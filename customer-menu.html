@@ -25,204 +25,545 @@
 
         body {
             background: #f5f5f5;
+            padding-bottom: 90px;
         }
 
 
+        /* ================================
+           HEADER
+        ================================= */
+
         .header {
+
             background: #ff5722;
+
             color: white;
+
             padding: 20px;
+
             text-align: center;
+
         }
 
 
         .header h2 {
+
             margin-bottom: 5px;
+
         }
 
 
         .table-info {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 7px 14px;
-            background: rgba(255,255,255,0.2);
-            border-radius: 20px;
-            font-size: 14px;
+
+            margin-top: 8px;
+
+            font-size: 15px;
+
         }
 
 
-        .container {
-            max-width: 900px;
-            margin: 25px auto;
-            padding: 15px;
-        }
-
+        /* ================================
+           STATUS
+        ================================= */
 
         .status {
+
             text-align: center;
+
+            padding: 15px;
+
             color: #666;
-            margin-bottom: 20px;
+
         }
 
 
-        .menu-grid {
+        /* ================================
+           MENU CONTAINER
+        ================================= */
+
+        .container {
+
+            max-width: 900px;
+
+            margin: auto;
+
+            padding: 20px;
+
+        }
+
+
+        .menu-list {
+
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+
             gap: 18px;
+
         }
 
+
+        /* ================================
+           MENU CARD
+        ================================= */
 
         .menu-card {
+
             background: white;
-            padding: 20px;
+
+            padding: 18px;
+
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.1);
+
         }
 
 
         .menu-card h3 {
+
+            margin-bottom: 8px;
+
             color: #333;
-            margin-bottom: 7px;
+
         }
 
 
         .category {
+
             display: inline-block;
+
             background: #fff3e0;
-            color: #e64a19;
+
+            color: #e65100;
+
             padding: 5px 9px;
+
             border-radius: 12px;
+
             font-size: 12px;
-            margin-bottom: 10px;
+
+            margin-bottom: 8px;
+
         }
 
 
         .description {
+
             color: #666;
+
             font-size: 14px;
-            line-height: 1.5;
+
             margin-bottom: 12px;
+
+            line-height: 1.4;
+
         }
 
 
         .price {
+
             font-size: 19px;
+
             font-weight: bold;
+
             color: #ff5722;
+
             margin-bottom: 12px;
+
         }
 
 
-        .add-btn {
-            width: 100%;
-            padding: 11px;
-            background: #ff5722;
-            color: white;
+        /* ================================
+           QUANTITY
+        ================================= */
+
+        .quantity-row {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .quantity-row button {
+
+            width: 38px;
+
+            height: 38px;
+
             border: none;
+
             border-radius: 7px;
+
+            background: #ff5722;
+
+            color: white;
+
+            font-size: 20px;
+
             cursor: pointer;
-            font-size: 15px;
+
         }
 
 
-        .add-btn:hover {
-            background: #e64a19;
+        .quantity {
+
+            min-width: 30px;
+
+            text-align: center;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
         }
 
 
-        .unavailable {
-            background: #ddd;
-            color: #777;
-            cursor: not-allowed;
-        }
+        /* ================================
+           CART BAR
+        ================================= */
 
+        .cart-bar {
 
-        .cart-box {
-            position: sticky;
+            position: fixed;
+
+            left: 0;
+
+            right: 0;
+
             bottom: 0;
-            margin-top: 25px;
+
             background: white;
-            padding: 18px;
-            border-radius: 12px 12px 0 0;
-            box-shadow: 0 -3px 12px rgba(0,0,0,0.15);
+
+            padding: 15px;
+
+            box-shadow:
+                0 -3px 12px rgba(0,0,0,0.15);
+
+            z-index: 1000;
+
         }
 
 
-        .cart-box h3 {
-            margin-bottom: 10px;
+        .cart-inner {
+
+            max-width: 900px;
+
+            margin: auto;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .cart-total {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+
+        .view-cart-btn {
+
+            background: #ff5722;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+
+        /* ================================
+           CART MODAL
+        ================================= */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.55);
+
+            z-index: 2000;
+
+            padding: 20px;
+
+            overflow-y: auto;
+
+        }
+
+
+        .modal-content {
+
+            background: white;
+
+            max-width: 600px;
+
+            margin: 40px auto;
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+        }
+
+
+        .modal-content h2 {
+
+            margin-bottom: 15px;
+
         }
 
 
         .cart-item {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
-            padding: 8px 0;
-            border-bottom: 1px solid #eee;
+
             gap: 10px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #eee;
+
         }
 
 
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+        .cart-item-name {
 
-
-        .quantity-controls button {
-            width: 28px;
-            height: 28px;
-            border: none;
-            border-radius: 5px;
-            background: #ff5722;
-            color: white;
-            cursor: pointer;
-        }
-
-
-        .total {
-            margin-top: 15px;
-            font-size: 20px;
             font-weight: bold;
+
         }
 
 
-        .order-btn {
-            width: 100%;
-            padding: 13px;
-            margin-top: 12px;
-            background: #00897b;
-            color: white;
+        .cart-item-price {
+
+            color: #555;
+
+        }
+
+
+        .cart-quantity {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+        }
+
+
+        .cart-quantity button {
+
+            width: 30px;
+
+            height: 30px;
+
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+
+            background: #ff5722;
+
+            color: white;
+
+            border-radius: 5px;
+
             cursor: pointer;
+
         }
 
 
-        .order-btn:hover {
-            background: #00695c;
+        .instructions {
+
+            width: 100%;
+
+            min-height: 90px;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            resize: vertical;
+
         }
 
+
+        .modal-total {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-top: 15px;
+
+        }
+
+
+        .modal-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 18px;
+
+        }
+
+
+        .modal-buttons button {
+
+            flex: 1;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+
+        .place-order-btn {
+
+            background: #4caf50;
+
+        }
+
+
+        .close-btn {
+
+            background: #333;
+
+        }
+
+
+        /* ================================
+           EMPTY
+        ================================= */
 
         .empty {
+
             background: white;
-            padding: 30px;
+
+            padding: 35px;
+
             text-align: center;
+
             border-radius: 12px;
+
             color: #666;
+
         }
 
 
-        @media (max-width: 650px) {
+        /* ================================
+           ORDER SUCCESS
+        ================================= */
 
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
+        .success {
+
+            background: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            margin-top: 20px;
+
+        }
+
+
+        .success h2 {
+
+            color: #4caf50;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .success .order-number {
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            margin: 15px 0;
+
+        }
+
+
+        /* ================================
+           MOBILE
+        ================================= */
+
+        @media (max-width: 600px) {
 
             .container {
-                padding: 12px;
+
+                padding: 15px;
+
+            }
+
+
+            .cart-inner {
+
+                flex-direction: row;
+
+            }
+
+
+            .modal-content {
+
+                margin: 15px auto;
+
+            }
+
+
+            .cart-item {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
             }
 
         }
@@ -235,7 +576,9 @@
 <body>
 
 
-    <!-- HEADER -->
+    <!-- ================================
+         HEADER
+    ================================= -->
 
     <div class="header">
 
@@ -243,80 +586,141 @@
             🍽️ Restaurant Menu
         </h2>
 
-        <p>
-            Order your favourite food
-        </p>
-
         <div
             id="tableInfo"
             class="table-info"
         >
-            🪑 Table --
+            🪑 Loading table...
         </div>
 
     </div>
 
 
+    <!-- ================================
+         STATUS
+    ================================= -->
+
+    <div
+        id="status"
+        class="status"
+    >
+        Loading menu...
+    </div>
+
+
+    <!-- ================================
+         MENU
+    ================================= -->
+
     <div class="container">
 
-
         <div
-            id="status"
-            class="status"
-        >
-            Loading menu...
-        </div>
-
-
-        <div
-            id="menuGrid"
-            class="menu-grid"
+            id="menuList"
+            class="menu-list"
         >
         </div>
 
-
-        <!-- CART -->
-
-        <div
-            id="cartBox"
-            class="cart-box"
-            style="display:none;"
-        >
-
-            <h3>
-                🛒 Your Order
-            </h3>
+    </div>
 
 
-            <div id="cartItems"></div>
+    <!-- ================================
+         CART BAR
+    ================================= -->
 
+    <div class="cart-bar">
+
+        <div class="cart-inner">
 
             <div
                 id="cartTotal"
-                class="total"
+                class="cart-total"
+            >
+                Cart: ₹0.00
+            </div>
+
+
+            <button
+                class="view-cart-btn"
+                onclick="openCart()"
+            >
+                🛒 View Cart
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================
+         CART MODAL
+    ================================= -->
+
+    <div
+        id="cartModal"
+        class="modal"
+    >
+
+        <div class="modal-content">
+
+            <h2>
+                🛒 Your Cart
+            </h2>
+
+
+            <div
+                id="cartItems"
+            >
+            </div>
+
+
+            <textarea
+                id="instructions"
+                class="instructions"
+                placeholder="Special instructions (optional)"
+            ></textarea>
+
+
+            <div
+                id="modalTotal"
+                class="modal-total"
             >
                 Total: ₹0.00
             </div>
 
 
-            <button
-                class="order-btn"
-                onclick="placeOrder()"
-            >
-                ✅ Place Order
-            </button>
+            <div class="modal-buttons">
+
+                <button
+                    class="place-order-btn"
+                    onclick="placeOrder()"
+                >
+                    ✅ Place Order
+                </button>
+
+
+                <button
+                    class="close-btn"
+                    onclick="closeCart()"
+                >
+                    Close
+                </button>
+
+            </div>
 
         </div>
 
-
     </div>
 
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
 
     <script type="module">
 
 
         /* =====================================
-           FIREBASE
+           FIREBASE IMPORTS
         ===================================== */
 
         import {
@@ -367,6 +771,10 @@
         };
 
 
+        /* =====================================
+           INITIALIZE FIREBASE
+        ===================================== */
+
         const app =
             initializeApp(
                 firebaseConfig
@@ -378,22 +786,7 @@
 
 
         /* =====================================
-           IMPORTANT
-        ===================================== */
-
-        /*
-         * TEMPORARY RESTAURANT ID
-         *
-         * Replace this with the Firebase UID
-         * of the restaurant while testing.
-         */
-
-        const restaurantId =
-            "IMHrGV74BncmGKMdGhS4Dgowiv72";
-
-
-        /* =====================================
-           TABLE NUMBER
+           READ QR PARAMETERS
         ===================================== */
 
         const urlParams =
@@ -402,9 +795,40 @@
             );
 
 
-        const tableNumber =
-            urlParams.get("table");
+        const restaurantId =
+            urlParams.get(
+                "restaurant"
+            );
 
+
+        const tableNumber =
+            urlParams.get(
+                "table"
+            );
+
+
+        /* =====================================
+           CHECK RESTAURANT ID
+        ===================================== */
+
+        if (!restaurantId) {
+
+            document.getElementById(
+                "status"
+            ).textContent =
+                "Restaurant information is missing.";
+
+
+            throw new Error(
+                "Restaurant ID is missing from QR URL."
+            );
+
+        }
+
+
+        /* =====================================
+           SHOW TABLE
+        ===================================== */
 
         document.getElementById(
             "tableInfo"
@@ -470,7 +894,7 @@
             catch (error) {
 
                 console.error(
-                    "Restaurant error:",
+                    "Restaurant loading error:",
                     error
                 );
 
@@ -485,9 +909,15 @@
 
         async function loadMenu() {
 
-            const menuGrid =
+            const menuList =
                 document.getElementById(
-                    "menuGrid"
+                    "menuList"
+                );
+
+
+            const status =
+                document.getElementById(
+                    "status"
                 );
 
 
@@ -508,18 +938,18 @@
                     );
 
 
-                menuGrid.innerHTML = "";
+                menuList.innerHTML = "";
 
 
-                if (snapshot.empty) {
+                if (
+                    snapshot.empty
+                ) {
 
-                    document.getElementById(
-                        "status"
-                    ).textContent =
-                        "No menu items available.";
+                    status.textContent =
+                        "Menu is empty.";
 
 
-                    menuGrid.innerHTML = `
+                    menuList.innerHTML = `
 
                         <div class="empty">
 
@@ -528,7 +958,7 @@
                             </h3>
 
                             <p>
-                                No food items are available yet.
+                                No menu items are available right now.
                             </p>
 
                         </div>
@@ -540,7 +970,8 @@
                 }
 
 
-                let count = 0;
+                status.textContent =
+                    `${snapshot.size} menu item(s)`;
 
 
                 snapshot.forEach(
@@ -550,20 +981,30 @@
                             menuDoc.data();
 
 
-                        /*
-                         * Only show available items
-                         */
-
-                        if (
-                            item.availability === false
-                        ) {
-
-                            return;
-
-                        }
+                        const itemId =
+                            menuDoc.id;
 
 
-                        count++;
+                        const name =
+                            item.name ||
+                            item.foodName ||
+                            "Food Item";
+
+
+                        const description =
+                            item.description ||
+                            "";
+
+
+                        const category =
+                            item.category ||
+                            "Food";
+
+
+                        const price =
+                            Number(
+                                item.price || 0
+                            );
 
 
                         const card =
@@ -576,19 +1017,12 @@
                             "menu-card";
 
 
-                        const price =
-                            Number(
-                                item.price || 0
-                            );
-
-
                         card.innerHTML = `
 
                             <span class="category">
 
                                 ${escapeHTML(
-                                    item.category ||
-                                    "Food"
+                                    category
                                 )}
 
                             </span>
@@ -597,21 +1031,27 @@
                             <h3>
 
                                 ${escapeHTML(
-                                    item.foodName ||
-                                    "Food Item"
+                                    name
                                 )}
 
                             </h3>
 
 
-                            <div class="description">
+                            ${
+                                description
+                                ? `
 
-                                ${escapeHTML(
-                                    item.description ||
-                                    "Delicious food."
-                                )}
+                                    <div class="description">
 
-                            </div>
+                                        ${escapeHTML(
+                                            description
+                                        )}
+
+                                    </div>
+
+                                `
+                                : ""
+                            }
 
 
                             <div class="price">
@@ -621,88 +1061,46 @@
                             </div>
 
 
-                            <button
-                                class="add-btn"
-                                onclick="addToCart(
-                                    '${menuDoc.id}'
-                                )"
-                            >
+                            <div class="quantity-row">
 
-                                ➕ Add to Order
+                                <button
+                                    onclick="changeQuantity(
+                                        '${itemId}',
+                                        -1
+                                    )"
+                                >
+                                    −
+                                </button>
 
-                            </button>
+
+                                <span
+                                    id="quantity-${itemId}"
+                                    class="quantity"
+                                >
+                                    0
+                                </span>
+
+
+                                <button
+                                    onclick="changeQuantity(
+                                        '${itemId}',
+                                        1
+                                    )"
+                                >
+                                    +
+                                </button>
+
+                            </div>
 
                         `;
 
 
-                        /*
-                         * Store complete item
-                         */
-
-                        card.dataset.id =
-                            menuDoc.id;
-
-
-                        menuGrid.appendChild(
+                        menuList.appendChild(
                             card
                         );
 
-
-                        /*
-                         * Keep item available
-                         * for cart
-                         */
-
-                        menuItems[
-                            menuDoc.id
-                        ] = {
-
-                            id:
-                                menuDoc.id,
-
-                            foodName:
-                                item.foodName ||
-                                "Food Item",
-
-                            price:
-                                price,
-
-                            category:
-                                item.category ||
-                                "Food"
-
-                        };
-
                     }
                 );
-
-
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    count +
-                    " menu item(s) available";
-
-
-                if (count === 0) {
-
-                    menuGrid.innerHTML = `
-
-                        <div class="empty">
-
-                            <h3>
-                                🍽️ No Available Items
-                            </h3>
-
-                            <p>
-                                Please check again later.
-                            </p>
-
-                        </div>
-
-                    `;
-
-                }
 
             }
 
@@ -714,13 +1112,11 @@
                 );
 
 
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "Error loading menu.";
+                status.textContent =
+                    "Unable to load menu.";
 
 
-                menuGrid.innerHTML = `
+                menuList.innerHTML = `
 
                     <div class="empty">
 
@@ -744,87 +1140,263 @@
 
 
         /* =====================================
-           MENU ITEMS MEMORY
+           CHANGE QUANTITY
         ===================================== */
 
-        const menuItems = {};
+        window.changeQuantity =
+            async function(
+                itemId,
+                change
+            ) {
 
-
-        /* =====================================
-           ADD TO CART
-        ===================================== */
-
-        window.addToCart =
-            function(menuId) {
-
-                const item =
-                    menuItems[
-                        menuId
-                    ];
-
-
-                if (!item) {
-
-                    alert(
-                        "Food item not found."
-                    );
-
-                    return;
-
-                }
-
-
-                const existing =
-                    cart.find(
-                        cartItem =>
-                            cartItem.id ===
-                            menuId
+                const existingIndex =
+                    cart.findIndex(
+                        item =>
+                            item.id === itemId
                     );
 
 
-                if (existing) {
+                if (
+                    existingIndex === -1
+                ) {
 
-                    existing.quantity++;
+                    if (
+                        change <= 0
+                    ) {
+                        return;
+                    }
+
+
+                    try {
+
+                        const itemRef =
+                            doc(
+                                db,
+                                "restaurants",
+                                restaurantId,
+                                "menu",
+                                itemId
+                            );
+
+
+                        const itemSnap =
+                            await getDoc(
+                                itemRef
+                            );
+
+
+                        if (
+                            !itemSnap.exists()
+                        ) {
+                            return;
+                        }
+
+
+                        const item =
+                            itemSnap.data();
+
+
+                        cart.push({
+
+                            id: itemId,
+
+                            name:
+                                item.name ||
+                                item.foodName ||
+                                "Food Item",
+
+                            price:
+                                Number(
+                                    item.price || 0
+                                ),
+
+                            quantity: 1
+
+                        });
+
+                    }
+
+                    catch (error) {
+
+                        console.error(
+                            "Item loading error:",
+                            error
+                        );
+
+                        return;
+
+                    }
 
                 }
 
                 else {
 
-                    cart.push({
+                    cart[
+                        existingIndex
+                    ].quantity += change;
 
-                        id:
-                            item.id,
 
-                        name:
-                            item.foodName,
+                    if (
+                        cart[
+                            existingIndex
+                        ].quantity <= 0
+                    ) {
 
-                        price:
-                            item.price,
-
-                        quantity:
+                        cart.splice(
+                            existingIndex,
                             1
+                        );
 
-                    });
+                    }
 
                 }
 
 
-                updateCart();
+                updateCartDisplay();
+
+                updateMenuQuantity(
+                    itemId
+                );
 
             };
 
 
         /* =====================================
-           UPDATE CART
+           UPDATE MENU QUANTITY
         ===================================== */
 
-        function updateCart() {
+        function updateMenuQuantity(
+            itemId
+        ) {
 
-            const cartBox =
+            const quantityElement =
                 document.getElementById(
-                    "cartBox"
+                    "quantity-" +
+                    itemId
                 );
 
+
+            if (!quantityElement) {
+                return;
+            }
+
+
+            const item =
+                cart.find(
+                    item =>
+                        item.id === itemId
+                );
+
+
+            quantityElement.textContent =
+                item
+                ? item.quantity
+                : 0;
+
+        }
+
+
+        /* =====================================
+           CART TOTAL
+        ===================================== */
+
+        function getCartTotal() {
+
+            return cart.reduce(
+                (
+                    total,
+                    item
+                ) => {
+
+                    return total +
+                        (
+                            Number(
+                                item.price
+                            ) *
+                            Number(
+                                item.quantity
+                            )
+                        );
+
+                },
+                0
+            );
+
+        }
+
+
+        /* =====================================
+           UPDATE CART BAR
+        ===================================== */
+
+        function updateCartDisplay() {
+
+            const total =
+                getCartTotal();
+
+
+            const count =
+                cart.reduce(
+                    (
+                        sum,
+                        item
+                    ) => {
+
+                        return sum +
+                            Number(
+                                item.quantity
+                            );
+
+                    },
+                    0
+                );
+
+
+            document.getElementById(
+                "cartTotal"
+            ).textContent =
+                `Cart: ${count} item(s) • ₹${total.toFixed(2)}`;
+
+        }
+
+
+        /* =====================================
+           OPEN CART
+        ===================================== */
+
+        window.openCart =
+            function() {
+
+                renderCart();
+
+                document.getElementById(
+                    "cartModal"
+                ).style.display =
+                    "block";
+
+            };
+
+
+        /* =====================================
+           CLOSE CART
+        ===================================== */
+
+        window.closeCart =
+            function() {
+
+                document.getElementById(
+                    "cartModal"
+                ).style.display =
+                    "none";
+
+            };
+
+
+        /* =====================================
+           RENDER CART
+        ===================================== */
+
+        function renderCart() {
 
             const cartItems =
                 document.getElementById(
@@ -832,149 +1404,112 @@
                 );
 
 
-            if (cart.length === 0) {
+            cartItems.innerHTML = "";
 
-                cartBox.style.display =
-                    "none";
 
-                return;
+            if (
+                cart.length === 0
+            ) {
+
+                cartItems.innerHTML = `
+
+                    <div class="empty">
+
+                        🛒 Your cart is empty.
+
+                    </div>
+
+                `;
+
+            }
+
+            else {
+
+                cart.forEach(
+                    item => {
+
+                        const row =
+                            document.createElement(
+                                "div"
+                            );
+
+
+                        row.className =
+                            "cart-item";
+
+
+                        row.innerHTML = `
+
+                            <div>
+
+                                <div class="cart-item-name">
+
+                                    ${escapeHTML(
+                                        item.name
+                                    )}
+
+                                </div>
+
+
+                                <div class="cart-item-price">
+
+                                    ₹${Number(
+                                        item.price
+                                    ).toFixed(2)}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="cart-quantity">
+
+                                <button
+                                    onclick="changeQuantity(
+                                        '${item.id}',
+                                        -1
+                                    )"
+                                >
+                                    −
+                                </button>
+
+
+                                <span>
+                                    ${item.quantity}
+                                </span>
+
+
+                                <button
+                                    onclick="changeQuantity(
+                                        '${item.id}',
+                                        1
+                                    )"
+                                >
+                                    +
+                                </button>
+
+                            </div>
+
+                        `;
+
+
+                        cartItems.appendChild(
+                            row
+                        );
+
+                    }
+                );
 
             }
 
 
-            cartBox.style.display =
-                "block";
-
-
-            cartItems.innerHTML =
-                "";
-
-
-            let total = 0;
-
-
-            cart.forEach(
-                (item, index) => {
-
-                    const itemTotal =
-                        item.price *
-                        item.quantity;
-
-
-                    total += itemTotal;
-
-
-                    const row =
-                        document.createElement(
-                            "div"
-                        );
-
-
-                    row.className =
-                        "cart-item";
-
-
-                    row.innerHTML = `
-
-                        <div>
-
-                            <strong>
-                                ${escapeHTML(
-                                    item.name
-                                )}
-                            </strong>
-
-                            <br>
-
-                            ₹${item.price.toFixed(2)}
-
-                        </div>
-
-
-                        <div class="quantity-controls">
-
-                            <button
-                                onclick="changeQuantity(
-                                    ${index},
-                                    -1
-                                )"
-                            >
-                                −
-                            </button>
-
-
-                            <strong>
-                                ${item.quantity}
-                            </strong>
-
-
-                            <button
-                                onclick="changeQuantity(
-                                    ${index},
-                                    1
-                                )"
-                            >
-                                +
-                            </button>
-
-                        </div>
-
-
-                        <strong>
-
-                            ₹${itemTotal.toFixed(2)}
-
-                        </strong>
-
-                    `;
-
-
-                    cartItems.appendChild(
-                        row
-                    );
-
-                }
-            );
-
-
             document.getElementById(
-                "cartTotal"
+                "modalTotal"
             ).textContent =
                 "Total: ₹" +
-                total.toFixed(2);
+                getCartTotal().toFixed(2);
 
         }
-
-
-        /* =====================================
-           CHANGE QUANTITY
-        ===================================== */
-
-        window.changeQuantity =
-            function(
-                index,
-                change
-            ) {
-
-                cart[index].quantity +=
-                    change;
-
-
-                if (
-                    cart[index].quantity <= 0
-                ) {
-
-                    cart.splice(
-                        index,
-                        1
-                    );
-
-                }
-
-
-                updateCart();
-
-            };
 
 
         /* =====================================
@@ -985,24 +1520,11 @@
             async function() {
 
                 if (
-                    !tableNumber
-                ) {
-
-                    alert(
-                        "Table number is missing."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
                     cart.length === 0
                 ) {
 
                     alert(
-                        "Please add food items first."
+                        "Please add at least one item to the cart."
                     );
 
                     return;
@@ -1010,38 +1532,38 @@
                 }
 
 
-                let total = 0;
+                const instructions =
+                    document.getElementById(
+                        "instructions"
+                    ).value.trim();
 
 
-                cart.forEach(
-                    item => {
-
-                        total +=
-                            item.price *
-                            item.quantity;
-
-                    }
-                );
-
-
-                const orderItems =
-                    cart.map(
-                        item => ({
-
-                            name:
-                                item.name,
-
-                            price:
-                                item.price,
-
-                            quantity:
-                                item.quantity
-
-                        })
-                    );
+                const total =
+                    getCartTotal();
 
 
                 try {
+
+                    const orderItems =
+                        cart.map(
+                            item => ({
+
+                                name:
+                                    item.name,
+
+                                price:
+                                    Number(
+                                        item.price
+                                    ),
+
+                                quantity:
+                                    Number(
+                                        item.quantity
+                                    )
+
+                            })
+                        );
+
 
                     const ordersRef =
                         collection(
@@ -1052,41 +1574,105 @@
                         );
 
 
+                    const orderNumber =
+                        "ORD-" +
+                        Date.now();
+
+
+                    const orderData = {
+
+                        orderNumber:
+                            orderNumber,
+
+                        tableNumber:
+                            tableNumber ||
+                            "N/A",
+
+                        items:
+                            orderItems,
+
+                        total:
+                            total,
+
+                        instructions:
+                            instructions,
+
+                        status:
+                            "new",
+
+                        createdAt:
+                            serverTimestamp()
+
+                    };
+
+
                     await addDoc(
                         ordersRef,
-                        {
-
-                            tableNumber:
-                                tableNumber,
-
-                            items:
-                                orderItems,
-
-                            total:
-                                total,
-
-                            status:
-                                "new",
-
-                            instructions:
-                                "",
-
-                            createdAt:
-                                serverTimestamp()
-
-                        }
+                        orderData
                     );
 
 
-                    alert(
-                        "✅ Order placed successfully!"
-                    );
+                    document.getElementById(
+                        "cartModal"
+                    ).style.display =
+                        "none";
+
+
+                    document.getElementById(
+                        "menuList"
+                    ).innerHTML = `
+
+                        <div class="success">
+
+                            <h2>
+                                ✅ Order Placed!
+                            </h2>
+
+                            <p>
+                                Your order has been sent to the restaurant.
+                            </p>
+
+
+                            <div class="order-number">
+
+                                ${escapeHTML(
+                                    orderNumber
+                                )}
+
+                            </div>
+
+
+                            <p>
+                                Table:
+                                ${escapeHTML(
+                                    tableNumber ||
+                                    "N/A"
+                                )}
+                            </p>
+
+
+                            <p style="margin-top:10px;">
+
+                                Total:
+                                ₹${total.toFixed(2)}
+
+                            </p>
+
+                        </div>
+
+                    `;
+
+
+                    document.getElementById(
+                        "status"
+                    ).textContent =
+                        "Order successfully placed.";
 
 
                     cart = [];
 
 
-                    updateCart();
+                    updateCartDisplay();
 
                 }
 
@@ -1109,7 +1695,7 @@
 
 
         /* =====================================
-           SECURITY
+           ESCAPE HTML
         ===================================== */
 
         function escapeHTML(
@@ -1147,12 +1733,15 @@
 
 
         /* =====================================
-           START
+           INITIAL LOAD
         ===================================== */
 
         loadRestaurant();
 
         loadMenu();
+
+        updateCartDisplay();
+
 
     </script>
 
