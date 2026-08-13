@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Restaurant Dashboard</title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -19,6 +26,7 @@
         }
 
         /* Header */
+
         .header {
             background: #ff5722;
             color: white;
@@ -30,19 +38,25 @@
             margin-bottom: 5px;
         }
 
+
         /* Dashboard */
+
         .dashboard {
             padding: 20px;
             max-width: 1000px;
             margin: auto;
         }
 
+
+        /* Welcome */
+
         .welcome {
             background: white;
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.1);
         }
 
         .welcome h3 {
@@ -53,10 +67,14 @@
             color: gray;
         }
 
+
         /* Cards */
+
         .cards {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns:
+                repeat(2, 1fr);
+
             gap: 15px;
         }
 
@@ -65,8 +83,11 @@
             padding: 25px;
             border-radius: 12px;
             text-align: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.1);
+
             cursor: pointer;
+
             transition: 0.2s;
         }
 
@@ -88,16 +109,22 @@
             font-size: 14px;
         }
 
+
         /* Logout */
+
         .logout {
             margin-top: 25px;
             width: 100%;
             padding: 13px;
+
             border: none;
             border-radius: 8px;
+
             background: #333;
             color: white;
+
             font-size: 16px;
+
             cursor: pointer;
         }
 
@@ -105,7 +132,9 @@
             background: #111;
         }
 
+
         /* Mobile */
+
         @media (max-width: 600px) {
 
             .cards {
@@ -115,99 +144,306 @@
             .dashboard {
                 padding: 15px;
             }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+    <!-- ================================
+         HEADER
+    ================================= -->
+
     <div class="header">
-        <h2>🍽️ Restaurant Dashboard</h2>
-        <p>QR Ordering System</p>
+
+        <h2>
+            🍽️ Restaurant Dashboard
+        </h2>
+
+        <p>
+            QR Ordering System
+        </p>
+
     </div>
+
+
+    <!-- ================================
+         DASHBOARD
+    ================================= -->
 
     <div class="dashboard">
 
+
+        <!-- Welcome -->
+
         <div class="welcome">
-            <h3>Welcome, Restaurant Owner 👋</h3>
-            <p>Manage your restaurant from here.</p>
+
+            <h3>
+                Welcome, Restaurant Owner 👋
+            </h3>
+
+            <p>
+                Manage your restaurant from here.
+            </p>
+
         </div>
+
+
+        <!-- Dashboard Cards -->
 
         <div class="cards">
 
-            <div class="card" onclick="addMenu()">
-                <div class="icon">➕</div>
-                <h3>Add Menu Item</h3>
-                <p>Add food items to your menu</p>
+
+            <!-- Add Menu -->
+
+            <div
+                class="card"
+                onclick="addMenu()"
+            >
+
+                <div class="icon">
+                    ➕
+                </div>
+
+                <h3>
+                    Add Menu Item
+                </h3>
+
+                <p>
+                    Add food items to your menu
+                </p>
+
             </div>
 
-            <div class="card" onclick="viewMenu()">
-                <div class="icon">🍽️</div>
-                <h3>Manage Menu</h3>
-                <p>Edit or delete menu items</p>
+
+            <!-- Manage Menu -->
+
+            <div
+                class="card"
+                onclick="viewMenu()"
+            >
+
+                <div class="icon">
+                    🍽️
+                </div>
+
+                <h3>
+                    Manage Menu
+                </h3>
+
+                <p>
+                    Edit or delete menu items
+                </p>
+
             </div>
 
-            <div class="card" onclick="viewOrders()">
-                <div class="icon">🛒</div>
-                <h3>Orders</h3>
-                <p>View customer orders</p>
+
+            <!-- Orders -->
+
+            <div
+                class="card"
+                onclick="viewOrders()"
+            >
+
+                <div class="icon">
+                    🛒
+                </div>
+
+                <h3>
+                    Orders
+                </h3>
+
+                <p>
+                    View customer orders
+                </p>
+
             </div>
 
-            <div class="card" onclick="qrCode()">
-                <div class="icon">📱</div>
-                <h3>QR Code</h3>
-                <p>View your restaurant QR code</p>
+
+            <!-- QR CODE -->
+
+            <div
+                class="card"
+                onclick="openQR()"
+            >
+
+                <div class="icon">
+                    📱
+                </div>
+
+                <h3>
+                    QR Code
+                </h3>
+
+                <p>
+                    View your restaurant QR code
+                </p>
+
             </div>
 
-            <div class="card" onclick="settings()">
-                <div class="icon">⚙️</div>
-                <h3>Settings</h3>
-                <p>Manage restaurant settings</p>
+
+            <!-- Settings -->
+
+            <div
+                class="card"
+                onclick="settings()"
+            >
+
+                <div class="icon">
+                    ⚙️
+                </div>
+
+                <h3>
+                    Settings
+                </h3>
+
+                <p>
+                    Manage restaurant settings
+                </p>
+
             </div>
 
-            <div class="card" onclick="profile()">
-                <div class="icon">👤</div>
-                <h3>Restaurant Profile</h3>
-                <p>Manage restaurant information</p>
+
+            <!-- Restaurant Profile -->
+
+            <div
+                class="card"
+                onclick="profile()"
+            >
+
+                <div class="icon">
+                    👤
+                </div>
+
+                <h3>
+                    Restaurant Profile
+                </h3>
+
+                <p>
+                    Manage restaurant information
+                </p>
+
             </div>
+
 
         </div>
 
-        <button class="logout" onclick="logout()">
+
+        <!-- Logout -->
+
+        <button
+            class="logout"
+            onclick="logout()"
+        >
+
             🚪 Logout
+
         </button>
+
 
     </div>
 
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
     <script>
 
+
+        /* ================================
+           ADD MENU
+        ================================= */
+
         function addMenu() {
-    window.location.href = "add-menu.html";
-}
-    function viewMenu() {
-    window.location.href = "manage-menu.html";
-}
-function viewOrders() {
-    window.location.href = "view-orders.html";
-}
+
+            window.location.href =
+                "add-menu.html";
+
+        }
+
+
+        /* ================================
+           MANAGE MENU
+        ================================= */
+
+        function viewMenu() {
+
+            window.location.href =
+                "manage-menu.html";
+
+        }
+
+
+        /* ================================
+           VIEW ORDERS
+        ================================= */
+
+        function viewOrders() {
+
+            window.location.href =
+                "view-orders.html";
+
+        }
+
+
+        /* ================================
+           QR CODE
+        ================================= */
 
         function openQR() {
-    window.location.href = "qr.html";
-}
+
+            window.location.href =
+                "qr.html";
+
+        }
+
+
+        /* ================================
+           SETTINGS
+        ================================= */
 
         function settings() {
-            alert("Settings - Coming Next!");
+
+            alert(
+                "Settings - Coming Next!"
+            );
+
         }
+
+
+        /* ================================
+           RESTAURANT PROFILE
+        ================================= */
 
         function profile() {
-            window.location.href="Profile.html";
+
+            window.location.href =
+                "profile.html";
+
         }
 
+
+        /* ================================
+           LOGOUT
+        ================================= */
+
         function logout() {
-            window.location.href = "index.html";
+
+            window.location.href =
+                "index.html";
+
         }
+
 
     </script>
 
+
 </body>
+
 </html>
