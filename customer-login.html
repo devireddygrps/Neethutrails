@@ -12,7 +12,6 @@
 
     <title>Customer Login</title>
 
-
     <style>
 
         * {
@@ -21,7 +20,6 @@
             box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
-
 
         body {
             background: #f5f5f5;
@@ -32,167 +30,102 @@
             padding: 20px;
         }
 
-
         .login-card {
-
             width: 100%;
             max-width: 420px;
-
             background: white;
-
             padding: 30px;
-
             border-radius: 15px;
-
-            box-shadow:
-                0 4px 15px rgba(0,0,0,0.12);
-
+            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
         }
-
 
         h2 {
-
             text-align: center;
-
             margin-bottom: 8px;
-
             color: #333;
-
         }
-
 
         .subtitle {
-
             text-align: center;
-
             color: #777;
-
             margin-bottom: 25px;
-
         }
-
 
         label {
-
             display: block;
-
             margin-bottom: 7px;
-
             font-weight: bold;
-
             color: #333;
-
         }
-
 
         input {
-
             width: 100%;
-
             padding: 13px;
-
             border: 1px solid #ccc;
-
             border-radius: 8px;
-
             font-size: 16px;
-
             margin-bottom: 15px;
-
         }
-
 
         input:focus {
-
             outline: none;
-
             border-color: #ff5722;
-
         }
-
 
         button {
-
             width: 100%;
-
             padding: 13px;
-
             border: none;
-
             border-radius: 8px;
-
             background: #ff5722;
-
             color: white;
-
             font-size: 16px;
-
             cursor: pointer;
-
         }
-
 
         button:hover {
-
             background: #e64a19;
-
         }
-
 
         button:disabled {
-
             background: #aaa;
-
             cursor: not-allowed;
-
         }
-
 
         .otp-section {
-
             display: none;
-
         }
-
 
         .status {
-
             text-align: center;
-
             margin-top: 15px;
-
             color: #666;
-
             font-size: 14px;
-
+            line-height: 1.5;
+            word-break: break-word;
         }
-
 
         .restaurant-info {
-
             text-align: center;
-
             margin-bottom: 20px;
-
             background: #fff3e0;
-
             padding: 12px;
-
             border-radius: 8px;
-
             color: #e65100;
-
         }
 
-
         .recaptcha-container {
-
             margin: 15px 0;
-
             display: flex;
-
             justify-content: center;
+        }
 
+        .error {
+            color: #d32f2f;
+        }
+
+        .success {
+            color: #2e7d32;
         }
 
     </style>
@@ -202,18 +135,15 @@
 
 <body>
 
-
     <div class="login-card">
 
         <h2>
             📱 Customer Login
         </h2>
 
-
         <p class="subtitle">
             Verify your mobile number to continue
         </p>
-
 
         <div
             id="restaurantInfo"
@@ -231,24 +161,22 @@
                 Mobile Number
             </label>
 
-
             <input
                 id="phoneNumber"
                 type="tel"
-                placeholder="+91 9876543210"
+                placeholder="9876543210 or +919876543210"
                 autocomplete="tel"
+                inputmode="tel"
             >
-
 
             <div
                 id="recaptcha-container"
                 class="recaptcha-container"
-            >
-            </div>
-
+            ></div>
 
             <button
                 id="sendOtpBtn"
+                type="button"
             >
                 📲 Send OTP
             </button>
@@ -267,7 +195,6 @@
                 Enter OTP
             </label>
 
-
             <input
                 id="otp"
                 type="text"
@@ -277,9 +204,9 @@
                 autocomplete="one-time-code"
             >
 
-
             <button
                 id="verifyOtpBtn"
+                type="button"
             >
                 ✅ Verify OTP
             </button>
@@ -290,15 +217,12 @@
         <div
             id="status"
             class="status"
-        >
-        </div>
+        ></div>
 
     </div>
 
 
-
     <script type="module">
-
 
         /* =====================================
            FIREBASE IMPORTS
@@ -352,14 +276,9 @@
            INITIALIZE FIREBASE
         ===================================== */
 
-        const app =
-            initializeApp(
-                firebaseConfig
-            );
+        const app = initializeApp(firebaseConfig);
 
-
-        const auth =
-            getAuth(app);
+        const auth = getAuth(app);
 
 
         /* =====================================
@@ -371,135 +290,255 @@
                 window.location.search
             );
 
-
         const restaurantId =
-            urlParams.get(
-                "restaurant"
-            );
-
+            urlParams.get("restaurant");
 
         const tableNumber =
-            urlParams.get(
-                "table"
-            );
-
-
-        /* =====================================
-           CHECK QR
-        ===================================== */
-
-        if (!restaurantId) {
-
-            document.getElementById(
-                "restaurantInfo"
-            ).textContent =
-                "Restaurant information is missing.";
-
-            document.getElementById(
-                "sendOtpBtn"
-            ).disabled = true;
-
-            throw new Error(
-                "Restaurant ID missing from QR URL."
-            );
-
-        }
-
-
-        document.getElementById(
-            "restaurantInfo"
-        ).textContent =
-            tableNumber
-            ? `🪑 Table ${tableNumber}`
-            : "🍽️ Restaurant";
+            urlParams.get("table");
 
 
         /* =====================================
            ELEMENTS
         ===================================== */
 
-        const phoneInput =
-            document.getElementById(
-                "phoneNumber"
-            );
+        const restaurantInfo =
+            document.getElementById("restaurantInfo");
 
+        const phoneInput =
+            document.getElementById("phoneNumber");
 
         const otpInput =
-            document.getElementById(
-                "otp"
-            );
-
+            document.getElementById("otp");
 
         const sendOtpBtn =
-            document.getElementById(
-                "sendOtpBtn"
-            );
-
+            document.getElementById("sendOtpBtn");
 
         const verifyOtpBtn =
-            document.getElementById(
-                "verifyOtpBtn"
-            );
-
+            document.getElementById("verifyOtpBtn");
 
         const status =
-            document.getElementById(
-                "status"
-            );
+            document.getElementById("status");
+
+        const phoneSection =
+            document.getElementById("phoneSection");
+
+        const otpSection =
+            document.getElementById("otpSection");
 
 
         /* =====================================
-           RECAPTCHA
+           CHECK QR PARAMETERS
+        ===================================== */
+
+        if (!restaurantId) {
+
+            restaurantInfo.textContent =
+                "Restaurant information is missing.";
+
+            sendOtpBtn.disabled = true;
+
+            status.textContent =
+                "Please scan the restaurant QR code again.";
+
+            status.className =
+                "status error";
+
+        } else {
+
+            restaurantInfo.textContent =
+                tableNumber
+                    ? `🪑 Table ${tableNumber}`
+                    : "🍽️ Restaurant";
+
+        }
+
+
+        /* =====================================
+           VARIABLES
         ===================================== */
 
         let confirmationResult = null;
 
+        let recaptchaVerifier = null;
 
-        let recaptchaVerifier;
-
-
-        try {
-
-            recaptchaVerifier =
-                new RecaptchaVerifier(
-                    auth,
-                    "recaptcha-container",
-                    {
-
-                        size: "normal",
-
-                        callback: () => {
-
-                            status.textContent =
-                                "reCAPTCHA verified.";
-
-                        },
-
-                        "expired-callback": () => {
-
-                            status.textContent =
-                                "reCAPTCHA expired. Please verify again.";
-
-                        }
-
-                    }
-                );
+        let recaptchaWidgetId = null;
 
 
-            await recaptchaVerifier.render();
+        /* =====================================
+           SHOW STATUS
+        ===================================== */
+
+        function showStatus(message, type = "") {
+
+            status.textContent = message;
+
+            status.className =
+                "status" +
+                (type ? ` ${type}` : "");
 
         }
 
-        catch (error) {
 
-            console.error(
-                "reCAPTCHA error:",
-                error
-            );
+        /* =====================================
+           NORMALIZE INDIAN PHONE NUMBER
+        ===================================== */
+
+        function normalizeIndianPhoneNumber(value) {
+
+            let phone =
+                value.trim();
+
+            /*
+             * Remove spaces, hyphens and brackets.
+             *
+             * Examples:
+             *
+             * 9876543210
+             * +91 9876543210
+             * +91-9876543210
+             * +91 (9876543210)
+             */
+
+            phone =
+                phone.replace(
+                    /[\s\-()]/g,
+                    ""
+                );
 
 
-            status.textContent =
-                "Could not load reCAPTCHA.";
+            /*
+             * 10 digit Indian number
+             *
+             * 9876543210
+             *
+             * becomes
+             *
+             * +919876543210
+             */
+
+            if (/^[6-9]\d{9}$/.test(phone)) {
+
+                return "+91" + phone;
+
+            }
+
+
+            /*
+             * +91 followed by 10 digits
+             */
+
+            if (/^\+91[6-9]\d{9}$/.test(phone)) {
+
+                return phone;
+
+            }
+
+
+            return null;
+
+        }
+
+
+        /* =====================================
+           RESET RECAPTCHA
+        ===================================== */
+
+        async function resetRecaptcha() {
+
+            try {
+
+                if (recaptchaVerifier) {
+
+                    recaptchaVerifier.clear();
+
+                    recaptchaVerifier = null;
+
+                    recaptchaWidgetId = null;
+
+                }
+
+            } catch (error) {
+
+                console.warn(
+                    "Could not clear reCAPTCHA:",
+                    error
+                );
+
+            }
+
+
+            /*
+             * Re-create reCAPTCHA.
+             */
+
+            try {
+
+                recaptchaVerifier =
+                    new RecaptchaVerifier(
+                        auth,
+                        "recaptcha-container",
+                        {
+
+                            size: "normal",
+
+                            callback: () => {
+
+                                showStatus(
+                                    "reCAPTCHA verified."
+                                );
+
+                            },
+
+                            "expired-callback": () => {
+
+                                showStatus(
+                                    "reCAPTCHA expired. Please verify again.",
+                                    "error"
+                                );
+
+                            },
+
+                            "error-callback": () => {
+
+                                showStatus(
+                                    "reCAPTCHA error. Please try again.",
+                                    "error"
+                                );
+
+                            }
+
+                        }
+                    );
+
+
+                recaptchaWidgetId =
+                    await recaptchaVerifier.render();
+
+
+            } catch (error) {
+
+                console.error(
+                    "reCAPTCHA initialization error:",
+                    error
+                );
+
+                showStatus(
+                    "Could not load reCAPTCHA. Please refresh the page.",
+                    "error"
+                );
+
+            }
+
+        }
+
+
+        /* =====================================
+           INITIALIZE RECAPTCHA
+        ===================================== */
+
+        if (restaurantId) {
+
+            await resetRecaptcha();
 
         }
 
@@ -512,42 +551,79 @@
             "click",
             async () => {
 
-                const phoneNumber =
-                    phoneInput.value.trim();
+                if (!restaurantId) {
 
+                    showStatus(
+                        "Restaurant information is missing.",
+                        "error"
+                    );
+
+                    return;
+
+                }
+
+
+                /*
+                 * Normalize the number.
+                 */
+
+                const phoneNumber =
+                    normalizeIndianPhoneNumber(
+                        phoneInput.value
+                    );
+
+
+                /*
+                 * Validate the number BEFORE
+                 * calling Firebase.
+                 */
 
                 if (!phoneNumber) {
 
-                    alert(
-                        "Please enter your mobile number."
+                    showStatus(
+                        "Enter a valid Indian mobile number.\nExample: 9876543210 or +919876543210",
+                        "error"
                     );
+
+                    phoneInput.focus();
 
                     return;
 
                 }
 
 
-                if (
-                    !phoneNumber.startsWith("+")
-                ) {
+                /*
+                 * Display the normalized number
+                 * so the user knows what will be used.
+                 */
 
-                    alert(
-                        "Please enter the number with country code.\n\nExample:\n+91 9876543210"
-                    );
-
-                    return;
-
-                }
+                phoneInput.value =
+                    phoneNumber;
 
 
                 sendOtpBtn.disabled = true;
 
-
-                status.textContent =
-                    "Sending OTP...";
+                showStatus(
+                    "Sending OTP..."
+                );
 
 
                 try {
+
+                    /*
+                     * Make sure reCAPTCHA exists.
+                     */
+
+                    if (!recaptchaVerifier) {
+
+                        await resetRecaptcha();
+
+                    }
+
+
+                    /*
+                     * Send OTP.
+                     */
 
                     confirmationResult =
                         await signInWithPhoneNumber(
@@ -557,45 +633,77 @@
                         );
 
 
-                    status.textContent =
-                        "OTP sent successfully. Please check your phone.";
+                    /*
+                     * OTP successfully sent.
+                     */
+
+                    showStatus(
+                        "OTP sent successfully. Please check your phone.",
+                        "success"
+                    );
 
 
-                    document.getElementById(
-                        "phoneSection"
-                    ).style.display =
+                    phoneSection.style.display =
                         "none";
 
-
-                    document.getElementById(
-                        "otpSection"
-                    ).style.display =
+                    otpSection.style.display =
                         "block";
 
+                    otpInput.value = "";
 
                     otpInput.focus();
 
-                }
 
-                catch (error) {
+                } catch (error) {
 
                     console.error(
-                        "OTP error:",
+                        "Firebase OTP error:",
                         error
                     );
 
 
-                    status.textContent =
-                        "Could not send OTP.";
+                    /*
+                     * IMPORTANT:
+                     * Show the actual Firebase error code.
+                     */
+
+                    const errorCode =
+                        error?.code ||
+                        "unknown-error";
+
+                    const errorMessage =
+                        error?.message ||
+                        "Unknown Firebase error.";
 
 
-                    alert(
-                        "Could not send OTP:\n\n" +
-                        error.message
+                    showStatus(
+                        `Firebase error: ${errorCode}`,
+                        "error"
                     );
 
 
-                    sendOtpBtn.disabled = false;
+                    alert(
+                        "Could not send OTP.\n\n" +
+                        "Firebase error code:\n" +
+                        errorCode +
+                        "\n\n" +
+                        "Message:\n" +
+                        errorMessage
+                    );
+
+
+                    sendOtpBtn.disabled =
+                        false;
+
+
+                    /*
+                     * reCAPTCHA tokens are often
+                     * unusable after a failed request.
+                     *
+                     * Completely reset it.
+                     */
+
+                    await resetRecaptcha();
 
                 }
 
@@ -617,8 +725,9 @@
 
                 if (!confirmationResult) {
 
-                    alert(
-                        "Please request an OTP first."
+                    showStatus(
+                        "Please request an OTP first.",
+                        "error"
                     );
 
                     return;
@@ -626,24 +735,31 @@
                 }
 
 
-                if (
-                    otp.length !== 6
-                ) {
+                /*
+                 * OTP must contain exactly
+                 * six digits.
+                 */
 
-                    alert(
-                        "Please enter the 6-digit OTP."
+                if (!/^\d{6}$/.test(otp)) {
+
+                    showStatus(
+                        "Please enter the 6-digit OTP.",
+                        "error"
                     );
+
+                    otpInput.focus();
 
                     return;
 
                 }
 
 
-                verifyOtpBtn.disabled = true;
+                verifyOtpBtn.disabled =
+                    true;
 
-
-                status.textContent =
-                    "Verifying OTP...";
+                showStatus(
+                    "Verifying OTP..."
+                );
 
 
                 try {
@@ -665,8 +781,7 @@
 
 
                     /*
-                     * Save basic login information
-                     * temporarily for the next step.
+                     * Save customer information.
                      */
 
                     sessionStorage.setItem(
@@ -681,6 +796,10 @@
                     );
 
 
+                    /*
+                     * Preserve QR information.
+                     */
+
                     sessionStorage.setItem(
                         "restaurantId",
                         restaurantId
@@ -693,15 +812,22 @@
                     );
 
 
-                    status.textContent =
-                        "Login successful!";
+                    showStatus(
+                        "Login successful! Opening menu...",
+                        "success"
+                    );
 
 
                     /*
-                     * Go back to the menu.
+                     * IMPORTANT:
+                     *
+                     * customer-menu.html is NOT changed.
+                     *
+                     * We simply redirect to it with
+                     * the original QR parameters.
                      */
 
-                    window.location.href =
+                    const menuUrl =
                         "customer-menu.html" +
                         "?restaurant=" +
                         encodeURIComponent(
@@ -712,9 +838,12 @@
                             tableNumber || ""
                         );
 
-                }
 
-                catch (error) {
+                    window.location.href =
+                        menuUrl;
+
+
+                } catch (error) {
 
                     console.error(
                         "OTP verification error:",
@@ -722,18 +851,39 @@
                     );
 
 
-                    status.textContent =
-                        "Invalid OTP.";
+                    /*
+                     * Show actual Firebase error code.
+                     */
+
+                    const errorCode =
+                        error?.code ||
+                        "unknown-error";
+
+                    const errorMessage =
+                        error?.message ||
+                        "Unknown Firebase error.";
+
+
+                    showStatus(
+                        `Firebase error: ${errorCode}`,
+                        "error"
+                    );
 
 
                     alert(
-                        "OTP verification failed:\n\n" +
-                        error.message
+                        "OTP verification failed.\n\n" +
+                        "Firebase error code:\n" +
+                        errorCode +
+                        "\n\n" +
+                        "Message:\n" +
+                        errorMessage
                     );
 
 
                     verifyOtpBtn.disabled =
                         false;
+
+                    otpInput.focus();
 
                 }
 
@@ -741,8 +891,46 @@
         );
 
 
-    </script>
+        /* =====================================
+           ALLOW ENTER TO SEND OTP
+        ===================================== */
 
+        phoneInput.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (event.key === "Enter") {
+
+                    event.preventDefault();
+
+                    sendOtpBtn.click();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================
+           ALLOW ENTER TO VERIFY OTP
+        ===================================== */
+
+        otpInput.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (event.key === "Enter") {
+
+                    event.preventDefault();
+
+                    verifyOtpBtn.click();
+
+                }
+
+            }
+        );
+
+    </script>
 
 </body>
 
