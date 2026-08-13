@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -345,12 +346,17 @@
 
 
         /* =====================================
-           CUSTOMER MENU BASE URL
+           CUSTOMER LOGIN BASE URL
+           
+           IMPORTANT:
+           
+           QR codes now open customer-login.html
+           instead of customer-menu.html.
         ===================================== */
 
-        const baseMenuUrl =
+        const baseLoginUrl =
             window.location.origin +
-            "/Neethutrails/customer-menu.html";
+            "/Neethutrails/customer-login.html";
 
 
         /* =====================================
@@ -417,8 +423,6 @@
 
 
                 /*
-                 * THIS IS THE IMPORTANT PART
-                 *
                  * Firebase automatically gives
                  * us the restaurant owner's UID.
                  */
@@ -558,12 +562,20 @@
                 /*
                  * IMPORTANT:
                  *
-                 * Restaurant UID +
-                 * Table Number
+                 * QR now points to CUSTOMER LOGIN.
+                 *
+                 * The restaurant UID and table number
+                 * are preserved in the URL.
+                 *
+                 * Example:
+                 *
+                 * customer-login.html
+                 * ?restaurant=UID
+                 * &table=1
                  */
 
                 const tableUrl =
-                    baseMenuUrl +
+                    baseLoginUrl +
                     "?restaurant=" +
                     encodeURIComponent(
                         restaurantId
@@ -779,3 +791,4 @@
 </body>
 
 </html>
+```
