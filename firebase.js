@@ -92,6 +92,7 @@ window.verifyOTP = async function () {
     await window.confirmationResult.confirm(otp);
 
     alert("Login Successful!");
+    window.location.href="dashboard.html";
 
   } catch (error) {
 
