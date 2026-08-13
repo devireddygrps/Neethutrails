@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Manage Menu</title>
+    <title>View Orders</title>
 
     <style>
 
@@ -43,86 +43,153 @@
             margin-bottom: 20px;
         }
 
-        .menu-list {
+        .orders-list {
             display: grid;
-            gap: 15px;
+            gap: 18px;
         }
 
-        .menu-item {
+        .order-card {
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        .menu-item h3 {
-            margin-bottom: 7px;
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+
+        .order-number {
+            font-size: 19px;
+            font-weight: bold;
             color: #333;
         }
 
-        .category {
-            color: #ff5722;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 8px;
+        .table-number {
+            background: #ff5722;
+            color: white;
+            padding: 6px 10px;
+            border-radius: 15px;
+            font-size: 13px;
         }
 
-        .description {
-            color: #666;
-            margin-bottom: 10px;
-        }
-
-        .price {
-            font-size: 18px;
-            font-weight: bold;
+        .items {
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            padding: 12px 0;
             margin-bottom: 12px;
         }
 
-        .availability {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 13px;
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+        }
+
+        .item-name {
+            font-weight: bold;
+        }
+
+        .item-quantity {
+            color: #666;
+        }
+
+        .instructions {
+            background: #fff8e1;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .instructions strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .total {
+            font-size: 19px;
+            font-weight: bold;
             margin-bottom: 15px;
         }
 
-        .available {
+        .status-badge {
+            display: inline-block;
+            padding: 7px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .new {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .accepted {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .preparing {
+            background: #e2d9f3;
+            color: #4a235a;
+        }
+
+        .ready {
             background: #d4edda;
             color: #155724;
         }
 
-        .unavailable {
+        .completed {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .cancelled {
             background: #f8d7da;
             color: #721c24;
         }
 
-        .buttons {
+        .action-buttons {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .buttons button {
+        .action-buttons button {
             flex: 1;
+            min-width: 130px;
             padding: 10px;
             border: none;
             border-radius: 7px;
+            color: white;
             cursor: pointer;
             font-size: 14px;
         }
 
-        .edit-btn {
+        .accept-btn {
             background: #2196f3;
-            color: white;
         }
 
-        .delete-btn {
+        .prepare-btn {
+            background: #9c27b0;
+        }
+
+        .ready-btn {
+            background: #4caf50;
+        }
+
+        .complete-btn {
+            background: #00897b;
+        }
+
+        .cancel-btn {
             background: #f44336;
-            color: white;
-        }
-
-        .toggle-btn {
-            background: #555;
-            color: white;
         }
 
         .back-btn {
@@ -139,7 +206,7 @@
 
         .empty {
             background: white;
-            padding: 30px;
+            padding: 35px;
             text-align: center;
             border-radius: 12px;
             color: #666;
@@ -151,8 +218,17 @@
                 padding: 15px;
             }
 
-            .buttons {
+            .order-header {
+                align-items: flex-start;
                 flex-direction: column;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
             }
 
         }
@@ -166,9 +242,9 @@
 
     <div class="header">
 
-        <h2>🍽️ Manage Menu</h2>
+        <h2>📦 View Orders</h2>
 
-        <p>Your Restaurant Menu</p>
+        <p>Restaurant Order Management</p>
 
     </div>
 
@@ -179,13 +255,13 @@
             id="status"
             class="status"
         >
-            Loading menu...
+            Loading orders...
         </div>
 
 
         <div
-            id="menuList"
-            class="menu-list"
+            id="ordersList"
+            class="orders-list"
         >
         </div>
 
@@ -222,9 +298,9 @@
             collection,
             getDocs,
             doc,
-            getDoc,
             updateDoc,
-            deleteDoc
+            query,
+            orderBy
         } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
@@ -284,13 +360,7 @@
 
                 currentUser = user;
 
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "Loading your menu...";
-
-
-                await loadMenu();
+                await loadOrders();
 
             }
 
@@ -299,7 +369,6 @@
                 alert(
                     "Please login first."
                 );
-
 
                 window.location.href =
                     "index.html";
@@ -310,10 +379,10 @@
 
 
         /* ================================
-           LOAD MENU
+           LOAD ORDERS
         ================================= */
 
-        async function loadMenu() {
+        async function loadOrders() {
 
             if (!currentUser) {
                 return;
@@ -324,52 +393,60 @@
                 currentUser.uid;
 
 
-            const menuCollection =
+            const ordersCollection =
                 collection(
                     db,
                     "restaurants",
                     restaurantId,
-                    "menu"
+                    "orders"
                 );
 
 
             try {
 
+                const ordersQuery =
+                    query(
+                        ordersCollection,
+                        orderBy(
+                            "createdAt",
+                            "desc"
+                        )
+                    );
+
+
                 const snapshot =
                     await getDocs(
-                        menuCollection
+                        ordersQuery
                     );
 
 
-                const menuList =
+                const ordersList =
                     document.getElementById(
-                        "menuList"
+                        "ordersList"
                     );
 
 
-                menuList.innerHTML = "";
+                ordersList.innerHTML = "";
 
-
-                /* No menu items */
 
                 if (snapshot.empty) {
 
                     document.getElementById(
                         "status"
                     ).textContent =
-                        "No menu items found.";
+                        "No orders yet.";
 
 
-                    menuList.innerHTML = `
+                    ordersList.innerHTML = `
 
                         <div class="empty">
 
                             <h3>
-                                🍽️ Your menu is empty
+                                📦 No Orders Yet
                             </h3>
 
                             <p>
-                                Add your first menu item.
+                                Customer orders will appear here.
                             </p>
 
                         </div>
@@ -381,36 +458,20 @@
                 }
 
 
-                /* Show number of items */
-
                 document.getElementById(
                     "status"
                 ).textContent =
-                    `${snapshot.size} menu item(s)`;
+                    `${snapshot.size} order(s)`;
 
 
-                /* Display every menu item */
+                snapshot.forEach((orderDoc) => {
 
-                snapshot.forEach((menuDoc) => {
-
-                    const item =
-                        menuDoc.data();
+                    const order =
+                        orderDoc.data();
 
 
-                    const itemId =
-                        menuDoc.id;
-
-
-                    const availabilityClass =
-                        item.availability === "available"
-                        ? "available"
-                        : "unavailable";
-
-
-                    const availabilityText =
-                        item.availability === "available"
-                        ? "🟢 Available"
-                        : "🔴 Unavailable";
+                    const orderId =
+                        orderDoc.id;
 
 
                     const card =
@@ -420,83 +481,239 @@
 
 
                     card.className =
-                        "menu-item";
+                        "order-card";
+
+
+                    const status =
+                        order.status ||
+                        "new";
+
+
+                    const statusClass =
+                        getStatusClass(
+                            status
+                        );
+
+
+                    const items =
+                        Array.isArray(
+                            order.items
+                        )
+                        ? order.items
+                        : [];
+
+
+                    let itemsHTML = "";
+
+
+                    items.forEach((item) => {
+
+                        itemsHTML += `
+
+                            <div class="item-row">
+
+                                <div>
+
+                                    <span class="item-name">
+                                        ${escapeHTML(
+                                            item.name ||
+                                            item.foodName ||
+                                            ""
+                                        )}
+                                    </span>
+
+                                    <span class="item-quantity">
+                                        × ${Number(
+                                            item.quantity || 1
+                                        )}
+                                    </span>
+
+                                </div>
+
+                                <div>
+                                    ₹${(
+                                        Number(
+                                            item.price || 0
+                                        ) *
+                                        Number(
+                                            item.quantity || 1
+                                        )
+                                    ).toFixed(2)}
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    });
 
 
                     card.innerHTML = `
 
-                        <h3>
-                            ${escapeHTML(
-                                item.foodName || ""
-                            )}
-                        </h3>
+                        <div class="order-header">
 
+                            <div class="order-number">
+                                📦 Order #${escapeHTML(
+                                    order.orderNumber ||
+                                    orderId.substring(0, 6)
+                                )}
+                            </div>
 
-                        <div class="category">
-                            ${escapeHTML(
-                                item.category || ""
-                            )}
-                        </div>
+                            <div class="table-number">
+                                🪑 Table ${
+                                    escapeHTML(
+                                        String(
+                                            order.tableNumber ||
+                                            "N/A"
+                                        )
+                                    )
+                                }
+                            </div>
 
-
-                        <div class="description">
-                            ${escapeHTML(
-                                item.description ||
-                                "No description"
-                            )}
-                        </div>
-
-
-                        <div class="price">
-                            ₹${Number(
-                                item.price || 0
-                            ).toFixed(2)}
                         </div>
 
 
                         <div
-                            class="availability ${availabilityClass}"
+                            class="status-badge ${statusClass}"
                         >
-                            ${availabilityText}
+                            ${getStatusText(status)}
                         </div>
 
 
-                        <div class="buttons">
+                        <div class="items">
+
+                            ${
+                                itemsHTML ||
+                                "<p>No items found.</p>"
+                            }
+
+                        </div>
 
 
-                            <button
-                                class="edit-btn"
-                                onclick="editItem('${itemId}')"
-                            >
-                                ✏️ Edit
-                            </button>
+                        ${
+                            order.instructions
+                            ? `
+
+                                <div class="instructions">
+
+                                    <strong>
+                                        📝 Customer Instructions
+                                    </strong>
+
+                                    ${escapeHTML(
+                                        order.instructions
+                                    )}
+
+                                </div>
+
+                            `
+                            : ""
+                        }
 
 
-                            <button
-                                class="toggle-btn"
-                                onclick="toggleAvailability(
-                                    '${itemId}',
-                                    '${item.availability}'
-                                )"
-                            >
-                                🔄 Toggle
-                            </button>
+                        <div class="total">
+
+                            Total:
+                            ₹${Number(
+                                order.total || 0
+                            ).toFixed(2)}
+
+                        </div>
 
 
-                            <button
-                                class="delete-btn"
-                                onclick="deleteItem('${itemId}')"
-                            >
-                                🗑️ Delete
-                            </button>
+                        <div class="action-buttons">
 
+                            ${
+                                status === "new"
+                                ? `
+
+                                    <button
+                                        class="accept-btn"
+                                        onclick="updateOrderStatus(
+                                            '${orderId}',
+                                            'accepted'
+                                        )"
+                                    >
+                                        ✅ Accept
+                                    </button>
+
+                                    <button
+                                        class="cancel-btn"
+                                        onclick="updateOrderStatus(
+                                            '${orderId}',
+                                            'cancelled'
+                                        )"
+                                    >
+                                        ❌ Cancel
+                                    </button>
+
+                                `
+                                : ""
+                            }
+
+
+                            ${
+                                status === "accepted"
+                                ? `
+
+                                    <button
+                                        class="prepare-btn"
+                                        onclick="updateOrderStatus(
+                                            '${orderId}',
+                                            'preparing'
+                                        )"
+                                    >
+                                        👨‍🍳 Start Preparing
+                                    </button>
+
+                                `
+                                : ""
+                            }
+
+
+                            ${
+                                status === "preparing"
+                                ? `
+
+                                    <button
+                                        class="ready-btn"
+                                        onclick="updateOrderStatus(
+                                            '${orderId}',
+                                            'ready'
+                                        )"
+                                    >
+                                        🍽️ Mark Ready
+                                    </button>
+
+                                `
+                                : ""
+                            }
+
+
+                            ${
+                                status === "ready"
+                                ? `
+
+                                    <button
+                                        class="complete-btn"
+                                        onclick="updateOrderStatus(
+                                            '${orderId}',
+                                            'completed'
+                                        )"
+                                    >
+                                        ✅ Complete Order
+                                    </button>
+
+                                `
+                                : ""
+                            }
 
                         </div>
 
                     `;
 
 
-                    menuList.appendChild(card);
+                    ordersList.appendChild(card);
 
                 });
 
@@ -505,7 +722,7 @@
             catch (error) {
 
                 console.error(
-                    "Error loading menu:",
+                    "Error loading orders:",
                     error
                 );
 
@@ -513,11 +730,11 @@
                 document.getElementById(
                     "status"
                 ).textContent =
-                    "Error loading menu.";
+                    "Error loading orders.";
 
 
                 alert(
-                    "Error loading menu:\n\n" +
+                    "Error loading orders:\n\n" +
                     error.message
                 );
 
@@ -527,206 +744,13 @@
 
 
         /* ================================
-           EDIT MENU ITEM
+           UPDATE ORDER STATUS
         ================================= */
 
-        window.editItem = async function (itemId) {
-
-            if (!currentUser) {
-
-                alert(
-                    "Please login first."
-                );
-
-                return;
-
-            }
-
-
-            const restaurantId =
-                currentUser.uid;
-
-
-            const itemRef =
-                doc(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "menu",
-                    itemId
-                );
-
-
-            try {
-
-                /* Get existing item */
-
-                const itemSnapshot =
-                    await getDoc(
-                        itemRef
-                    );
-
-
-                if (!itemSnapshot.exists()) {
-
-                    alert(
-                        "Menu item not found."
-                    );
-
-                    return;
-
-                }
-
-
-                const item =
-                    itemSnapshot.data();
-
-
-                /* Food name */
-
-                const foodName =
-                    prompt(
-                        "Food Name:",
-                        item.foodName || ""
-                    );
-
-
-                if (foodName === null) {
-                    return;
-                }
-
-
-                /* Category */
-
-                const category =
-                    prompt(
-                        "Category:",
-                        item.category || ""
-                    );
-
-
-                if (category === null) {
-                    return;
-                }
-
-
-                /* Description */
-
-                const description =
-                    prompt(
-                        "Description:",
-                        item.description || ""
-                    );
-
-
-                if (description === null) {
-                    return;
-                }
-
-
-                /* Price */
-
-                const price =
-                    prompt(
-                        "Price (₹):",
-                        item.price || ""
-                    );
-
-
-                if (price === null) {
-                    return;
-                }
-
-
-                /* Validation */
-
-                if (
-                    foodName.trim() === ""
-                ) {
-
-                    alert(
-                        "Food name cannot be empty."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    price === "" ||
-                    Number(price) < 0 ||
-                    isNaN(Number(price))
-                ) {
-
-                    alert(
-                        "Please enter a valid price."
-                    );
-
-                    return;
-
-                }
-
-
-                /* Update Firestore */
-
-                await updateDoc(
-                    itemRef,
-                    {
-
-                        foodName:
-                            foodName.trim(),
-
-                        category:
-                            category.trim(),
-
-                        description:
-                            description.trim(),
-
-                        price:
-                            Number(price)
-
-                    }
-                );
-
-
-                alert(
-                    "✅ Menu item updated successfully!"
-                );
-
-
-                /* Refresh menu */
-
-                await loadMenu();
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Edit Error:",
-                    error
-                );
-
-
-                alert(
-                    "❌ Could not update menu item:\n\n" +
-                    error.message
-                );
-
-            }
-
-        };
-
-
-        /* ================================
-           TOGGLE AVAILABILITY
-        ================================= */
-
-        window.toggleAvailability =
+        window.updateOrderStatus =
             async function (
-                itemId,
-                currentAvailability
+                orderId,
+                newStatus
             ) {
 
                 if (!currentUser) {
@@ -740,48 +764,43 @@
                 }
 
 
-                const newAvailability =
-                    currentAvailability === "available"
-                    ? "unavailable"
-                    : "available";
-
-
-                const itemRef =
+                const orderRef =
                     doc(
                         db,
                         "restaurants",
                         currentUser.uid,
-                        "menu",
-                        itemId
+                        "orders",
+                        orderId
                     );
 
 
                 try {
 
                     await updateDoc(
-                        itemRef,
+                        orderRef,
                         {
 
-                            availability:
-                                newAvailability
+                            status:
+                                newStatus
 
                         }
                     );
 
 
-                    await loadMenu();
+                    await loadOrders();
 
                 }
 
                 catch (error) {
 
                     console.error(
+                        "Status update error:",
                         error
                     );
 
 
                     alert(
-                        "Could not update availability:\n\n" +
+                        "Could not update order:\n\n" +
                         error.message
                     );
 
@@ -791,101 +810,111 @@
 
 
         /* ================================
-           DELETE MENU ITEM
+           STATUS HELPERS
         ================================= */
 
-        window.deleteItem =
-            async function (itemId) {
+        function getStatusClass(status) {
 
-                if (!currentUser) {
+            if (
+                status === "accepted"
+            ) {
+                return "accepted";
+            }
 
-                    alert(
-                        "Please login first."
-                    );
+            if (
+                status === "preparing"
+            ) {
+                return "preparing";
+            }
 
-                    return;
+            if (
+                status === "ready"
+            ) {
+                return "ready";
+            }
 
-                }
+            if (
+                status === "completed"
+            ) {
+                return "completed";
+            }
 
+            if (
+                status === "cancelled"
+            ) {
+                return "cancelled";
+            }
 
-                const confirmDelete =
-                    confirm(
-                        "Are you sure you want to delete this menu item?"
-                    );
+            return "new";
 
-
-                if (!confirmDelete) {
-                    return;
-                }
-
-
-                const itemRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        currentUser.uid,
-                        "menu",
-                        itemId
-                    );
-
-
-                try {
-
-                    await deleteDoc(
-                        itemRef
-                    );
+        }
 
 
-                    alert(
-                        "Menu item deleted."
-                    );
+        function getStatusText(status) {
 
+            if (
+                status === "accepted"
+            ) {
+                return "🔵 Accepted";
+            }
 
-                    await loadMenu();
+            if (
+                status === "preparing"
+            ) {
+                return "👨‍🍳 Preparing";
+            }
 
-                }
+            if (
+                status === "ready"
+            ) {
+                return "🟢 Ready";
+            }
 
-                catch (error) {
+            if (
+                status === "completed"
+            ) {
+                return "✅ Completed";
+            }
 
-                    console.error(
-                        error
-                    );
+            if (
+                status === "cancelled"
+            ) {
+                return "❌ Cancelled";
+            }
 
+            return "🆕 New Order";
 
-                    alert(
-                        "Could not delete item:\n\n" +
-                        error.message
-                    );
-
-                }
-
-            };
+        }
 
 
         /* ================================
            SECURITY
-           Prevent HTML injection
         ================================= */
 
         function escapeHTML(value) {
 
             return String(value)
+
                 .replace(
                     /&/g,
                     "&amp;"
                 )
+
                 .replace(
                     /</g,
                     "&lt;"
                 )
+
                 .replace(
                     />/g,
                     "&gt;"
                 )
+
                 .replace(
                     /"/g,
                     "&quot;"
                 )
+
                 .replace(
                     /'/g,
                     "&#039;"
