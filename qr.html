@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Restaurant QR Code</title>
+    <title>Restaurant Table QR Codes</title>
 
 
     <style>
@@ -42,94 +42,131 @@
 
 
         .container {
-            max-width: 600px;
+            max-width: 1000px;
             margin: 30px auto;
             padding: 20px;
         }
 
 
-        .card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        .restaurant-name {
             text-align: center;
-        }
-
-
-        .card h3 {
-            color: #333;
+            font-size: 22px;
+            font-weight: bold;
             margin-bottom: 10px;
+            color: #333;
         }
 
 
-        .card p {
+        .description {
+            text-align: center;
             color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
 
-        /* QR CODE */
+        /* QR GRID */
 
-        .qr-container {
-            width: 280px;
-            height: 280px;
+        .qr-grid {
 
-            margin: 20px auto;
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 20px;
+
+        }
+
+
+        /* QR CARD */
+
+        .qr-card {
+
+            background: white;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 3px 12px rgba(0,0,0,0.12);
+
+            text-align: center;
+
+        }
+
+
+        .table-title {
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            color: #ff5722;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .qr-image-container {
+
+            width: 270px;
+
+            height: 270px;
+
+            margin: auto;
 
             display: flex;
-            align-items: center;
-            justify-content: center;
 
-            background: white;
+            align-items: center;
+
+            justify-content: center;
 
             border: 2px solid #eee;
 
             border-radius: 10px;
+
+            background: white;
+
         }
 
 
-        .qr-container img {
+        .qr-image {
+
             width: 250px;
+
             height: 250px;
 
-            display: block;
         }
 
 
-        .restaurant-name {
-            font-size: 20px;
-            font-weight: bold;
-
-            color: #333;
+        .qr-url {
 
             margin-top: 15px;
-        }
 
-
-        .menu-url {
-            margin-top: 15px;
-
-            padding: 12px;
+            padding: 10px;
 
             background: #f5f5f5;
 
-            border-radius: 8px;
+            border-radius: 7px;
 
-            font-size: 13px;
+            font-size: 12px;
 
             color: #555;
 
             word-break: break-all;
+
         }
 
 
         .download-btn {
+
             width: 100%;
 
-            padding: 13px;
+            padding: 11px;
 
-            margin-top: 20px;
+            margin-top: 15px;
 
             background: #ff5722;
 
@@ -139,23 +176,27 @@
 
             border-radius: 8px;
 
-            font-size: 16px;
+            font-size: 15px;
 
             cursor: pointer;
+
         }
 
 
         .download-btn:hover {
+
             background: #e64a19;
+
         }
 
 
         .back-btn {
+
             width: 100%;
 
-            padding: 13px;
+            padding: 14px;
 
-            margin-top: 12px;
+            margin-top: 25px;
 
             background: #333;
 
@@ -168,39 +209,48 @@
             font-size: 16px;
 
             cursor: pointer;
+
         }
 
 
         .back-btn:hover {
+
             background: #111;
+
         }
 
 
-        .status {
-            margin-top: 15px;
-
-            color: #666;
-
-            font-size: 14px;
-        }
-
-
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
 
             .container {
+
                 padding: 15px;
-                margin: 15px auto;
+
             }
 
 
-            .card {
-                padding: 20px;
+            .qr-grid {
+
+                grid-template-columns: 1fr;
+
             }
 
 
-            .qr-container {
-                width: 270px;
-                height: 270px;
+            .qr-image-container {
+
+                width: 260px;
+
+                height: 260px;
+
+            }
+
+
+            .qr-image {
+
+                width: 240px;
+
+                height: 240px;
+
             }
 
         }
@@ -217,105 +267,62 @@
 
     <div class="header">
 
-        <h2>📱 Restaurant QR Code</h2>
+        <h2>📱 Restaurant Table QR Codes</h2>
 
         <p>
-            Scan to view restaurant menu
+            Generate QR codes for all tables
         </p>
 
     </div>
 
 
 
-    <!-- MAIN -->
-
     <div class="container">
 
-        <div class="card">
 
+        <!-- RESTAURANT NAME -->
 
-            <h3>
-                🍽️ Your Restaurant QR Code
-            </h3>
+        <div
+            id="restaurantName"
+            class="restaurant-name"
+        >
 
-
-            <p>
-                Customers can scan this QR code
-                to open your restaurant menu.
-            </p>
-
-
-
-            <!-- QR CODE -->
-
-            <div class="qr-container">
-
-                <img
-                    id="qrImage"
-                    alt="Restaurant QR Code"
-                >
-
-            </div>
-
-
-
-            <!-- RESTAURANT NAME -->
-
-            <div
-                id="restaurantName"
-                class="restaurant-name"
-            >
-                Restaurant
-            </div>
-
-
-
-            <!-- MENU URL -->
-
-            <div
-                id="menuUrl"
-                class="menu-url"
-            >
-                Loading...
-            </div>
-
-
-
-            <div
-                id="status"
-                class="status"
-            >
-                QR Code Ready
-            </div>
-
-
-
-            <!-- DOWNLOAD -->
-
-            <button
-                class="download-btn"
-                onclick="downloadQR()"
-            >
-
-                📥 Download QR Code
-
-            </button>
-
-
-
-            <!-- BACK -->
-
-            <button
-                class="back-btn"
-                onclick="goBack()"
-            >
-
-                ← Back to Dashboard
-
-            </button>
-
+            Restaurant
 
         </div>
+
+
+        <div class="description">
+
+            Print one QR code and place it
+            on each restaurant table.
+
+        </div>
+
+
+
+        <!-- QR CODES -->
+
+        <div
+            id="qrGrid"
+            class="qr-grid"
+        >
+
+        </div>
+
+
+
+        <!-- BACK -->
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+        >
+
+            ← Back to Dashboard
+
+        </button>
+
 
     </div>
 
@@ -326,47 +333,16 @@
 
         /*
          * CUSTOMER MENU PAGE
-         *
-         * We will create this page later.
          */
 
-        const menuUrl =
+        const baseMenuUrl =
             window.location.origin +
             "/Neethutrails/customer-menu.html";
 
 
 
         /*
-         * SHOW MENU URL
-         */
-
-        document.getElementById(
-            "menuUrl"
-        ).textContent = menuUrl;
-
-
-
-        /*
-         * CREATE QR CODE
-         *
-         * This uses an image-based QR service,
-         * so no QR JavaScript library is required.
-         */
-
-        const qrImage =
-            document.getElementById(
-                "qrImage"
-            );
-
-
-        qrImage.src =
-            "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
-            encodeURIComponent(menuUrl);
-
-
-
-        /*
-         * RESTAURANT NAME
+         * RESTAURANT PROFILE
          */
 
         const savedProfile =
@@ -401,7 +377,7 @@
             catch (error) {
 
                 console.log(
-                    "Could not load restaurant profile."
+                    "Profile could not be loaded."
                 );
 
             }
@@ -411,68 +387,192 @@
 
 
         /*
-         * QR IMAGE ERROR
+         * QR GRID
          */
 
-        qrImage.onerror =
-            function() {
-
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "QR Code could not be loaded.";
-
-            };
+        const qrGrid =
+            document.getElementById(
+                "qrGrid"
+            );
 
 
 
         /*
-         * QR IMAGE SUCCESS
+         * CREATE 10 TABLE QR CODES
          */
 
-        qrImage.onload =
-            function() {
-
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "✅ QR Code generated successfully.";
-
-            };
+        for (
+            let tableNumber = 1;
+            tableNumber <= 10;
+            tableNumber++
+        ) {
 
 
+            /*
+             * TABLE-SPECIFIC URL
+             */
 
-        /*
-         * DOWNLOAD QR
-         */
+            const tableUrl =
+                baseMenuUrl +
+                "?table=" +
+                tableNumber;
 
-        function downloadQR() {
 
-            const link =
+
+            /*
+             * CARD
+
+             */
+
+            const card =
                 document.createElement(
-                    "a"
+                    "div"
                 );
 
 
-            link.href =
-                qrImage.src;
+            card.className =
+                "qr-card";
 
 
-            link.download =
-                "restaurant-qr-code.png";
+
+            /*
+             * QR IMAGE URL
+             */
+
+            const qrImageUrl =
+                "https://api.qrserver.com/v1/create-qr-code/" +
+                "?size=250x250&data=" +
+                encodeURIComponent(
+                    tableUrl
+                );
 
 
-            document.body.appendChild(
-                link
+
+            card.innerHTML = `
+
+                <div class="table-title">
+
+                    🪑 Table ${tableNumber}
+
+                </div>
+
+
+                <div class="qr-image-container">
+
+                    <img
+                        class="qr-image"
+                        src="${qrImageUrl}"
+                        alt="Table ${tableNumber} QR Code"
+                    >
+
+                </div>
+
+
+                <div class="qr-url">
+
+                    ${tableUrl}
+
+                </div>
+
+
+                <button
+                    class="download-btn"
+                    onclick="downloadQR(
+                        '${qrImageUrl}',
+                        ${tableNumber}
+                    )"
+                >
+
+                    📥 Download Table ${tableNumber} QR
+
+                </button>
+
+            `;
+
+
+            qrGrid.appendChild(
+                card
             );
 
+        }
 
-            link.click();
 
 
-            document.body.removeChild(
-                link
-            );
+        /*
+         * DOWNLOAD QR CODE
+         */
+
+        async function downloadQR(
+            imageUrl,
+            tableNumber
+        ) {
+
+            try {
+
+                const response =
+                    await fetch(
+                        imageUrl
+                    );
+
+
+                const blob =
+                    await response.blob();
+
+
+                const imageURL =
+                    URL.createObjectURL(
+                        blob
+                    );
+
+
+                const link =
+                    document.createElement(
+                        "a"
+                    );
+
+
+                link.href =
+                    imageURL;
+
+
+                link.download =
+                    "table-" +
+                    tableNumber +
+                    "-qr-code.png";
+
+
+                document.body.appendChild(
+                    link
+                );
+
+
+                link.click();
+
+
+                document.body.removeChild(
+                    link
+                );
+
+
+                URL.revokeObjectURL(
+                    imageURL
+                );
+
+            }
+
+            catch (error) {
+
+                /*
+                 * Fallback:
+                 * Open QR image directly.
+                 */
+
+                window.open(
+                    imageUrl,
+                    "_blank"
+                );
+
+            }
 
         }
 
@@ -488,7 +588,6 @@
                 "dashboard.html";
 
         }
-
 
     </script>
 
