@@ -2,10 +2,16 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Restaurant QR Code</title>
+
 
     <style>
 
@@ -16,20 +22,24 @@
             font-family: Arial, sans-serif;
         }
 
+
         body {
             background: #f5f5f5;
         }
 
+
         .header {
             background: #ff5722;
             color: white;
-            padding: 18px;
+            padding: 20px;
             text-align: center;
         }
+
 
         .header h2 {
             margin-bottom: 5px;
         }
+
 
         .container {
             max-width: 600px;
@@ -37,7 +47,8 @@
             padding: 20px;
         }
 
-        .qr-card {
+
+        .card {
             background: white;
             padding: 30px;
             border-radius: 15px;
@@ -45,90 +56,151 @@
             text-align: center;
         }
 
-        .qr-card h3 {
-            margin-bottom: 10px;
+
+        .card h3 {
             color: #333;
+            margin-bottom: 10px;
         }
 
-        .qr-card p {
+
+        .card p {
             color: #666;
             margin-bottom: 20px;
         }
 
-        #qrcode {
+
+        /* QR CODE */
+
+        .qr-container {
+            width: 280px;
+            height: 280px;
+
+            margin: 20px auto;
+
             display: flex;
-            justify-content: center;
             align-items: center;
-            margin: 20px 0;
+            justify-content: center;
+
+            background: white;
+
+            border: 2px solid #eee;
+
+            border-radius: 10px;
         }
 
-        #qrcode img {
-            margin: auto;
+
+        .qr-container img {
+            width: 250px;
+            height: 250px;
+
+            display: block;
         }
+
 
         .restaurant-name {
             font-size: 20px;
             font-weight: bold;
-            margin-top: 15px;
+
             color: #333;
+
+            margin-top: 15px;
         }
 
-        .url-box {
+
+        .menu-url {
             margin-top: 15px;
+
             padding: 12px;
+
             background: #f5f5f5;
+
             border-radius: 8px;
-            word-break: break-all;
+
             font-size: 13px;
+
             color: #555;
+
+            word-break: break-all;
         }
+
 
         .download-btn {
             width: 100%;
+
             padding: 13px;
+
             margin-top: 20px;
+
             background: #ff5722;
+
             color: white;
+
             border: none;
+
             border-radius: 8px;
+
             font-size: 16px;
+
             cursor: pointer;
         }
+
 
         .download-btn:hover {
             background: #e64a19;
         }
 
+
         .back-btn {
             width: 100%;
+
             padding: 13px;
+
             margin-top: 12px;
+
             background: #333;
+
             color: white;
+
             border: none;
+
             border-radius: 8px;
+
             font-size: 16px;
+
             cursor: pointer;
         }
+
 
         .back-btn:hover {
             background: #111;
         }
 
-        .error {
-            color: #d32f2f;
+
+        .status {
             margin-top: 15px;
+
+            color: #666;
+
+            font-size: 14px;
         }
+
 
         @media (max-width: 600px) {
 
             .container {
-                margin: 15px auto;
                 padding: 15px;
+                margin: 15px auto;
             }
 
-            .qr-card {
+
+            .card {
                 padding: 20px;
+            }
+
+
+            .qr-container {
+                width: 270px;
+                height: 270px;
             }
 
         }
@@ -140,20 +212,32 @@
 
 <body>
 
+
+    <!-- HEADER -->
+
     <div class="header">
 
         <h2>📱 Restaurant QR Code</h2>
 
-        <p>Scan to view restaurant menu</p>
+        <p>
+            Scan to view restaurant menu
+        </p>
 
     </div>
 
 
+
+    <!-- MAIN -->
+
     <div class="container">
 
-        <div class="qr-card">
+        <div class="card">
 
-            <h3>🍽️ Your Restaurant QR Code</h3>
+
+            <h3>
+                🍽️ Your Restaurant QR Code
+            </h3>
+
 
             <p>
                 Customers can scan this QR code
@@ -161,8 +245,21 @@
             </p>
 
 
-            <div id="qrcode"></div>
 
+            <!-- QR CODE -->
+
+            <div class="qr-container">
+
+                <img
+                    id="qrImage"
+                    alt="Restaurant QR Code"
+                >
+
+            </div>
+
+
+
+            <!-- RESTAURANT NAME -->
 
             <div
                 id="restaurantName"
@@ -172,49 +269,65 @@
             </div>
 
 
+
+            <!-- MENU URL -->
+
             <div
                 id="menuUrl"
-                class="url-box"
+                class="menu-url"
             >
-                Loading menu URL...
+                Loading...
             </div>
 
+
+
+            <div
+                id="status"
+                class="status"
+            >
+                QR Code Ready
+            </div>
+
+
+
+            <!-- DOWNLOAD -->
 
             <button
                 class="download-btn"
                 onclick="downloadQR()"
             >
+
                 📥 Download QR Code
+
             </button>
 
+
+
+            <!-- BACK -->
 
             <button
                 class="back-btn"
                 onclick="goBack()"
             >
+
                 ← Back to Dashboard
+
             </button>
+
 
         </div>
 
     </div>
 
 
-    <!-- QR Code Library -->
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
 
     <script>
 
+
         /*
-         * CUSTOMER MENU URL
+         * CUSTOMER MENU PAGE
          *
-         * This is the page customers will open
-         * after scanning the QR code.
-         *
-         * We will connect this to your Firebase
-         * restaurant/menu system in the next step.
+         * We will create this page later.
          */
 
         const menuUrl =
@@ -222,8 +335,9 @@
             "/Neethutrails/customer-menu.html";
 
 
+
         /*
-         * Show URL
+         * SHOW MENU URL
          */
 
         document.getElementById(
@@ -231,28 +345,28 @@
         ).textContent = menuUrl;
 
 
+
         /*
-         * Generate QR Code
+         * CREATE QR CODE
+         *
+         * This uses an image-based QR service,
+         * so no QR JavaScript library is required.
          */
 
-        const qrContainer =
+        const qrImage =
             document.getElementById(
-                "qrcode"
+                "qrImage"
             );
 
 
-        new QRCode(
-            qrContainer,
-            {
-                text: menuUrl,
-                width: 220,
-                height: 220
-            }
-        );
+        qrImage.src =
+            "https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=" +
+            encodeURIComponent(menuUrl);
+
 
 
         /*
-         * Restaurant Name
+         * RESTAURANT NAME
          */
 
         const savedProfile =
@@ -287,7 +401,7 @@
             catch (error) {
 
                 console.log(
-                    "Profile could not be loaded."
+                    "Could not load restaurant profile."
                 );
 
             }
@@ -295,28 +409,44 @@
         }
 
 
+
         /*
-         * DOWNLOAD QR CODE
+         * QR IMAGE ERROR
+         */
+
+        qrImage.onerror =
+            function() {
+
+                document.getElementById(
+                    "status"
+                ).textContent =
+                    "QR Code could not be loaded.";
+
+            };
+
+
+
+        /*
+         * QR IMAGE SUCCESS
+         */
+
+        qrImage.onload =
+            function() {
+
+                document.getElementById(
+                    "status"
+                ).textContent =
+                    "✅ QR Code generated successfully.";
+
+            };
+
+
+
+        /*
+         * DOWNLOAD QR
          */
 
         function downloadQR() {
-
-            const qrImage =
-                document.querySelector(
-                    "#qrcode img"
-                );
-
-
-            if (!qrImage) {
-
-                alert(
-                    "QR code is not ready yet."
-                );
-
-                return;
-
-            }
-
 
             const link =
                 document.createElement(
@@ -347,6 +477,7 @@
         }
 
 
+
         /*
          * BACK TO DASHBOARD
          */
@@ -358,7 +489,9 @@
 
         }
 
+
     </script>
+
 
 </body>
 
