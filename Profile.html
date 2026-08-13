@@ -18,7 +18,6 @@
             background: #f5f5f5;
         }
 
-        /* Header */
         .header {
             background: #ff5722;
             color: white;
@@ -30,7 +29,6 @@
             margin-bottom: 5px;
         }
 
-        /* Main Container */
         .container {
             max-width: 600px;
             margin: 25px auto;
@@ -49,7 +47,6 @@
             color: #333;
         }
 
-        /* Form */
         .form-group {
             margin-bottom: 18px;
         }
@@ -76,7 +73,6 @@
             min-height: 90px;
         }
 
-        /* Buttons */
         .save-btn {
             width: 100%;
             padding: 13px;
@@ -90,6 +86,11 @@
 
         .save-btn:hover {
             background: #e64a19;
+        }
+
+        .save-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
         }
 
         .back-btn {
@@ -108,8 +109,15 @@
             background: #111;
         }
 
-        /* Mobile */
+        #loginStatus {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
+
         @media (max-width: 600px) {
+
             .container {
                 margin: 15px auto;
                 padding: 15px;
@@ -135,7 +143,12 @@
 
             <h3>Enter Restaurant Details</h3>
 
+            <div id="loginStatus">
+                Checking restaurant login...
+            </div>
+
             <div class="form-group">
+
                 <label for="restaurantName">
                     Restaurant Name
                 </label>
@@ -145,9 +158,11 @@
                     id="restaurantName"
                     placeholder="Enter restaurant name"
                 >
+
             </div>
 
             <div class="form-group">
+
                 <label for="restaurantType">
                     Restaurant Type
                 </label>
@@ -179,9 +194,11 @@
                     </option>
 
                 </select>
+
             </div>
 
             <div class="form-group">
+
                 <label for="address">
                     Address
                 </label>
@@ -190,9 +207,11 @@
                     id="address"
                     placeholder="Enter restaurant address"
                 ></textarea>
+
             </div>
 
             <div class="form-group">
+
                 <label for="phone">
                     Contact Number
                 </label>
@@ -202,9 +221,11 @@
                     id="phone"
                     placeholder="Enter contact number"
                 >
+
             </div>
 
             <div class="form-group">
+
                 <label for="openingTime">
                     Opening Time
                 </label>
@@ -213,9 +234,11 @@
                     type="time"
                     id="openingTime"
                 >
+
             </div>
 
             <div class="form-group">
+
                 <label for="closingTime">
                     Closing Time
                 </label>
@@ -224,13 +247,22 @@
                     type="time"
                     id="closingTime"
                 >
+
             </div>
 
-            <button class="save-btn" onclick="saveProfile()">
+            <button
+                class="save-btn"
+                id="saveBtn"
+                onclick="saveProfile()"
+                disabled
+            >
                 💾 Save Restaurant Profile
             </button>
 
-            <button class="back-btn" onclick="goBack()">
+            <button
+                class="back-btn"
+                onclick="goBack()"
+            >
                 ← Back to Dashboard
             </button>
 
@@ -238,95 +270,371 @@
 
     </div>
 
-    <script>
 
-        function saveProfile() {
+    <script type="module">
+
+        import { initializeApp }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+        import {
+            getAuth,
+            onAuthStateChanged
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+        import {
+            getFirestore,
+            doc,
+            setDoc,
+            getDoc
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+        // Firebase Configuration
+        const firebaseConfig = {
+
+            apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+            authDomain:
+                "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+            projectId:
+                "restaurant-qr-ordering-fdf9b",
+
+            storageBucket:
+                "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+            messagingSenderId:
+                "907571024375",
+
+            appId:
+                "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+            measurementId:
+                "G-G3Q89BDFF9"
+
+        };
+
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+
+        const auth = getAuth(app);
+
+        const db = getFirestore(app);
+
+
+        let currentUser = null;
+
+
+        // Check Firebase Login
+        onAuthStateChanged(auth, async (user) => {
+
+            if (user) {
+
+                currentUser = user;
+
+                document.getElementById("loginStatus").textContent =
+                    "✅ Restaurant owner logged in";
+
+                document.getElementById("saveBtn").disabled = false;
+
+                console.log("Logged in UID:", user.uid);
+
+                // Load existing restaurant profile
+                await loadProfile();
+
+            } else {
+
+                currentUser = null;
+
+                document.getElementById("loginStatus").textContent =
+                    "❌ Please login first";
+
+                document.getElementById("saveBtn").disabled = true;
+
+                alert("Please login using the restaurant login page.");
+
+                window.location.href = "index.html";
+
+            }
+
+        });
+
+
+        // Save Restaurant Profile
+        window.saveProfile = async function () {
+
+            if (!currentUser) {
+
+                alert("Restaurant owner is not logged in.");
+
+                return;
+
+            }
+
 
             const restaurantName =
-                document.getElementById("restaurantName").value.trim();
+                document
+                .getElementById("restaurantName")
+                .value
+                .trim();
+
 
             const restaurantType =
-                document.getElementById("restaurantType").value;
+                document
+                .getElementById("restaurantType")
+                .value;
+
 
             const address =
-                document.getElementById("address").value.trim();
+                document
+                .getElementById("address")
+                .value
+                .trim();
+
 
             const phone =
-                document.getElementById("phone").value.trim();
+                document
+                .getElementById("phone")
+                .value
+                .trim();
+
 
             const openingTime =
-                document.getElementById("openingTime").value;
+                document
+                .getElementById("openingTime")
+                .value;
+
 
             const closingTime =
-                document.getElementById("closingTime").value;
+                document
+                .getElementById("closingTime")
+                .value;
 
 
+            // Validation
             if (restaurantName === "") {
+
                 alert("Please enter restaurant name.");
+
                 return;
+
             }
+
 
             if (restaurantType === "") {
+
                 alert("Please select restaurant type.");
+
                 return;
+
             }
+
 
             if (address === "") {
+
                 alert("Please enter restaurant address.");
+
                 return;
+
             }
+
 
             if (phone === "") {
+
                 alert("Please enter contact number.");
+
                 return;
+
             }
+
 
             if (openingTime === "") {
+
                 alert("Please select opening time.");
+
                 return;
+
             }
+
 
             if (closingTime === "") {
+
                 alert("Please select closing time.");
+
                 return;
+
             }
 
 
-            const profile = {
+            // Restaurant ID = Firebase Authentication UID
+            const restaurantId = currentUser.uid;
+
+
+            const profileData = {
 
                 restaurantName: restaurantName,
+
                 restaurantType: restaurantType,
+
                 address: address,
+
                 phone: phone,
+
                 openingTime: openingTime,
-                closingTime: closingTime
+
+                closingTime: closingTime,
+
+                ownerUid: restaurantId
 
             };
 
 
-            /*
-             * Temporary storage.
-             *
-             * We will later replace this with
-             * Firebase Firestore.
-             */
+            try {
 
-            localStorage.setItem(
-                "restaurantProfile",
-                JSON.stringify(profile)
-            );
+                await setDoc(
+
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantId
+                    ),
+
+                    profileData,
+
+                    { merge: true }
+
+                );
 
 
-            alert("Restaurant profile saved successfully!");
+                alert(
+                    "✅ Restaurant profile saved to Firebase!"
+                );
+
+
+                console.log(
+                    "Restaurant saved successfully."
+                );
+
+                console.log(
+                    "Restaurant ID:",
+                    restaurantId
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Firestore Error:",
+                    error
+                );
+
+
+                alert(
+                    "❌ Error saving profile:\n\n" +
+                    error.message
+                );
+
+            }
+
+        };
+
+
+        // Load Existing Profile
+        async function loadProfile() {
+
+            if (!currentUser) {
+                return;
+            }
+
+
+            const restaurantId =
+                currentUser.uid;
+
+
+            try {
+
+                const profileRef =
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantId
+                    );
+
+
+                const profileSnapshot =
+                    await getDoc(profileRef);
+
+
+                if (profileSnapshot.exists()) {
+
+                    const data =
+                        profileSnapshot.data();
+
+
+                    document.getElementById(
+                        "restaurantName"
+                    ).value =
+                        data.restaurantName || "";
+
+
+                    document.getElementById(
+                        "restaurantType"
+                    ).value =
+                        data.restaurantType || "";
+
+
+                    document.getElementById(
+                        "address"
+                    ).value =
+                        data.address || "";
+
+
+                    document.getElementById(
+                        "phone"
+                    ).value =
+                        data.phone || "";
+
+
+                    document.getElementById(
+                        "openingTime"
+                    ).value =
+                        data.openingTime || "";
+
+
+                    document.getElementById(
+                        "closingTime"
+                    ).value =
+                        data.closingTime || "";
+
+
+                    console.log(
+                        "Existing profile loaded."
+                    );
+
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Error loading profile:",
+                    error
+                );
+
+            }
 
         }
 
 
-        function goBack() {
+        // Back to Dashboard
+        window.goBack = function () {
 
-            window.location.href = "dashboard.html";
+            window.location.href =
+                "dashboard.html";
 
-        }
+        };
 
     </script>
 
