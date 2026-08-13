@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Restaurant Profile</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        /* Header */
+        .header {
+            background: #ff5722;
+            color: white;
+            padding: 18px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin-bottom: 5px;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 600px;
+            margin: 25px auto;
+            padding: 20px;
+        }
+
+        .profile-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .profile-card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* Buttons */
+        .save-btn {
+            width: 100%;
+            padding: 13px;
+            background: #ff5722;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #e64a19;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #111;
+        }
+
+        /* Mobile */
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+                padding: 15px;
+            }
+
+            .profile-card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h2>🏪 Restaurant Profile</h2>
+        <p>Restaurant Information</p>
+    </div>
+
+    <div class="container">
+
+        <div class="profile-card">
+
+            <h3>Enter Restaurant Details</h3>
+
+            <div class="form-group">
+                <label for="restaurantName">
+                    Restaurant Name
+                </label>
+
+                <input
+                    type="text"
+                    id="restaurantName"
+                    placeholder="Enter restaurant name"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="restaurantType">
+                    Restaurant Type
+                </label>
+
+                <select id="restaurantType">
+
+                    <option value="">
+                        Select restaurant type
+                    </option>
+
+                    <option value="Restaurant">
+                        Restaurant
+                    </option>
+
+                    <option value="Cafe">
+                        Cafe
+                    </option>
+
+                    <option value="Bakery">
+                        Bakery
+                    </option>
+
+                    <option value="Fast Food">
+                        Fast Food
+                    </option>
+
+                    <option value="Hotel">
+                        Hotel
+                    </option>
+
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="address">
+                    Address
+                </label>
+
+                <textarea
+                    id="address"
+                    placeholder="Enter restaurant address"
+                ></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">
+                    Contact Number
+                </label>
+
+                <input
+                    type="tel"
+                    id="phone"
+                    placeholder="Enter contact number"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="openingTime">
+                    Opening Time
+                </label>
+
+                <input
+                    type="time"
+                    id="openingTime"
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="closingTime">
+                    Closing Time
+                </label>
+
+                <input
+                    type="time"
+                    id="closingTime"
+                >
+            </div>
+
+            <button class="save-btn" onclick="saveProfile()">
+                💾 Save Restaurant Profile
+            </button>
+
+            <button class="back-btn" onclick="goBack()">
+                ← Back to Dashboard
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        function saveProfile() {
+
+            const restaurantName =
+                document.getElementById("restaurantName").value.trim();
+
+            const restaurantType =
+                document.getElementById("restaurantType").value;
+
+            const address =
+                document.getElementById("address").value.trim();
+
+            const phone =
+                document.getElementById("phone").value.trim();
+
+            const openingTime =
+                document.getElementById("openingTime").value;
+
+            const closingTime =
+                document.getElementById("closingTime").value;
+
+
+            if (restaurantName === "") {
+                alert("Please enter restaurant name.");
+                return;
+            }
+
+            if (restaurantType === "") {
+                alert("Please select restaurant type.");
+                return;
+            }
+
+            if (address === "") {
+                alert("Please enter restaurant address.");
+                return;
+            }
+
+            if (phone === "") {
+                alert("Please enter contact number.");
+                return;
+            }
+
+            if (openingTime === "") {
+                alert("Please select opening time.");
+                return;
+            }
+
+            if (closingTime === "") {
+                alert("Please select closing time.");
+                return;
+            }
+
+
+            const profile = {
+
+                restaurantName: restaurantName,
+                restaurantType: restaurantType,
+                address: address,
+                phone: phone,
+                openingTime: openingTime,
+                closingTime: closingTime
+
+            };
+
+
+            /*
+             * Temporary storage.
+             *
+             * We will later replace this with
+             * Firebase Firestore.
+             */
+
+            localStorage.setItem(
+                "restaurantProfile",
+                JSON.stringify(profile)
+            );
+
+
+            alert("Restaurant profile saved successfully!");
+
+        }
+
+
+        function goBack() {
+
+            window.location.href = "dashboard.html";
+
+        }
+
+    </script>
+
+</body>
+</html>
