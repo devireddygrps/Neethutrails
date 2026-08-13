@@ -2,16 +2,10 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Restaurant Dashboard</title>
-
+    <title>Restaurant QR Code</title>
 
     <style>
 
@@ -22,15 +16,9 @@
             font-family: Arial, sans-serif;
         }
 
-
         body {
             background: #f5f5f5;
         }
-
-
-        /* =========================
-           HEADER
-        ========================== */
 
         .header {
             background: #ff5722;
@@ -39,125 +27,108 @@
             text-align: center;
         }
 
-
         .header h2 {
             margin-bottom: 5px;
         }
 
-
-        /* =========================
-           DASHBOARD
-        ========================== */
-
-        .dashboard {
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
             padding: 20px;
-            max-width: 1000px;
+        }
+
+        .qr-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+            text-align: center;
+        }
+
+        .qr-card h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .qr-card p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        #qrcode img {
             margin: auto;
         }
 
-
-        /* =========================
-           WELCOME
-        ========================== */
-
-        .welcome {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        .restaurant-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin-top: 15px;
+            color: #333;
         }
 
-
-        .welcome h3 {
-            margin-bottom: 8px;
+        .url-box {
+            margin-top: 15px;
+            padding: 12px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            word-break: break-all;
+            font-size: 13px;
+            color: #555;
         }
 
-
-        .welcome p {
-            color: gray;
-        }
-
-
-        /* =========================
-           CARDS
-        ========================== */
-
-        .cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-        }
-
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-
-        .card:hover {
-            transform: translateY(-3px);
-        }
-
-
-        .card .icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-        }
-
-
-        .card h3 {
-            margin-bottom: 5px;
-        }
-
-
-        .card p {
-            color: gray;
-            font-size: 14px;
-        }
-
-
-        /* =========================
-           LOGOUT
-        ========================== */
-
-        .logout {
-            margin-top: 25px;
+        .download-btn {
             width: 100%;
             padding: 13px;
+            margin-top: 20px;
+            background: #ff5722;
+            color: white;
             border: none;
             border-radius: 8px;
-            background: #333;
-            color: white;
             font-size: 16px;
             cursor: pointer;
         }
 
+        .download-btn:hover {
+            background: #e64a19;
+        }
 
-        .logout:hover {
+        .back-btn {
+            width: 100%;
+            padding: 13px;
+            margin-top: 12px;
+            background: #333;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
             background: #111;
         }
 
-
-        /* =========================
-           MOBILE
-        ========================== */
+        .error {
+            color: #d32f2f;
+            margin-top: 15px;
+        }
 
         @media (max-width: 600px) {
 
-            .cards {
-                grid-template-columns: 1fr;
+            .container {
+                margin: 15px auto;
+                padding: 15px;
             }
 
-
-            .dashboard {
-                padding: 15px;
+            .qr-card {
+                padding: 20px;
             }
 
         }
@@ -169,299 +140,225 @@
 
 <body>
 
-
-    <!-- =========================
-         HEADER
-    ========================== -->
-
     <div class="header">
 
-        <h2>
-            🍽️ Restaurant Dashboard
-        </h2>
+        <h2>📱 Restaurant QR Code</h2>
 
-        <p>
-            QR Ordering System
-        </p>
+        <p>Scan to view restaurant menu</p>
 
     </div>
 
 
-    <!-- =========================
-         DASHBOARD
-    ========================== -->
+    <div class="container">
 
-    <div class="dashboard">
+        <div class="qr-card">
 
-
-        <!-- WELCOME -->
-
-        <div class="welcome">
-
-            <h3>
-                Welcome, Restaurant Owner 👋
-            </h3>
+            <h3>🍽️ Your Restaurant QR Code</h3>
 
             <p>
-                Manage your restaurant from here.
+                Customers can scan this QR code
+                to open your restaurant menu.
             </p>
 
-        </div>
 
+            <div id="qrcode"></div>
 
-        <!-- =========================
-             DASHBOARD CARDS
-        ========================== -->
-
-        <div class="cards">
-
-
-            <!-- ADD MENU -->
 
             <div
-                class="card"
-                onclick="addMenu()"
+                id="restaurantName"
+                class="restaurant-name"
             >
-
-                <div class="icon">
-                    ➕
-                </div>
-
-                <h3>
-                    Add Menu Item
-                </h3>
-
-                <p>
-                    Add food items to your menu
-                </p>
-
+                Restaurant
             </div>
 
 
-            <!-- MANAGE MENU -->
-
             <div
-                class="card"
-                onclick="viewMenu()"
+                id="menuUrl"
+                class="url-box"
             >
-
-                <div class="icon">
-                    🍽️
-                </div>
-
-                <h3>
-                    Manage Menu
-                </h3>
-
-                <p>
-                    Edit or delete menu items
-                </p>
-
+                Loading menu URL...
             </div>
 
 
-            <!-- ORDERS -->
-
-            <div
-                class="card"
-                onclick="viewOrders()"
+            <button
+                class="download-btn"
+                onclick="downloadQR()"
             >
-
-                <div class="icon">
-                    🛒
-                </div>
-
-                <h3>
-                    Orders
-                </h3>
-
-                <p>
-                    View customer orders
-                </p>
-
-            </div>
+                📥 Download QR Code
+            </button>
 
 
-            <!-- QR CODE -->
-
-            <div
-                class="card"
-                onclick="qrCode()"
+            <button
+                class="back-btn"
+                onclick="goBack()"
             >
-
-                <div class="icon">
-                    📱
-                </div>
-
-                <h3>
-                    QR Code
-                </h3>
-
-                <p>
-                    View your restaurant QR code
-                </p>
-
-            </div>
-
-
-            <!-- SETTINGS -->
-
-            <div
-                class="card"
-                onclick="settings()"
-            >
-
-                <div class="icon">
-                    ⚙️
-                </div>
-
-                <h3>
-                    Settings
-                </h3>
-
-                <p>
-                    Manage restaurant settings
-                </p>
-
-            </div>
-
-
-            <!-- RESTAURANT PROFILE -->
-
-            <div
-                class="card"
-                onclick="profile()"
-            >
-
-                <div class="icon">
-                    👤
-                </div>
-
-                <h3>
-                    Restaurant Profile
-                </h3>
-
-                <p>
-                    Manage restaurant information
-                </p>
-
-            </div>
-
+                ← Back to Dashboard
+            </button>
 
         </div>
-
-
-        <!-- =========================
-             LOGOUT
-        ========================== -->
-
-        <button
-            class="logout"
-            onclick="logout()"
-        >
-
-            🚪 Logout
-
-        </button>
-
 
     </div>
 
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================== -->
+    <!-- QR Code Library -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 
     <script>
 
+        /*
+         * CUSTOMER MENU URL
+         *
+         * This is the page customers will open
+         * after scanning the QR code.
+         *
+         * We will connect this to your Firebase
+         * restaurant/menu system in the next step.
+         */
 
-        /* =========================
-           ADD MENU
-        ========================== */
+        const menuUrl =
+            window.location.origin +
+            "/Neethutrails/customer-menu.html";
 
-        function addMenu() {
 
-            window.location.href =
-                "add-menu.html";
+        /*
+         * Show URL
+         */
+
+        document.getElementById(
+            "menuUrl"
+        ).textContent = menuUrl;
+
+
+        /*
+         * Generate QR Code
+         */
+
+        const qrContainer =
+            document.getElementById(
+                "qrcode"
+            );
+
+
+        new QRCode(
+            qrContainer,
+            {
+                text: menuUrl,
+                width: 220,
+                height: 220
+            }
+        );
+
+
+        /*
+         * Restaurant Name
+         */
+
+        const savedProfile =
+            localStorage.getItem(
+                "restaurantProfile"
+            );
+
+
+        if (savedProfile) {
+
+            try {
+
+                const profile =
+                    JSON.parse(
+                        savedProfile
+                    );
+
+
+                if (
+                    profile.restaurantName
+                ) {
+
+                    document.getElementById(
+                        "restaurantName"
+                    ).textContent =
+                        profile.restaurantName;
+
+                }
+
+            }
+
+            catch (error) {
+
+                console.log(
+                    "Profile could not be loaded."
+                );
+
+            }
 
         }
 
 
-        /* =========================
-           MANAGE MENU
-        ========================== */
+        /*
+         * DOWNLOAD QR CODE
+         */
 
-        function viewMenu() {
+        function downloadQR() {
 
-            window.location.href =
-                "manage-menu.html";
-
-        }
-
-
-        /* =========================
-           VIEW ORDERS
-        ========================== */
-
-        function viewOrders() {
-
-            window.location.href =
-                "view-orders.html";
-
-        }
+            const qrImage =
+                document.querySelector(
+                    "#qrcode img"
+                );
 
 
-        /* =========================
-           QR CODE
-        ========================== */
+            if (!qrImage) {
 
-        function qrCode() {
+                alert(
+                    "QR code is not ready yet."
+                );
 
-            window.location.href =
-                "qr.html";
+                return;
 
-        }
+            }
 
 
-        /* =========================
-           SETTINGS
-        ========================== */
+            const link =
+                document.createElement(
+                    "a"
+                );
 
-        function settings() {
 
-            alert(
-                "Settings - Coming Next!"
+            link.href =
+                qrImage.src;
+
+
+            link.download =
+                "restaurant-qr-code.png";
+
+
+            document.body.appendChild(
+                link
+            );
+
+
+            link.click();
+
+
+            document.body.removeChild(
+                link
             );
 
         }
 
 
-        /* =========================
-           RESTAURANT PROFILE
-        ========================== */
+        /*
+         * BACK TO DASHBOARD
+         */
 
-        function profile() {
-
-            window.location.href =
-                "Profile.html";
-
-        }
-
-
-        /* =========================
-           LOGOUT
-        ========================== */
-
-        function logout() {
+        function goBack() {
 
             window.location.href =
-                "index.html";
+                "dashboard.html";
 
         }
-
 
     </script>
-
 
 </body>
 
