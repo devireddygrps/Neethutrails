@@ -75,6 +75,13 @@
             resize: vertical;
         }
 
+        .help-text {
+            display: block;
+            margin-top: 6px;
+            color: #777;
+            font-size: 12px;
+        }
+
         .save-btn {
             width: 100%;
             padding: 13px;
@@ -170,49 +177,101 @@
             </div>
 
 
-            <!-- Category -->
+            <!-- Main Category -->
 
             <div class="form-group">
 
                 <label for="category">
-                    Category
+                    Main Category
                 </label>
 
                 <select id="category">
 
                     <option value="">
-                        Select category
+                        Select main category
                     </option>
 
-                    <option value="Starters">
-                        Starters
+                    <option value="Biryanis">
+                        🍚 Biryanis
                     </option>
 
                     <option value="Main Course">
-                        Main Course
+                        🍽️ Main Course
                     </option>
 
-                    <option value="Biryani">
-                        Biryani
+                    <option value="Starters">
+                        🥗 Starters
+                    </option>
+
+                    <option value="Signature Items">
+                        ⭐ Signature Items
                     </option>
 
                     <option value="Chinese">
-                        Chinese
+                        🥢 Chinese
                     </option>
 
                     <option value="Fast Food">
-                        Fast Food
+                        🍔 Fast Food
                     </option>
 
                     <option value="Desserts">
-                        Desserts
+                        🍰 Desserts
                     </option>
 
                     <option value="Beverages">
-                        Beverages
+                        🥤 Beverages
+                    </option>
+
+                    <option value="Others">
+                        📋 Others
                     </option>
 
                 </select>
+
+            </div>
+
+
+            <!-- Subcategory -->
+
+            <div class="form-group">
+
+                <label for="subcategory">
+                    Subcategory
+                </label>
+
+                <select id="subcategory">
+
+                    <option value="">
+                        Select subcategory
+                    </option>
+
+                </select>
+
+                <span class="help-text">
+                    Choose the main category first. The available subcategories will appear here.
+                </span>
+
+            </div>
+
+
+            <!-- Custom Subcategory -->
+
+            <div
+                class="form-group"
+                id="customSubcategoryGroup"
+                style="display:none;"
+            >
+
+                <label for="customSubcategory">
+                    Custom Subcategory
+                </label>
+
+                <input
+                    type="text"
+                    id="customSubcategory"
+                    placeholder="Example: Special Chicken Biryani"
+                >
 
             </div>
 
@@ -364,259 +423,613 @@
         let currentUser = null;
 
 
-        // Check login
+        // =====================================
+        // SUBCATEGORY DATA
+        // =====================================
 
-        onAuthStateChanged(auth, (user) => {
+        const subcategories = {
 
-            if (user) {
+            "Biryanis": [
+                "Chicken Biryani",
+                "Mutton Biryani",
+                "Veg Biryani",
+                "Egg Biryani",
+                "Fish Biryani",
+                "Prawn Biryani",
+                "Special Biryani"
+            ],
 
-                currentUser = user;
+            "Main Course": [
+                "Chicken",
+                "Mutton",
+                "Seafood",
+                "Vegetarian",
+                "Rice & Noodles",
+                "Breads",
+                "Gravies"
+            ],
 
-                document.getElementById(
-                    "loginStatus"
-                ).textContent =
-                    "✅ Restaurant owner logged in";
+            "Starters": [
+                "Chicken Starters",
+                "Mutton Starters",
+                "Seafood Starters",
+                "Veg Starters",
+                "Tandoori",
+                "Kebabs"
+            ],
 
-                document.getElementById(
-                    "saveBtn"
-                ).disabled = false;
+            "Signature Items": [
+                "Chef Special",
+                "Restaurant Special",
+                "Signature Biryani",
+                "Signature Starter",
+                "Signature Main Course",
+                "House Special"
+            ],
 
-                console.log(
-                    "Restaurant UID:",
-                    user.uid
-                );
+            "Chinese": [
+                "Noodles",
+                "Fried Rice",
+                "Manchurian",
+                "Chinese Starters",
+                "Chinese Main Course"
+            ],
+
+            "Fast Food": [
+                "Burgers",
+                "Sandwiches",
+                "Pizza",
+                "Rolls",
+                "Fries",
+                "Wraps"
+            ],
+
+            "Desserts": [
+                "Ice Cream",
+                "Cakes",
+                "Indian Sweets",
+                "Puddings",
+                "Special Desserts"
+            ],
+
+            "Beverages": [
+                "Hot Beverages",
+                "Cold Beverages",
+                "Juices",
+                "Milkshakes",
+                "Mocktails",
+                "Soft Drinks"
+            ],
+
+            "Others": [
+                "Special Items",
+                "Combos",
+                "Extras",
+                "Sides"
+            ]
+
+        };
+
+
+        // =====================================
+        // LOAD SUBCATEGORIES
+        // =====================================
+
+        document
+            .getElementById("category")
+            .addEventListener(
+                "change",
+                function () {
+
+                    const category =
+                        this.value;
+
+                    const subcategorySelect =
+                        document.getElementById(
+                            "subcategory"
+                        );
+
+                    const customGroup =
+                        document.getElementById(
+                            "customSubcategoryGroup"
+                        );
+
+                    const customInput =
+                        document.getElementById(
+                            "customSubcategory"
+                        );
+
+
+                    subcategorySelect.innerHTML = `
+
+                        <option value="">
+                            Select subcategory
+                        </option>
+
+                    `;
+
+
+                    customGroup.style.display =
+                        "none";
+
+                    customInput.value = "";
+
+
+                    if (
+                        !category ||
+                        !subcategories[category]
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    subcategories[category]
+                        .forEach(
+                            function (subcategory) {
+
+                                const option =
+                                    document.createElement(
+                                        "option"
+                                    );
+
+                                option.value =
+                                    subcategory;
+
+                                option.textContent =
+                                    subcategory;
+
+                                subcategorySelect
+                                    .appendChild(
+                                        option
+                                    );
+
+                            }
+                        );
+
+
+                    const customOption =
+                        document.createElement(
+                            "option"
+                        );
+
+                    customOption.value =
+                        "__custom__";
+
+                    customOption.textContent =
+                        "➕ Add Custom Subcategory";
+
+                    subcategorySelect
+                        .appendChild(
+                            customOption
+                        );
+
+                }
+            );
+
+
+        // =====================================
+        // CUSTOM SUBCATEGORY
+        // =====================================
+
+        document
+            .getElementById("subcategory")
+            .addEventListener(
+                "change",
+                function () {
+
+                    const customGroup =
+                        document.getElementById(
+                            "customSubcategoryGroup"
+                        );
+
+                    const customInput =
+                        document.getElementById(
+                            "customSubcategory"
+                        );
+
+
+                    if (
+                        this.value ===
+                        "__custom__"
+                    ) {
+
+                        customGroup.style.display =
+                            "block";
+
+                        customInput.focus();
+
+                    }
+
+                    else {
+
+                        customGroup.style.display =
+                            "none";
+
+                        customInput.value =
+                            "";
+
+                    }
+
+                }
+            );
+
+
+        // =====================================
+        // CHECK LOGIN
+        // =====================================
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                if (user) {
+
+                    currentUser =
+                        user;
+
+                    document.getElementById(
+                        "loginStatus"
+                    ).textContent =
+                        "✅ Restaurant owner logged in";
+
+                    document.getElementById(
+                        "saveBtn"
+                    ).disabled =
+                        false;
+
+                    console.log(
+                        "Restaurant UID:",
+                        user.uid
+                    );
+
+                }
+
+                else {
+
+                    currentUser =
+                        null;
+
+                    document.getElementById(
+                        "loginStatus"
+                    ).textContent =
+                        "❌ Please login first";
+
+                    document.getElementById(
+                        "saveBtn"
+                    ).disabled =
+                        true;
+
+                    alert(
+                        "Please login using the restaurant login page."
+                    );
+
+                    window.location.href =
+                        "index.html";
+
+                }
 
             }
-
-            else {
-
-                currentUser = null;
-
-                document.getElementById(
-                    "loginStatus"
-                ).textContent =
-                    "❌ Please login first";
-
-                document.getElementById(
-                    "saveBtn"
-                ).disabled = true;
-
-                alert(
-                    "Please login using the restaurant login page."
-                );
-
-                window.location.href =
-                    "index.html";
-
-            }
-
-        });
+        );
 
 
-        // Save menu item
+        // =====================================
+        // SAVE MENU ITEM
+        // =====================================
 
-        window.saveMenuItem = async function () {
+        window.saveMenuItem =
+            async function () {
 
-            if (!currentUser) {
+                if (!currentUser) {
 
-                alert(
-                    "Restaurant owner is not logged in."
-                );
+                    alert(
+                        "Restaurant owner is not logged in."
+                    );
 
-                return;
+                    return;
 
-            }
-
-
-            const foodName =
-                document
-                .getElementById("foodName")
-                .value
-                .trim();
+                }
 
 
-            const category =
-                document
-                .getElementById("category")
-                .value;
+                const foodName =
+                    document
+                    .getElementById(
+                        "foodName"
+                    )
+                    .value
+                    .trim();
 
 
-            const description =
-                document
-                .getElementById("description")
-                .value
-                .trim();
+                const category =
+                    document
+                    .getElementById(
+                        "category"
+                    )
+                    .value;
 
 
-            const price =
-                document
-                .getElementById("price")
-                .value;
+                const selectedSubcategory =
+                    document
+                    .getElementById(
+                        "subcategory"
+                    )
+                    .value;
 
 
-            const availability =
-                document
-                .getElementById("availability")
-                .value;
+                const customSubcategory =
+                    document
+                    .getElementById(
+                        "customSubcategory"
+                    )
+                    .value
+                    .trim();
 
 
-            // Validation
-
-            if (foodName === "") {
-
-                alert(
-                    "Please enter food name."
-                );
-
-                return;
-
-            }
+                const description =
+                    document
+                    .getElementById(
+                        "description"
+                    )
+                    .value
+                    .trim();
 
 
-            if (category === "") {
-
-                alert(
-                    "Please select a category."
-                );
-
-                return;
-
-            }
+                const price =
+                    document
+                    .getElementById(
+                        "price"
+                    )
+                    .value;
 
 
-            if (price === "" || Number(price) < 0) {
-
-                alert(
-                    "Please enter a valid price."
-                );
-
-                return;
-
-            }
+                const availability =
+                    document
+                    .getElementById(
+                        "availability"
+                    )
+                    .value;
 
 
-            const restaurantId =
-                currentUser.uid;
+                // =====================================
+                // VALIDATION
+                // =====================================
+
+                if (
+                    foodName === ""
+                ) {
+
+                    alert(
+                        "Please enter food name."
+                    );
+
+                    return;
+
+                }
 
 
-            const menuItem = {
+                if (
+                    category === ""
+                ) {
 
-                restaurantId:
-                    restaurantId,
+                    alert(
+                        "Please select a main category."
+                    );
 
-                foodName:
-                    foodName,
+                    return;
 
-                category:
-                    category,
+                }
 
-                description:
-                    description,
 
-                price:
-                    Number(price),
+                if (
+                    selectedSubcategory === ""
+                ) {
 
-                availability:
-                    availability,
+                    alert(
+                        "Please select a subcategory."
+                    );
 
-                createdAt:
-                    serverTimestamp()
+                    return;
+
+                }
+
+
+                if (
+                    selectedSubcategory ===
+                    "__custom__" &&
+                    customSubcategory === ""
+                ) {
+
+                    alert(
+                        "Please enter the custom subcategory."
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    price === "" ||
+                    Number(price) < 0
+                ) {
+
+                    alert(
+                        "Please enter a valid price."
+                    );
+
+                    return;
+
+                }
+
+
+                const finalSubcategory =
+                    selectedSubcategory ===
+                    "__custom__"
+                    ? customSubcategory
+                    : selectedSubcategory;
+
+
+                const restaurantId =
+                    currentUser.uid;
+
+
+                const menuItem = {
+
+                    restaurantId:
+                        restaurantId,
+
+                    foodName:
+                        foodName,
+
+                    /*
+                     * Main category used by
+                     * customer-menu.html
+                     */
+                    category:
+                        category,
+
+                    /*
+                     * Subcategory used by
+                     * customer-menu.html
+                     */
+                    subcategory:
+                        finalSubcategory,
+
+                    /*
+                     * Also save subCategory for
+                     * compatibility with any
+                     * existing code.
+                     */
+                    subCategory:
+                        finalSubcategory,
+
+                    description:
+                        description,
+
+                    price:
+                        Number(price),
+
+                    availability:
+                        availability,
+
+                    createdAt:
+                        serverTimestamp()
+
+                };
+
+
+                try {
+
+                    const menuCollection =
+                        collection(
+                            db,
+                            "restaurants",
+                            restaurantId,
+                            "menu"
+                        );
+
+
+                    const documentReference =
+                        await addDoc(
+                            menuCollection,
+                            menuItem
+                        );
+
+
+                    console.log(
+                        "Menu Item ID:",
+                        documentReference.id
+                    );
+
+
+                    alert(
+                        "✅ Menu item saved successfully!"
+                    );
+
+
+                    // =====================================
+                    // CLEAR FORM
+                    // =====================================
+
+                    document.getElementById(
+                        "foodName"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "category"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "subcategory"
+                    ).innerHTML = `
+
+                        <option value="">
+                            Select subcategory
+                        </option>
+
+                    `;
+
+
+                    document.getElementById(
+                        "customSubcategory"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "customSubcategoryGroup"
+                    ).style.display =
+                        "none";
+
+
+                    document.getElementById(
+                        "description"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "price"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "availability"
+                    ).value =
+                        "available";
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Firestore Error:",
+                        error
+                    );
+
+
+                    alert(
+                        "❌ Error saving menu item:\n\n" +
+                        error.message
+                    );
+
+                }
 
             };
 
 
-            try {
+        // =====================================
+        // BACK BUTTON
+        // =====================================
 
-                /*
-                 * Structure:
-                 *
-                 * restaurants
-                 *    ↓
-                 * restaurant UID
-                 *    ↓
-                 * menu
-                 *    ↓
-                 * menu item
-                 */
+        window.goBack =
+            function () {
 
-                const menuCollection =
-                    collection(
-                        db,
-                        "restaurants",
-                        restaurantId,
-                        "menu"
-                    );
+                window.location.href =
+                    "dashboard.html";
 
-
-                const documentReference =
-                    await addDoc(
-                        menuCollection,
-                        menuItem
-                    );
-
-
-                console.log(
-                    "Menu Item ID:",
-                    documentReference.id
-                );
-
-
-                alert(
-                    "✅ Menu item saved successfully!"
-                );
-
-
-                // Clear form
-
-                document.getElementById(
-                    "foodName"
-                ).value = "";
-
-                document.getElementById(
-                    "category"
-                ).value = "";
-
-                document.getElementById(
-                    "description"
-                ).value = "";
-
-                document.getElementById(
-                    "price"
-                ).value = "";
-
-                document.getElementById(
-                    "availability"
-                ).value = "available";
-
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Firestore Error:",
-                    error
-                );
-
-
-                alert(
-                    "❌ Error saving menu item:\n\n" +
-                    error.message
-                );
-
-            }
-
-        };
-
-
-        // Back button
-
-        window.goBack = function () {
-
-            window.location.href =
-                "dashboard.html";
-
-        };
+            };
 
     </script>
 
