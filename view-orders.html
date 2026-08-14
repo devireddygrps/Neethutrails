@@ -32,7 +32,7 @@ body{background:#f5f5f5}
 .accept-btn{background:#2196f3}.prepare-btn{background:#9c27b0}.ready-btn{background:#4caf50}
 .complete-btn{background:#00897b}.cancel-btn{background:#f44336}.bill-btn{background:#ff9800}
 .back-btn{width:100%;margin-top:20px;padding:13px;background:#333;color:white;border:none;border-radius:8px;font-size:16px;cursor:pointer}
-.empty{background:white;padding:35px;text-align:center;border-radius:12px;color:#666}
+.waiter-alert{background:#fff3cd;border:2px solid #ff9800;color:#7a4b00;padding:15px;border-radius:12px;margin-bottom:18px;font-weight:bold}.waiter-alert button{margin-top:10px;padding:9px 14px;border:0;border-radius:7px;background:#ff9800;color:white;cursor:pointer}.waiter-row{background:#fff3cd;border:1px solid #ff9800;color:#7a4b00;padding:12px;border-radius:9px;margin:12px 0}.waiter-row button{margin-top:8px;padding:8px 12px;border:0;border-radius:7px;background:#ff9800;color:white;cursor:pointer}.empty{background:white;padding:35px;text-align:center;border-radius:12px;color:#666}
 .bill-box{margin:15px 0;padding:15px;border:2px solid #ff9800;border-radius:10px;background:#fffaf2}
 .bill-box h3{margin-bottom:12px}.bill-row{display:flex;justify-content:space-between;padding:6px 0}
 .bill-total{font-size:18px;font-weight:bold;border-top:1px solid #ddd;margin-top:8px;padding-top:10px}
@@ -51,6 +51,7 @@ body{background:#f5f5f5}
 
 <div class="container">
 <div id="status" class="status">Loading orders...</div>
+<div id="waiterAlerts"></div>
 <div id="ordersList" class="orders-list"></div>
 <button class="back-btn" onclick="goBack()">← Back to Dashboard</button>
 </div>
@@ -60,7 +61,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/fireba
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 import {
     getFirestore, collection, getDocs, doc, updateDoc,
-    query, orderBy, serverTimestamp
+    query, orderBy, serverTimestamp, onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -81,12 +82,32 @@ let currentUser=null;
 onAuthStateChanged(auth,async user=>{
     if(user){
         currentUser=user;
-        await loadOrders();
+        await loadOrdersRealtime();
     }else{
         alert("Please login first.");
         window.location.href="index.html";
     }
 });
+
+let stopOrdersListener=null;
+
+function loadOrdersRealtime(){
+    if(!currentUser)return;
+
+    if(stopOrdersListener){
+        stopOrdersListener();
+        stopOrdersListener=null;
+    }
+
+    const ordersCollection=collection(db,"restaurants",currentUser.uid,"orders");
+    const ordersQuery=query(ordersCollection,orderBy("createdAt","desc"));
+
+    stopOrdersListener=onSnapshot(ordersQuery,()=>{
+        loadOrders();
+    },error=>{
+        console.error("Realtime orders listener error:",error);
+    });
+}
 
 async function loadOrders(){
     if(!currentUser)return;
@@ -135,6 +156,7 @@ async function loadOrders(){
 
             const billRequested=order.billRequested===true;
             const billGenerated=order.billGenerated===true;
+            const waiterCalled=order.waiterCalled===true;
 
             const subtotal=Number(order.billSubtotal ?? order.subtotal ?? order.total ?? 0);
             const discount=Number(order.billDiscountAmount ?? order.discountAmount ?? 0);
@@ -155,6 +177,14 @@ async function loadOrders(){
                 ${billRequested ? `
                     <div class="bill-requested-badge">
                         🧾 Customer has requested the bill
+                    </div>
+                ` : ""}
+
+                ${waiterCalled ? `
+                    <div class="waiter-row">
+                        🔔 <strong>WAITER CALLED</strong> — Table ${escapeHTML(String(order.tableNumber||"N/A"))} is requesting assistance.
+                        <br>
+                        <button onclick="clearWaiterRequest('${orderId}')">✅ Mark Attended / Clear</button>
                     </div>
                 ` : ""}
 
@@ -205,12 +235,61 @@ async function loadOrders(){
 
             ordersList.appendChild(card);
         });
+
+        updateWaiterAlerts(snapshot);
     }catch(error){
         console.error("Error loading orders:",error);
         document.getElementById("status").textContent="Error loading orders.";
         alert("Error loading orders:\\n\\n"+error.message);
     }
 }
+
+function updateWaiterAlerts(snapshot){
+    const alerts=document.getElementById("waiterAlerts");
+    const requests=[];
+
+    snapshot.forEach(d=>{
+        const o=d.data();
+        if(o.waiterCalled===true){
+            requests.push({
+                id:d.id,
+                table:o.tableNumber||"N/A",
+                order:o.orderNumber||d.id.substring(0,6)
+            });
+        }
+    });
+
+    if(!requests.length){
+        alerts.innerHTML="";
+        return;
+    }
+
+    alerts.innerHTML=`
+        <div class="waiter-alert">
+            🔔 <strong>${requests.length} Waiter Request${requests.length>1?"s":""}</strong>
+            <div style="margin-top:7px;font-weight:normal;">
+                ${requests.map(r=>`Table ${escapeHTML(String(r.table))} — Order #${escapeHTML(String(r.order))}`).join("<br>")}
+            </div>
+        </div>
+    `;
+}
+
+window.clearWaiterRequest=async function(orderId){
+    if(!currentUser){alert("Please login first.");return;}
+
+    const orderRef=doc(db,"restaurants",currentUser.uid,"orders",orderId);
+
+    try{
+        await updateDoc(orderRef,{
+            waiterCalled:false,
+            waiterClearedAt:serverTimestamp()
+        });
+        await loadOrders();
+    }catch(error){
+        console.error("Clear waiter request error:",error);
+        alert("Could not clear waiter request:\n\n"+error.message);
+    }
+};
 
 window.updateOrderStatus=async function(orderId,newStatus){
     if(!currentUser){alert("Please login first.");return;}
