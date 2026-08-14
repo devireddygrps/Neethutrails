@@ -92,6 +92,38 @@
         }
 
 
+        .category-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px 2px 12px;
+            margin-bottom: 8px;
+            scrollbar-width: thin;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #f5f5f5;
+        }
+
+        .category-nav button {
+            flex: 0 0 auto;
+            border: none;
+            background: white;
+            color: #555;
+            padding: 11px 16px;
+            border-radius: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .category-nav button.active {
+            background: #ff5722;
+            color: white;
+        }
+
         .menu-list {
 
             display: grid;
@@ -752,6 +784,12 @@
     <div class="container">
 
         <div
+            id="categoryNav"
+            class="category-nav"
+        >
+        </div>
+
+        <div
             id="menuList"
             class="menu-list"
         >
@@ -1096,238 +1134,148 @@
 
 
         /* =====================================
-           LOAD MENU
+           LOAD MENU + MAIN CATEGORY NAVIGATION
         ===================================== */
 
+        let allMenuItems = [];
+        let activeCategory = "All";
+
+        const MAIN_CATEGORIES = [
+            "All",
+            "Biryanis",
+            "Main Course",
+            "Starters",
+            "Signature Items"
+        ];
+
+        function normalizeCategory(value) {
+            const text = String(value || "Other").trim();
+            const key = text.toLowerCase().replace(/[\s_-]+/g, " ");
+
+            if (key === "biryani" || key === "biryanis") return "Biryanis";
+            if (key === "main course" || key === "maincourse") return "Main Course";
+            if (key === "starter" || key === "starters") return "Starters";
+            if (key === "signature" || key === "signature item" || key === "signature items") return "Signature Items";
+
+            return text || "Other";
+        }
+
+        function renderCategoryNav() {
+            const nav = document.getElementById("categoryNav");
+            if (!nav) return;
+
+            const extraCategories = [...new Set(
+                allMenuItems
+                    .map(item => normalizeCategory(item.category))
+                    .filter(category => category && !MAIN_CATEGORIES.includes(category))
+            )];
+
+            const categories = [...MAIN_CATEGORIES, ...extraCategories];
+            nav.innerHTML = "";
+
+            categories.forEach(category => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.textContent = category === "All" ? "🍽️ All" : category === "Signature Items" ? "⭐ Signature Items" : category;
+
+                if (category === activeCategory) button.classList.add("active");
+
+                button.addEventListener("click", () => {
+                    activeCategory = category;
+                    renderCategoryNav();
+                    renderMenuItems();
+                });
+
+                nav.appendChild(button);
+            });
+        }
+
+        function renderMenuItems() {
+            const menuList = document.getElementById("menuList");
+            const status = document.getElementById("status");
+            menuList.innerHTML = "";
+
+            const filteredItems = activeCategory === "All"
+                ? allMenuItems
+                : allMenuItems.filter(item => normalizeCategory(item.category) === activeCategory);
+
+            if (!filteredItems.length) {
+                status.textContent = "No items in this category.";
+                menuList.innerHTML = `
+                    <div class="empty">
+                        <h3>🍽️ No Items</h3>
+                        <p>No food items are available in this category.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            status.textContent = `${filteredItems.length} item(s)`;
+
+            filteredItems.forEach(item => {
+                const itemId = item.id;
+                const name = item.name || item.foodName || "Food Item";
+                const description = item.description || "";
+                const category = normalizeCategory(item.category);
+                const price = Number(item.price || 0);
+
+                const card = document.createElement("div");
+                card.className = "menu-card";
+                card.innerHTML = `
+                    <span class="category">${escapeHTML(category)}</span>
+                    <h3>${escapeHTML(name)}</h3>
+                    ${description ? `<div class="description">${escapeHTML(description)}</div>` : ""}
+                    <div class="price">₹${price.toFixed(2)}</div>
+                    <div class="quantity-row">
+                        <button type="button" onclick="changeQuantity('${itemId}', -1)">−</button>
+                        <span id="quantity-${itemId}" class="quantity">0</span>
+                        <button type="button" onclick="changeQuantity('${itemId}', 1)">+</button>
+                    </div>
+                `;
+                menuList.appendChild(card);
+            });
+        }
+
         async function loadMenu() {
-
-            const menuList =
-                document.getElementById(
-                    "menuList"
-                );
-
-
-            const status =
-                document.getElementById(
-                    "status"
-                );
-
+            const menuList = document.getElementById("menuList");
+            const status = document.getElementById("status");
 
             try {
+                const menuRef = collection(db, "restaurants", restaurantId, "menu");
+                const snapshot = await getDocs(menuRef);
 
-                const menuRef =
-                    collection(
-                        db,
-                        "restaurants",
-                        restaurantId,
-                        "menu"
-                    );
+                allMenuItems = [];
+                snapshot.forEach(menuDoc => {
+                    allMenuItems.push({ id: menuDoc.id, ...menuDoc.data() });
+                });
 
+                // Always render the main category buttons immediately.
+                renderCategoryNav();
 
-                const snapshot =
-                    await getDocs(
-                        menuRef
-                    );
-
-
-                menuList.innerHTML = "";
-
-
-                if (
-                    snapshot.empty
-                ) {
-
-                    status.textContent =
-                        "Menu is empty.";
-
-
+                if (snapshot.empty) {
+                    status.textContent = "Menu is empty.";
                     menuList.innerHTML = `
-
                         <div class="empty">
-
-                            <h3>
-                                🍽️ Menu Empty
-                            </h3>
-
-                            <p>
-                                No menu items are available right now.
-                            </p>
-
+                            <h3>🍽️ Menu Empty</h3>
+                            <p>No menu items are available right now.</p>
                         </div>
-
                     `;
-
                     return;
-
                 }
 
+                renderMenuItems();
 
-                status.textContent =
-                    `${snapshot.size} menu item(s)`;
-
-
-                snapshot.forEach(
-                    (menuDoc) => {
-
-                        const item =
-                            menuDoc.data();
-
-
-                        const itemId =
-                            menuDoc.id;
-
-
-                        const name =
-                            item.name ||
-                            item.foodName ||
-                            "Food Item";
-
-
-                        const description =
-                            item.description ||
-                            "";
-
-
-                        const category =
-                            item.category ||
-                            "Food";
-
-
-                        const price =
-                            Number(
-                                item.price || 0
-                            );
-
-
-                        const card =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        card.className =
-                            "menu-card";
-
-
-                        card.innerHTML = `
-
-                            <span class="category">
-
-                                ${escapeHTML(
-                                    category
-                                )}
-
-                            </span>
-
-
-                            <h3>
-
-                                ${escapeHTML(
-                                    name
-                                )}
-
-                            </h3>
-
-
-                            ${
-                                description
-                                ? `
-
-                                    <div class="description">
-
-                                        ${escapeHTML(
-                                            description
-                                        )}
-
-                                    </div>
-
-                                `
-                                : ""
-                            }
-
-
-                            <div class="price">
-
-                                ₹${price.toFixed(2)}
-
-                            </div>
-
-
-                            <div class="quantity-row">
-
-                                <button
-                                    onclick="changeQuantity(
-                                        '${itemId}',
-                                        -1
-                                    )"
-                                >
-                                    −
-                                </button>
-
-
-                                <span
-                                    id="quantity-${itemId}"
-                                    class="quantity"
-                                >
-                                    0
-                                </span>
-
-
-                                <button
-                                    onclick="changeQuantity(
-                                        '${itemId}',
-                                        1
-                                    )"
-                                >
-                                    +
-                                </button>
-
-                            </div>
-
-                        `;
-
-
-                        menuList.appendChild(
-                            card
-                        );
-
-                    }
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Menu loading error:",
-                    error
-                );
-
-
-                status.textContent =
-                    "Unable to load menu.";
-
-
+            } catch (error) {
+                console.error("Menu loading error:", error);
+                status.textContent = "Unable to load menu.";
                 menuList.innerHTML = `
-
                     <div class="empty">
-
-                        <h3>
-                            ⚠️ Unable to Load Menu
-                        </h3>
-
-                        <p>
-                            ${escapeHTML(
-                                error.message
-                            )}
-                        </p>
-
+                        <h3>⚠️ Unable to Load Menu</h3>
+                        <p>${escapeHTML(error.message)}</p>
                     </div>
-
                 `;
-
+                renderCategoryNav();
             }
-
         }
 
 
