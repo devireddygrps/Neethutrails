@@ -92,6 +92,38 @@
         }
 
 
+        .category-nav {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px 2px 12px;
+            margin-bottom: 8px;
+            scrollbar-width: thin;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #f5f5f5;
+        }
+
+        .category-nav button {
+            flex: 0 0 auto;
+            border: none;
+            background: white;
+            color: #555;
+            padding: 11px 16px;
+            border-radius: 22px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .category-nav button.active {
+            background: #ff5722;
+            color: white;
+        }
+
         .menu-list {
 
             display: grid;
@@ -531,6 +563,97 @@
         }
 
 
+
+        /* ================================
+           CUSTOMER ORDER TRACKING
+        ================================= */
+        .order-panel {
+            display: none;
+            background: white;
+            margin: 0 auto 20px;
+            padding: 20px;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-panel h3 {
+            margin-bottom: 12px;
+        }
+
+        .order-number-display {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .flow {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            margin: 15px 0;
+        }
+
+        .flow-step {
+            text-align: center;
+            padding: 10px 4px;
+            border-radius: 8px;
+            background: #eee;
+            color: #777;
+            font-size: 12px;
+        }
+
+        .flow-step.active {
+            background: #ff5722;
+            color: white;
+            font-weight: bold;
+        }
+
+        .flow-step.done {
+            background: #d4edda;
+            color: #155724;
+            font-weight: bold;
+        }
+
+        .customer-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .customer-actions button {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .waiter-btn {
+            background: #2196f3;
+        }
+
+        .bill-btn {
+            background: #00897b;
+        }
+
+        .bill-btn:disabled,
+        .waiter-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .live-status {
+            text-align: center;
+            font-size: 17px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
         /* ================================
            MOBILE
         ================================= */
@@ -607,12 +730,64 @@
         Loading menu...
     </div>
 
+    <div id="orderPanel" class="order-panel">
+
+        <h3>📦 My Order Status</h3>
+
+        <div id="orderNumberDisplay" class="order-number-display"></div>
+
+        <div id="liveOrderStatus" class="live-status">
+            Waiting for order...
+        </div>
+
+        <div class="flow">
+            <div id="step-new" class="flow-step">🆕<br>New</div>
+            <div id="step-accepted" class="flow-step">🔵<br>Accepted</div>
+            <div id="step-preparing" class="flow-step">👨‍🍳<br>Preparing</div>
+            <div id="step-ready" class="flow-step">🟢<br>Ready</div>
+            <div id="step-completed" class="flow-step">🚚<br>Delivered</div>
+        </div>
+
+        <div class="customer-actions">
+
+            <button
+                id="callWaiterBtn"
+                class="waiter-btn"
+                onclick="callWaiter()"
+            >
+                🔔 Call Waiter
+            </button>
+
+            <button
+                id="requestBillBtn"
+                class="bill-btn"
+                onclick="requestBill()"
+                disabled
+            >
+                🧾 Request Bill
+            </button>
+
+        </div>
+
+        <div
+            id="billMessage"
+            style="margin-top:12px;text-align:center;color:#666;"
+        ></div>
+
+    </div>
+
 
     <!-- ================================
          MENU
     ================================= -->
 
     <div class="container">
+
+        <div
+            id="categoryNav"
+            class="category-nav"
+        >
+        </div>
 
         <div
             id="menuList"
@@ -730,6 +905,12 @@
 
 
         import {
+            getAuth,
+            onAuthStateChanged
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+        import {
             getFirestore,
             collection,
             getDocs,
@@ -786,6 +967,42 @@
         const db =
             getFirestore(app);
 
+        const auth =
+            getAuth(app);
+
+        let currentCustomer = null;
+        let restaurantUpiId = "";
+        let restaurantNameValue = "Restaurant";
+        let currentOrderNumber = "";
+        let currentPayableAmount = 0;
+        let currentOrderId =
+            sessionStorage.getItem("customerOrderId") || null;
+
+        let unsubscribeOrder = null;
+
+
+        /* =====================================
+           CUSTOMER AUTHENTICATION
+        ===================================== */
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                if (!user) {
+                    document.getElementById("status").textContent =
+                        "Please login to continue.";
+
+                    return;
+                }
+
+                currentCustomer = user;
+
+                if (currentOrderId) {
+                    listenToCurrentOrder();
+                }
+            }
+        );
 
         /* =====================================
            READ QR PARAMETERS
@@ -846,9 +1063,6 @@
 
         let cart = [];
 
-        let currentOrderId = sessionStorage.getItem("customerOrderId") || null;
-        let unsubscribeOrder = null;
-
 
         /* =====================================
            LOAD RESTAURANT
@@ -884,13 +1098,24 @@
                         restaurant.restaurantName
                     ) {
 
+                        restaurantNameValue =
+                            String(
+                                restaurant.restaurantName
+                            );
+
                         document.getElementById(
                             "restaurantName"
                         ).textContent =
                             "🍽️ " +
-                            restaurant.restaurantName;
+                            restaurantNameValue;
 
                     }
+
+                    restaurantUpiId =
+                        String(
+                            restaurant.upiId ||
+                            ""
+                        ).trim();
 
                 }
 
@@ -909,238 +1134,148 @@
 
 
         /* =====================================
-           LOAD MENU
+           LOAD MENU + MAIN CATEGORY NAVIGATION
         ===================================== */
 
+        let allMenuItems = [];
+        let activeCategory = "All";
+
+        const MAIN_CATEGORIES = [
+            "All",
+            "Biryanis",
+            "Main Course",
+            "Starters",
+            "Signature Items"
+        ];
+
+        function normalizeCategory(value) {
+            const text = String(value || "Other").trim();
+            const key = text.toLowerCase().replace(/[\s_-]+/g, " ");
+
+            if (key === "biryani" || key === "biryanis") return "Biryanis";
+            if (key === "main course" || key === "maincourse") return "Main Course";
+            if (key === "starter" || key === "starters") return "Starters";
+            if (key === "signature" || key === "signature item" || key === "signature items") return "Signature Items";
+
+            return text || "Other";
+        }
+
+        function renderCategoryNav() {
+            const nav = document.getElementById("categoryNav");
+            if (!nav) return;
+
+            const extraCategories = [...new Set(
+                allMenuItems
+                    .map(item => normalizeCategory(item.category))
+                    .filter(category => category && !MAIN_CATEGORIES.includes(category))
+            )];
+
+            const categories = [...MAIN_CATEGORIES, ...extraCategories];
+            nav.innerHTML = "";
+
+            categories.forEach(category => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.textContent = category === "All" ? "🍽️ All" : category === "Signature Items" ? "⭐ Signature Items" : category;
+
+                if (category === activeCategory) button.classList.add("active");
+
+                button.addEventListener("click", () => {
+                    activeCategory = category;
+                    renderCategoryNav();
+                    renderMenuItems();
+                });
+
+                nav.appendChild(button);
+            });
+        }
+
+        function renderMenuItems() {
+            const menuList = document.getElementById("menuList");
+            const status = document.getElementById("status");
+            menuList.innerHTML = "";
+
+            const filteredItems = activeCategory === "All"
+                ? allMenuItems
+                : allMenuItems.filter(item => normalizeCategory(item.category) === activeCategory);
+
+            if (!filteredItems.length) {
+                status.textContent = "No items in this category.";
+                menuList.innerHTML = `
+                    <div class="empty">
+                        <h3>🍽️ No Items</h3>
+                        <p>No food items are available in this category.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            status.textContent = `${filteredItems.length} item(s)`;
+
+            filteredItems.forEach(item => {
+                const itemId = item.id;
+                const name = item.name || item.foodName || "Food Item";
+                const description = item.description || "";
+                const category = normalizeCategory(item.category);
+                const price = Number(item.price || 0);
+
+                const card = document.createElement("div");
+                card.className = "menu-card";
+                card.innerHTML = `
+                    <span class="category">${escapeHTML(category)}</span>
+                    <h3>${escapeHTML(name)}</h3>
+                    ${description ? `<div class="description">${escapeHTML(description)}</div>` : ""}
+                    <div class="price">₹${price.toFixed(2)}</div>
+                    <div class="quantity-row">
+                        <button type="button" onclick="changeQuantity('${itemId}', -1)">−</button>
+                        <span id="quantity-${itemId}" class="quantity">0</span>
+                        <button type="button" onclick="changeQuantity('${itemId}', 1)">+</button>
+                    </div>
+                `;
+                menuList.appendChild(card);
+            });
+        }
+
         async function loadMenu() {
-
-            const menuList =
-                document.getElementById(
-                    "menuList"
-                );
-
-
-            const status =
-                document.getElementById(
-                    "status"
-                );
-
+            const menuList = document.getElementById("menuList");
+            const status = document.getElementById("status");
 
             try {
+                const menuRef = collection(db, "restaurants", restaurantId, "menu");
+                const snapshot = await getDocs(menuRef);
 
-                const menuRef =
-                    collection(
-                        db,
-                        "restaurants",
-                        restaurantId,
-                        "menu"
-                    );
+                allMenuItems = [];
+                snapshot.forEach(menuDoc => {
+                    allMenuItems.push({ id: menuDoc.id, ...menuDoc.data() });
+                });
 
+                // Always render the main category buttons immediately.
+                renderCategoryNav();
 
-                const snapshot =
-                    await getDocs(
-                        menuRef
-                    );
-
-
-                menuList.innerHTML = "";
-
-
-                if (
-                    snapshot.empty
-                ) {
-
-                    status.textContent =
-                        "Menu is empty.";
-
-
+                if (snapshot.empty) {
+                    status.textContent = "Menu is empty.";
                     menuList.innerHTML = `
-
                         <div class="empty">
-
-                            <h3>
-                                🍽️ Menu Empty
-                            </h3>
-
-                            <p>
-                                No menu items are available right now.
-                            </p>
-
+                            <h3>🍽️ Menu Empty</h3>
+                            <p>No menu items are available right now.</p>
                         </div>
-
                     `;
-
                     return;
-
                 }
 
+                renderMenuItems();
 
-                status.textContent =
-                    `${snapshot.size} menu item(s)`;
-
-
-                snapshot.forEach(
-                    (menuDoc) => {
-
-                        const item =
-                            menuDoc.data();
-
-
-                        const itemId =
-                            menuDoc.id;
-
-
-                        const name =
-                            item.name ||
-                            item.foodName ||
-                            "Food Item";
-
-
-                        const description =
-                            item.description ||
-                            "";
-
-
-                        const category =
-                            item.category ||
-                            "Food";
-
-
-                        const price =
-                            Number(
-                                item.price || 0
-                            );
-
-
-                        const card =
-                            document.createElement(
-                                "div"
-                            );
-
-
-                        card.className =
-                            "menu-card";
-
-
-                        card.innerHTML = `
-
-                            <span class="category">
-
-                                ${escapeHTML(
-                                    category
-                                )}
-
-                            </span>
-
-
-                            <h3>
-
-                                ${escapeHTML(
-                                    name
-                                )}
-
-                            </h3>
-
-
-                            ${
-                                description
-                                ? `
-
-                                    <div class="description">
-
-                                        ${escapeHTML(
-                                            description
-                                        )}
-
-                                    </div>
-
-                                `
-                                : ""
-                            }
-
-
-                            <div class="price">
-
-                                ₹${price.toFixed(2)}
-
-                            </div>
-
-
-                            <div class="quantity-row">
-
-                                <button
-                                    onclick="changeQuantity(
-                                        '${itemId}',
-                                        -1
-                                    )"
-                                >
-                                    −
-                                </button>
-
-
-                                <span
-                                    id="quantity-${itemId}"
-                                    class="quantity"
-                                >
-                                    0
-                                </span>
-
-
-                                <button
-                                    onclick="changeQuantity(
-                                        '${itemId}',
-                                        1
-                                    )"
-                                >
-                                    +
-                                </button>
-
-                            </div>
-
-                        `;
-
-
-                        menuList.appendChild(
-                            card
-                        );
-
-                    }
-                );
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Menu loading error:",
-                    error
-                );
-
-
-                status.textContent =
-                    "Unable to load menu.";
-
-
+            } catch (error) {
+                console.error("Menu loading error:", error);
+                status.textContent = "Unable to load menu.";
                 menuList.innerHTML = `
-
                     <div class="empty">
-
-                        <h3>
-                            ⚠️ Unable to Load Menu
-                        </h3>
-
-                        <p>
-                            ${escapeHTML(
-                                error.message
-                            )}
-                        </p>
-
+                        <h3>⚠️ Unable to Load Menu</h3>
+                        <p>${escapeHTML(error.message)}</p>
                     </div>
-
                 `;
-
+                renderCategoryNav();
             }
-
         }
 
 
@@ -1605,6 +1740,20 @@
                         status:
                             "new",
 
+                        customerUid:
+                            currentCustomer
+                            ? currentCustomer.uid
+                            : "",
+
+                        paymentStatus:
+                            "pending",
+
+                        paymentMethod:
+                            "upi",
+
+                        restaurantUpiId:
+                            restaurantUpiId,
+
                         createdAt:
                             serverTimestamp()
 
@@ -1617,10 +1766,19 @@
                             orderData
                         );
 
-                    currentOrderId = newOrderRef.id;
-                    sessionStorage.setItem("customerOrderId", currentOrderId);
-                    listenToCurrentOrder();
+                    currentOrderId =
+                        newOrderRef.id;
 
+                    currentOrderNumber =
+                        orderNumber;
+
+                    currentPayableAmount =
+                        total;
+
+                    sessionStorage.setItem(
+                        "customerOrderId",
+                        currentOrderId
+                    );
 
                     document.getElementById(
                         "cartModal"
@@ -1705,76 +1863,558 @@
 
 
         /* =====================================
-           REALTIME ORDER STATUS
+           LIVE CUSTOMER ORDER TRACKING
         ===================================== */
 
         function listenToCurrentOrder() {
-            if (!currentOrderId) return;
+
+            if (!currentCustomer || !currentOrderId) {
+                return;
+            }
 
             if (unsubscribeOrder) {
                 unsubscribeOrder();
+                unsubscribeOrder = null;
             }
 
-            const orderRef = doc(
-                db,
-                "restaurants",
-                restaurantId,
-                "orders",
-                currentOrderId
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    currentOrderId
+                );
+
+            unsubscribeOrder =
+                onSnapshot(
+                    orderRef,
+                    (snapshot) => {
+
+                        if (!snapshot.exists()) {
+                            document.getElementById(
+                                "orderPanel"
+                            ).style.display = "none";
+
+                            return;
+                        }
+
+                        const order =
+                            snapshot.data();
+
+                        // Extra client-side safety check.
+                        if (
+                            order.customerUid &&
+                            order.customerUid !== currentCustomer.uid
+                        ) {
+                            document.getElementById(
+                                "status"
+                            ).textContent =
+                                "This order does not belong to this customer.";
+
+                            return;
+                        }
+
+                        renderCustomerOrderStatus(
+                            order
+                        );
+                    },
+                    (error) => {
+
+                        console.error(
+                            "Order status listener error:",
+                            error
+                        );
+
+                        document.getElementById(
+                            "liveOrderStatus"
+                        ).textContent =
+                            "Unable to track order status.";
+
+                        document.getElementById(
+                            "billMessage"
+                        ).textContent =
+                            error.message;
+                    }
+                );
+        }
+
+
+        function renderCustomerOrderStatus(order) {
+
+            const panel =
+                document.getElementById(
+                    "orderPanel"
+                );
+
+            panel.style.display = "block";
+
+            document.getElementById(
+                "orderNumberDisplay"
+            ).textContent =
+                "Order #" +
+                (
+                    order.orderNumber ||
+                    currentOrderId.substring(0, 6)
+                );
+
+            const status =
+                order.status || "new";
+
+            const statusText = {
+                new: "🆕 Order Received",
+                accepted: "🔵 Order Accepted",
+                preparing: "👨‍🍳 Preparing Your Order",
+                ready: "🟢 Order Ready",
+                completed: "🚚 Order Delivered",
+                cancelled: "❌ Order Cancelled"
+            };
+
+            document.getElementById(
+                "liveOrderStatus"
+            ).textContent =
+                statusText[status] ||
+                "Order Status: " + status;
+
+            const stages = [
+                "new",
+                "accepted",
+                "preparing",
+                "ready",
+                "completed"
+            ];
+
+            const currentIndex =
+                stages.indexOf(status);
+
+            stages.forEach(
+                (stage, index) => {
+
+                    const element =
+                        document.getElementById(
+                            "step-" + stage
+                        );
+
+                    if (!element) {
+                        return;
+                    }
+
+                    element.classList.remove(
+                        "active",
+                        "done"
+                    );
+
+                    if (
+                        status === "cancelled"
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        index < currentIndex
+                    ) {
+                        element.classList.add(
+                            "done"
+                        );
+                    }
+
+                    if (
+                        index === currentIndex
+                    ) {
+                        element.classList.add(
+                            "active"
+                        );
+                    }
+                }
             );
 
-            unsubscribeOrder = onSnapshot(orderRef, (snapshot) => {
-                if (!snapshot.exists()) return;
+            const callWaiterBtn =
+                document.getElementById(
+                    "callWaiterBtn"
+                );
 
-                const order = snapshot.data();
-                const status = order.status || "new";
+            if (
+                order.waiterCalled === true
+            ) {
+                callWaiterBtn.disabled = true;
+                callWaiterBtn.textContent =
+                    "✅ Waiter Called";
+            } else {
+                callWaiterBtn.disabled = false;
+                callWaiterBtn.textContent =
+                    "🔔 Call Waiter";
+            }
 
-                const statusText = {
-                    new: "🆕 Order Received",
-                    accepted: "🔵 Order Accepted",
-                    preparing: "👨‍🍳 Preparing Your Order",
-                    ready: "🟢 Order Ready",
-                    completed: "🚚 Order Delivered",
-                    cancelled: "❌ Order Cancelled"
-                };
+            const billBtn =
+                document.getElementById(
+                    "requestBillBtn"
+                );
 
-                let panel = document.getElementById("orderPanel");
-                if (!panel) {
-                    panel = document.createElement("div");
-                    panel.id = "orderPanel";
-                    panel.className = "order-panel";
-                    panel.innerHTML = `
-                        <h3>📦 My Order Status</h3>
-                        <div id="orderNumberDisplay" class="order-number-display"></div>
-                        <div id="liveOrderStatus" class="live-status"></div>
-                        <div class="flow">
-                            <div class="flow-step" id="step-new">🆕<br>New</div>
-                            <div class="flow-step" id="step-accepted">🔵<br>Accepted</div>
-                            <div class="flow-step" id="step-preparing">👨‍🍳<br>Preparing</div>
-                            <div class="flow-step" id="step-ready">🟢<br>Ready</div>
-                            <div class="flow-step" id="step-completed">🚚<br>Delivered</div>
+            if (
+                status === "completed" &&
+                order.billRequested !== true
+            ) {
+                billBtn.disabled = false;
+                billBtn.textContent =
+                    "🧾 Request Bill";
+            } else if (
+                order.billRequested === true
+            ) {
+                billBtn.disabled = true;
+                billBtn.textContent =
+                    "✅ Bill Requested";
+            } else {
+                billBtn.disabled = true;
+                billBtn.textContent =
+                    "🧾 Request Bill";
+            }
+
+            const billMessage =
+                document.getElementById(
+                    "billMessage"
+                );
+
+            if (order.billGenerated) {
+
+                const subtotal =
+                    Number(
+                        order.billSubtotal ??
+                        order.subtotal ??
+                        order.total ??
+                        0
+                    );
+
+                const discount =
+                    Number(
+                        order.billDiscountAmount ??
+                        order.discountAmount ??
+                        0
+                    );
+
+                const total =
+                    Number(
+                        order.billTotal ??
+                        order.finalTotal ??
+                        order.total ??
+                        0
+                    );
+
+                currentOrderNumber =
+                    order.orderNumber ||
+                    currentOrderNumber;
+
+                currentPayableAmount =
+                    total;
+
+                const upiId =
+                    String(
+                        order.restaurantUpiId ||
+                        restaurantUpiId ||
+                        ""
+                    ).trim();
+
+                billMessage.innerHTML =
+                    `
+                    <div style="
+                        background:#e8f5e9;
+                        padding:15px;
+                        border-radius:10px;
+                        color:#155724;
+                        text-align:left;
+                    ">
+                        <strong style="font-size:18px;">
+                            🧾 Bill Generated
+                        </strong>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            margin-top:10px;
+                        ">
+                            <span>Subtotal</span>
+                            <strong>₹${subtotal.toFixed(2)}</strong>
                         </div>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            margin-top:6px;
+                        ">
+                            <span>Discount</span>
+                            <strong>-₹${discount.toFixed(2)}</strong>
+                        </div>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            border-top:1px solid #b7d8bc;
+                            margin-top:10px;
+                            padding-top:10px;
+                            font-size:20px;
+                        ">
+                            <strong>Total</strong>
+                            <strong>₹${total.toFixed(2)}</strong>
+                        </div>
+
+                        ${
+                            upiId
+                            ? `
+                                <div style="
+                                    margin-top:15px;
+                                    background:white;
+                                    padding:12px;
+                                    border-radius:8px;
+                                    color:#333;
+                                ">
+                                    <strong>💳 Payment</strong>
+
+                                    <div style="
+                                        margin-top:6px;
+                                        font-size:13px;
+                                        color:#666;
+                                    ">
+                                        Pay directly to restaurant
+                                    </div>
+
+                                    <div style="
+                                        margin-top:6px;
+                                        font-weight:bold;
+                                    ">
+                                        UPI: ${escapeHTML(upiId)}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onclick="payBillViaUPI()"
+                                        style="
+                                            width:100%;
+                                            margin-top:12px;
+                                            padding:13px;
+                                            border:none;
+                                            border-radius:8px;
+                                            background:#00897b;
+                                            color:white;
+                                            font-size:16px;
+                                            font-weight:bold;
+                                            cursor:pointer;
+                                        "
+                                    >
+                                        💳 Pay ₹${total.toFixed(2)} Now
+                                    </button>
+
+                                    <div style="
+                                        margin-top:8px;
+                                        font-size:12px;
+                                        color:#666;
+                                    ">
+                                        Your UPI app will open with the
+                                        restaurant UPI ID and exact bill amount.
+                                    </div>
+                                </div>
+                            `
+                            : `
+                                <div style="
+                                    margin-top:15px;
+                                    background:#fff3cd;
+                                    padding:12px;
+                                    border-radius:8px;
+                                    color:#856404;
+                                ">
+                                    ⚠️ Restaurant UPI ID is not configured.
+                                </div>
+                            `
+                        }
+                    </div>
                     `;
-                    document.querySelector(".container").before(panel);
+
+                document.querySelector(
+                    ".container"
+                ).style.display = "none";
+
+                document.querySelector(
+                    ".cart-bar"
+                ).style.display = "none";
+
+                document.getElementById(
+                    "status"
+                ).textContent =
+                    "Bill generated. Please complete payment.";
+            } else if (
+                order.billRequested
+            ) {
+                billMessage.textContent =
+                    "Bill requested. Please wait for the restaurant.";
+            } else if (
+                status === "completed"
+            ) {
+                billMessage.textContent =
+                    "Your order is delivered. You can request your bill.";
+            } else {
+                billMessage.textContent = "";
+            }
+        }
+
+
+        /* =====================================
+           CALL WAITER
+        ===================================== */
+
+        window.callWaiter =
+            async function() {
+
+                if (
+                    !currentCustomer ||
+                    !currentOrderId
+                ) {
+                    alert(
+                        "Please place an order first."
+                    );
+
+                    return;
                 }
 
-                panel.style.display = "block";
-                document.getElementById("orderNumberDisplay").textContent = "Order #" + (order.orderNumber || currentOrderId);
-                document.getElementById("liveOrderStatus").textContent = statusText[status] || "Order Status: " + status;
+                const orderRef =
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantId,
+                        "orders",
+                        currentOrderId
+                    );
 
-                const stages = ["new", "accepted", "preparing", "ready", "completed"];
-                const currentIndex = stages.indexOf(status);
-                stages.forEach((stage, index) => {
-                    const el = document.getElementById("step-" + stage);
-                    if (!el) return;
-                    el.classList.remove("active", "done");
-                    if (index < currentIndex) el.classList.add("done");
-                    if (index === currentIndex) el.classList.add("active");
-                });
-            }, (error) => {
-                console.error("Realtime order listener error:", error);
-            });
-        }
+                try {
+
+                    await updateDoc(
+                        orderRef,
+                        {
+                            waiterCalled:
+                                true,
+                            waiterRequestedAt:
+                                serverTimestamp()
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Waiter request error:",
+                        error
+                    );
+
+                    alert(
+                        "Could not call waiter:\n\n" +
+                        error.message
+                    );
+                }
+            };
+
+
+        /* =====================================
+           PAY BILL VIA UPI
+        ===================================== */
+
+        window.payBillViaUPI =
+            function() {
+
+                const upiId =
+                    String(
+                        restaurantUpiId ||
+                        ""
+                    ).trim();
+
+                if (!upiId) {
+                    alert(
+                        "The restaurant has not configured a UPI ID yet."
+                    );
+                    return;
+                }
+
+                if (
+                    !currentOrderNumber ||
+                    currentPayableAmount <= 0
+                ) {
+                    alert(
+                        "Payment details are not available."
+                    );
+                    return;
+                }
+
+                const params =
+                    new URLSearchParams({
+                        pa: upiId,
+                        pn:
+                            restaurantNameValue ||
+                            "Restaurant",
+                        am:
+                            currentPayableAmount
+                                .toFixed(2),
+                        cu: "INR",
+                        tn:
+                            "Order " +
+                            currentOrderNumber
+                    });
+
+                const upiUrl =
+                    "upi://pay?" +
+                    params.toString();
+
+                window.location.href =
+                    upiUrl;
+            };
+
+
+        /* =====================================
+           REQUEST BILL
+        ===================================== */
+
+        window.requestBill =
+            async function() {
+
+                if (
+                    !currentCustomer ||
+                    !currentOrderId
+                ) {
+                    alert(
+                        "No active order found."
+                    );
+
+                    return;
+                }
+
+                const orderRef =
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantId,
+                        "orders",
+                        currentOrderId
+                    );
+
+                try {
+
+                    await updateDoc(
+                        orderRef,
+                        {
+                            billRequested:
+                                true,
+                            billRequestedAt:
+                                serverTimestamp()
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Bill request error:",
+                        error
+                    );
+
+                    alert(
+                        "Could not request bill:\n\n" +
+                        error.message
+                    );
+                }
+            };
 
 
         /* =====================================
@@ -1822,10 +2462,6 @@
         loadRestaurant();
 
         loadMenu();
-
-        if (currentOrderId) {
-            listenToCurrentOrder();
-        }
 
         updateCartDisplay();
 
