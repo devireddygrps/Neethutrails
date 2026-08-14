@@ -531,113 +531,100 @@
         }
 
 
+
         /* ================================
-           MOBILE
+           CUSTOMER ORDER TRACKING
         ================================= */
-
-        .customer-actions {
-            max-width: 900px;
-            margin: 0 auto 20px;
-            padding: 0 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .action-btn {
-            border: none;
-            border-radius: 10px;
-            padding: 13px;
-            color: white;
-            font-size: 15px;
-            cursor: pointer;
-        }
-
-        .waiter-btn { background: #6a1b9a; }
-        .order-btn { background: #1565c0; }
-        .bill-btn { background: #00897b; }
-        .bill-box {
-            display: none;
-            background: #fff;
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 12px;
-        }
-
-        .bill-box h4 {
-            margin-bottom: 10px;
-        }
-
-        .bill-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-        }
-
-        .bill-total {
-            border-top: 1px solid #ddd;
-            margin-top: 7px;
-            padding-top: 10px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        .action-btn:disabled {
-            background: #bdbdbd;
-            cursor: not-allowed;
-        }
-
         .order-panel {
-            max-width: 900px;
-            margin: 0 auto 20px;
-            padding: 0 20px;
-        }
-
-        .order-card-live {
-            background: white;
-            border-radius: 12px;
-            padding: 18px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
             display: none;
+            background: white;
+            margin: 0 auto 20px;
+            padding: 20px;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
-        .order-card-live h3 { margin-bottom: 8px; }
-
-        .live-status {
-            margin-top: 12px;
-            padding: 12px;
-            border-radius: 10px;
-            background: #f5f5f5;
-            font-weight: bold;
+        .order-panel h3 {
+            margin-bottom: 12px;
         }
 
-        .status-flow {
+        .order-number-display {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 15px;
+        }
+
+        .flow {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 6px;
-            margin-top: 12px;
+            margin: 15px 0;
         }
 
         .flow-step {
             text-align: center;
-            padding: 8px 4px;
+            padding: 10px 4px;
             border-radius: 8px;
-            background: #eeeeee;
+            background: #eee;
+            color: #777;
             font-size: 12px;
         }
 
         .flow-step.active {
+            background: #ff5722;
+            color: white;
+            font-weight: bold;
+        }
+
+        .flow-step.done {
             background: #d4edda;
             color: #155724;
             font-weight: bold;
         }
 
-        .helper-text {
-            color: #666;
-            font-size: 13px;
-            margin-top: 8px;
+        .customer-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
+
+        .customer-actions button {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .waiter-btn {
+            background: #2196f3;
+        }
+
+        .bill-btn {
+            background: #00897b;
+        }
+
+        .bill-btn:disabled,
+        .waiter-btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .live-status {
+            text-align: center;
+            font-size: 17px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* ================================
+           MOBILE
+        ================================= */
 
         @media (max-width: 600px) {
 
@@ -711,76 +698,49 @@
         Loading menu...
     </div>
 
+    <div id="orderPanel" class="order-panel">
 
-    <!-- ================================
-         CUSTOMER ACTIONS
-    ================================= -->
+        <h3>📦 My Order Status</h3>
 
-    <div class="customer-actions">
+        <div id="orderNumberDisplay" class="order-number-display"></div>
 
-        <button
-            id="callWaiterBtn"
-            class="action-btn waiter-btn"
-            onclick="callWaiter()"
-        >
-            🔔 Call Waiter
-        </button>
+        <div id="liveOrderStatus" class="live-status">
+            Waiting for order...
+        </div>
 
-        <button
-            class="action-btn order-btn"
-            onclick="openCart()"
-        >
-            🛒 My Order
-        </button>
+        <div class="flow">
+            <div id="step-new" class="flow-step">🆕<br>New</div>
+            <div id="step-accepted" class="flow-step">🔵<br>Accepted</div>
+            <div id="step-preparing" class="flow-step">👨‍🍳<br>Preparing</div>
+            <div id="step-ready" class="flow-step">🟢<br>Ready</div>
+            <div id="step-completed" class="flow-step">🚚<br>Delivered</div>
+        </div>
 
-    </div>
+        <div class="customer-actions">
 
-
-    <!-- ================================
-         LIVE ORDER STATUS
-    ================================= -->
-
-    <div class="order-panel">
-
-        <div id="liveOrderCard" class="order-card-live">
-
-            <h3>🧾 My Current Order</h3>
-
-            <div id="liveOrderNumber"></div>
-            <div id="liveOrderTotal"></div>
-
-            <div id="liveOrderStatus" class="live-status">
-                Waiting for order...
-            </div>
-
-            <div class="status-flow">
-                <div id="flow-new" class="flow-step">🆕 New</div>
-                <div id="flow-accepted" class="flow-step">🔵 Accepted</div>
-                <div id="flow-preparing" class="flow-step">👨‍🍳 Preparing</div>
-                <div id="flow-ready" class="flow-step">🟢 Ready</div>
-            </div>
-
-            <div id="deliveredStep" class="flow-step" style="margin-top:6px;">🚚 Delivered</div>
+            <button
+                id="callWaiterBtn"
+                class="waiter-btn"
+                onclick="callWaiter()"
+            >
+                🔔 Call Waiter
+            </button>
 
             <button
                 id="requestBillBtn"
-                class="action-btn bill-btn"
-                style="width:100%; margin-top:12px; display:none;"
+                class="bill-btn"
                 onclick="requestBill()"
+                disabled
             >
                 🧾 Request Bill
             </button>
 
-            <div id="billMessage" class="helper-text"></div>
-
-            <div id="generatedBill" class="bill-box">
-                <h4>🧾 Bill Generated</h4>
-                <div id="billSubtotal" class="bill-row"></div>
-                <div id="billDiscount" class="bill-row"></div>
-                <div id="billTotal" class="bill-row bill-total"></div>
-            </div>
-
         </div>
+
+        <div
+            id="billMessage"
+            style="margin-top:12px;text-align:center;color:#666;"
+        ></div>
 
     </div>
 
@@ -907,6 +867,12 @@
 
 
         import {
+            getAuth,
+            onAuthStateChanged
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+        import {
             getFirestore,
             collection,
             getDocs,
@@ -963,6 +929,38 @@
         const db =
             getFirestore(app);
 
+        const auth =
+            getAuth(app);
+
+        let currentCustomer = null;
+        let currentOrderId =
+            sessionStorage.getItem("customerOrderId") || null;
+
+        let unsubscribeOrder = null;
+
+
+        /* =====================================
+           CUSTOMER AUTHENTICATION
+        ===================================== */
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                if (!user) {
+                    document.getElementById("status").textContent =
+                        "Please login to continue.";
+
+                    return;
+                }
+
+                currentCustomer = user;
+
+                if (currentOrderId) {
+                    listenToCurrentOrder();
+                }
+            }
+        );
 
         /* =====================================
            READ QR PARAMETERS
@@ -1022,10 +1020,6 @@
         ===================================== */
 
         let cart = [];
-        let currentOrderId = localStorage.getItem(
-            "customerCurrentOrderId"
-        );
-        let currentOrderUnsubscribe = null;
 
 
         /* =====================================
@@ -1783,32 +1777,16 @@
                         status:
                             "new",
 
-                        paymentStatus:
-                            "pending",
-
-                        billRequested:
-                            false,
-
-                        billGenerated:
-                            false,
-
                         createdAt:
                             serverTimestamp()
 
                     };
 
 
-                    const newOrderRef = await addDoc(
+                    await addDoc(
                         ordersRef,
                         orderData
                     );
-
-                    currentOrderId = newOrderRef.id;
-                    localStorage.setItem(
-                        "customerCurrentOrderId",
-                        currentOrderId
-                    );
-                    watchCurrentOrder(currentOrderId);
 
 
                     document.getElementById(
@@ -1894,249 +1872,22 @@
 
 
         /* =====================================
-           CUSTOMER WAITER CALL
+           LIVE CUSTOMER ORDER TRACKING
         ===================================== */
 
-        window.callWaiter = async function() {
+        function listenToCurrentOrder() {
 
-            if (!restaurantId) {
-                alert("Restaurant information is missing.");
+            if (!currentCustomer || !currentOrderId) {
                 return;
             }
 
-            const button = document.getElementById("callWaiterBtn");
-            const originalText = button.textContent;
-
-            button.disabled = true;
-            button.textContent = "🔔 Calling...";
-
-            try {
-
-                const waiterRef = collection(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "waiterCalls"
-                );
-
-                await addDoc(waiterRef, {
-                    tableNumber: tableNumber || "N/A",
-                    status: "requested",
-                    createdAt: serverTimestamp()
-                });
-
-                button.textContent = "✅ Waiter Called";
-
-                setTimeout(() => {
-                    button.disabled = false;
-                    button.textContent = originalText;
-                }, 5000);
-
-            } catch (error) {
-
-                console.error("Waiter call error:", error);
-
-                button.disabled = false;
-                button.textContent = originalText;
-
-                alert(
-                    "Could not call the waiter:\n\n" +
-                    error.message
-                );
-            }
-        };
-
-
-        /* =====================================
-           LIVE ORDER STATUS
-        ===================================== */
-
-        function watchCurrentOrder(orderId) {
-
-            if (currentOrderUnsubscribe) {
-                currentOrderUnsubscribe();
-                currentOrderUnsubscribe = null;
+            if (unsubscribeOrder) {
+                unsubscribeOrder();
+                unsubscribeOrder = null;
             }
 
-            if (!orderId) {
-                document.getElementById("liveOrderCard").style.display = "none";
-                return;
-            }
-
-            const orderRef = doc(
-                db,
-                "restaurants",
-                restaurantId,
-                "orders",
-                orderId
-            );
-
-            currentOrderUnsubscribe = onSnapshot(
-                orderRef,
-                (snap) => {
-
-                    if (!snap.exists()) {
-                        document.getElementById("liveOrderCard").style.display = "none";
-                        return;
-                    }
-
-                    const order = snap.data();
-                    renderLiveOrder(order, orderId);
-                },
-                (error) => {
-                    console.error("Live order error:", error);
-                }
-            );
-        }
-
-
-        function renderLiveOrder(order, orderId) {
-
-            const card = document.getElementById("liveOrderCard");
-            card.style.display = "block";
-
-            const status = order.status || "new";
-
-            document.getElementById("liveOrderNumber").textContent =
-                "Order: " + (order.orderNumber || orderId.substring(0, 6));
-
-            const total = Number(
-                order.finalTotal ??
-                order.total ??
-                0
-            );
-
-            document.getElementById("liveOrderTotal").textContent =
-                "Total: ₹" + total.toFixed(2);
-
-            const statusText = {
-                new: "🆕 Order received",
-                accepted: "🔵 Order accepted",
-                preparing: "👨‍🍳 Your food is being prepared",
-                ready: "🟢 Your order is ready",
-                completed: "🚚 Order delivered",
-                cancelled: "❌ Order cancelled"
-            }[status] || "🆕 Order received";
-
-            document.getElementById("liveOrderStatus").textContent = statusText;
-
-            const flowOrder = [
-                "new",
-                "accepted",
-                "preparing",
-                "ready",
-                "completed"
-            ];
-
-            const currentIndex = flowOrder.indexOf(status);
-
-            document.querySelectorAll(".flow-step").forEach((el) => {
-                el.classList.remove("active");
-            });
-
-            const stepIds = [
-                "flow-new",
-                "flow-accepted",
-                "flow-preparing",
-                "flow-ready",
-                "deliveredStep"
-            ];
-
-            if (currentIndex >= 0) {
-                stepIds.forEach((id, index) => {
-                    if (index <= currentIndex) {
-                        document.getElementById(id).classList.add("active");
-                    }
-                });
-            }
-
-            const requestBillBtn = document.getElementById("requestBillBtn");
-            const billMessage = document.getElementById("billMessage");
-
-            if (status === "completed") {
-                requestBillBtn.style.display = "block";
-
-                if (order.billRequested) {
-                    requestBillBtn.disabled = true;
-                    requestBillBtn.textContent = "✅ Bill Requested";
-
-                    if (order.billGenerated) {
-                        billMessage.textContent = "Your bill has been generated.";
-
-                        const generatedBill =
-                            document.getElementById("generatedBill");
-
-                        generatedBill.style.display = "block";
-
-                        const subtotal = Number(
-                            order.billSubtotal ??
-                            order.subtotal ??
-                            order.total ??
-                            0
-                        );
-
-                        const discount = Number(
-                            order.billDiscountAmount ??
-                            order.discountAmount ??
-                            0
-                        );
-
-                        const total = Number(
-                            order.billTotal ??
-                            order.finalTotal ??
-                            order.total ??
-                            Math.max(0, subtotal - discount)
-                        );
-
-                        document.getElementById("billSubtotal").textContent =
-                            "Subtotal: ₹" + subtotal.toFixed(2);
-
-                        document.getElementById("billDiscount").textContent =
-                            discount > 0
-                                ? "Discount: -₹" + discount.toFixed(2)
-                                : "Discount: ₹0.00";
-
-                        document.getElementById("billTotal").textContent =
-                            "Total: ₹" + total.toFixed(2);
-                    } else {
-                        billMessage.textContent =
-                            "Bill requested. Please wait for the restaurant.";
-                        document.getElementById("generatedBill").style.display =
-                            "none";
-                    }
-                } else {
-                    requestBillBtn.disabled = false;
-                    requestBillBtn.textContent = "🧾 Request Bill";
-                    billMessage.textContent =
-                        "Order delivered. Request your bill when ready.";
-                    document.getElementById("generatedBill").style.display =
-                        "none";
-                }
-            } else {
-                requestBillBtn.style.display = "none";
-                billMessage.textContent = "";
-            }
-        }
-
-
-        /* =====================================
-           REQUEST BILL
-        ===================================== */
-
-        window.requestBill = async function() {
-
-            if (!currentOrderId) {
-                alert("No current order found.");
-                return;
-            }
-
-            const button = document.getElementById("requestBillBtn");
-            button.disabled = true;
-            button.textContent = "🧾 Requesting...";
-
-            try {
-
-                const orderRef = doc(
+            const orderRef =
+                doc(
                     db,
                     "restaurants",
                     restaurantId,
@@ -2144,26 +1895,355 @@
                     currentOrderId
                 );
 
-                await updateDoc(orderRef, {
-                    billRequested: true,
-                    billRequestedAt: serverTimestamp()
-                });
+            unsubscribeOrder =
+                onSnapshot(
+                    orderRef,
+                    (snapshot) => {
 
-                button.textContent = "✅ Bill Requested";
+                        if (!snapshot.exists()) {
+                            document.getElementById(
+                                "orderPanel"
+                            ).style.display = "none";
 
-            } catch (error) {
+                            return;
+                        }
 
-                console.error("Bill request error:", error);
+                        const order =
+                            snapshot.data();
 
-                button.disabled = false;
-                button.textContent = "🧾 Request Bill";
+                        // Extra client-side safety check.
+                        if (
+                            order.customerUid &&
+                            order.customerUid !== currentCustomer.uid
+                        ) {
+                            document.getElementById(
+                                "status"
+                            ).textContent =
+                                "This order does not belong to this customer.";
 
-                alert(
-                    "Could not request bill:\n\n" +
-                    error.message
+                            return;
+                        }
+
+                        renderCustomerOrderStatus(
+                            order
+                        );
+                    },
+                    (error) => {
+
+                        console.error(
+                            "Order status listener error:",
+                            error
+                        );
+
+                        document.getElementById(
+                            "liveOrderStatus"
+                        ).textContent =
+                            "Unable to track order status.";
+
+                        document.getElementById(
+                            "billMessage"
+                        ).textContent =
+                            error.message;
+                    }
                 );
+        }
+
+
+        function renderCustomerOrderStatus(order) {
+
+            const panel =
+                document.getElementById(
+                    "orderPanel"
+                );
+
+            panel.style.display = "block";
+
+            document.getElementById(
+                "orderNumberDisplay"
+            ).textContent =
+                "Order #" +
+                (
+                    order.orderNumber ||
+                    currentOrderId.substring(0, 6)
+                );
+
+            const status =
+                order.status || "new";
+
+            const statusText = {
+                new: "🆕 Order Received",
+                accepted: "🔵 Order Accepted",
+                preparing: "👨‍🍳 Preparing Your Order",
+                ready: "🟢 Order Ready",
+                completed: "🚚 Order Delivered",
+                cancelled: "❌ Order Cancelled"
+            };
+
+            document.getElementById(
+                "liveOrderStatus"
+            ).textContent =
+                statusText[status] ||
+                "Order Status: " + status;
+
+            const stages = [
+                "new",
+                "accepted",
+                "preparing",
+                "ready",
+                "completed"
+            ];
+
+            const currentIndex =
+                stages.indexOf(status);
+
+            stages.forEach(
+                (stage, index) => {
+
+                    const element =
+                        document.getElementById(
+                            "step-" + stage
+                        );
+
+                    if (!element) {
+                        return;
+                    }
+
+                    element.classList.remove(
+                        "active",
+                        "done"
+                    );
+
+                    if (
+                        status === "cancelled"
+                    ) {
+                        return;
+                    }
+
+                    if (
+                        index < currentIndex
+                    ) {
+                        element.classList.add(
+                            "done"
+                        );
+                    }
+
+                    if (
+                        index === currentIndex
+                    ) {
+                        element.classList.add(
+                            "active"
+                        );
+                    }
+                }
+            );
+
+            const callWaiterBtn =
+                document.getElementById(
+                    "callWaiterBtn"
+                );
+
+            if (
+                order.waiterCalled === true
+            ) {
+                callWaiterBtn.disabled = true;
+                callWaiterBtn.textContent =
+                    "✅ Waiter Called";
+            } else {
+                callWaiterBtn.disabled = false;
+                callWaiterBtn.textContent =
+                    "🔔 Call Waiter";
             }
-        };
+
+            const billBtn =
+                document.getElementById(
+                    "requestBillBtn"
+                );
+
+            if (
+                status === "completed" &&
+                order.billRequested !== true
+            ) {
+                billBtn.disabled = false;
+                billBtn.textContent =
+                    "🧾 Request Bill";
+            } else if (
+                order.billRequested === true
+            ) {
+                billBtn.disabled = true;
+                billBtn.textContent =
+                    "✅ Bill Requested";
+            } else {
+                billBtn.disabled = true;
+                billBtn.textContent =
+                    "🧾 Request Bill";
+            }
+
+            const billMessage =
+                document.getElementById(
+                    "billMessage"
+                );
+
+            if (order.billGenerated) {
+
+                const subtotal =
+                    Number(
+                        order.billSubtotal ??
+                        order.subtotal ??
+                        order.total ??
+                        0
+                    );
+
+                const discount =
+                    Number(
+                        order.billDiscountAmount ??
+                        order.discountAmount ??
+                        0
+                    );
+
+                const total =
+                    Number(
+                        order.billTotal ??
+                        order.finalTotal ??
+                        order.total ??
+                        0
+                    );
+
+                billMessage.innerHTML =
+                    `
+                    <div style="
+                        background:#e8f5e9;
+                        padding:12px;
+                        border-radius:8px;
+                        color:#155724;
+                    ">
+                        <strong>🧾 Bill Generated</strong><br>
+                        Subtotal: ₹${subtotal.toFixed(2)}<br>
+                        Discount: -₹${discount.toFixed(2)}<br>
+                        <strong>Total: ₹${total.toFixed(2)}</strong>
+                    </div>
+                    `;
+            } else if (
+                order.billRequested
+            ) {
+                billMessage.textContent =
+                    "Bill requested. Please wait for the restaurant.";
+            } else if (
+                status === "completed"
+            ) {
+                billMessage.textContent =
+                    "Your order is delivered. You can request your bill.";
+            } else {
+                billMessage.textContent = "";
+            }
+        }
+
+
+        /* =====================================
+           CALL WAITER
+        ===================================== */
+
+        window.callWaiter =
+            async function() {
+
+                if (
+                    !currentCustomer ||
+                    !currentOrderId
+                ) {
+                    alert(
+                        "Please place an order first."
+                    );
+
+                    return;
+                }
+
+                const orderRef =
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantId,
+                        "orders",
+                        currentOrderId
+                    );
+
+                try {
+
+                    await updateDoc(
+                        orderRef,
+                        {
+                            waiterCalled:
+                                true,
+                            waiterRequestedAt:
+                                serverTimestamp()
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Waiter request error:",
+                        error
+                    );
+
+                    alert(
+                        "Could not call waiter:\n\n" +
+                        error.message
+                    );
+                }
+            };
+
+
+        /* =====================================
+           REQUEST BILL
+        ===================================== */
+
+        window.requestBill =
+            async function() {
+
+                if (
+                    !currentCustomer ||
+                    !currentOrderId
+                ) {
+                    alert(
+                        "No active order found."
+                    );
+
+                    return;
+                }
+
+                const orderRef =
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantId,
+                        "orders",
+                        currentOrderId
+                    );
+
+                try {
+
+                    await updateDoc(
+                        orderRef,
+                        {
+                            billRequested:
+                                true,
+                            billRequestedAt:
+                                serverTimestamp()
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.error(
+                        "Bill request error:",
+                        error
+                    );
+
+                    alert(
+                        "Could not request bill:\n\n" +
+                        error.message
+                    );
+                }
+            };
 
 
         /* =====================================
@@ -2213,10 +2293,6 @@
         loadMenu();
 
         updateCartDisplay();
-
-        if (currentOrderId) {
-            watchCurrentOrder(currentOrderId);
-        }
 
 
     </script>
