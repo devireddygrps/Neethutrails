@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Restaurant</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: #ff5722;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .header h2 {
+            margin-bottom: 6px;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 28px;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.12);
+        }
+
+        .card h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .info {
+            background: #fff3e0;
+            color: #7a3b00;
+            padding: 13px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #444;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #ff5722;
+        }
+
+        .save-btn,
+        .back-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .save-btn {
+            background: #ff5722;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #e64a19;
+        }
+
+        .save-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            margin-top: 12px;
+            background: #333;
+            color: white;
+        }
+
+        .status {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #666;
+            min-height: 20px;
+        }
+
+        .success {
+            display: none;
+            margin-top: 20px;
+            padding: 16px;
+            background: #e8f5e9;
+            color: #155724;
+            border-radius: 9px;
+            line-height: 1.6;
+            word-break: break-word;
+        }
+
+        .warning {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #856404;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 15px auto;
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🏪 Add New Restaurant</h2>
+    <p>Restaurant Management</p>
+</div>
+
+<div class="container">
+    <div class="card">
+
+        <h3>Create Restaurant Account</h3>
+
+        <div class="info">
+            Enter the restaurant details below. A Firebase login account will
+            be created for the restaurant, and its profile will be stored under
+            <strong>restaurants/{restaurant UID}</strong>.
+        </div>
+
+        <div id="status" class="status">
+            Checking administrator access...
+        </div>
+
+        <div class="form-group">
+            <label for="restaurantName">Restaurant Name</label>
+            <input
+                id="restaurantName"
+                type="text"
+                placeholder="Example: Spice Garden"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="email">Restaurant Login Email</label>
+            <input
+                id="email"
+                type="email"
+                placeholder="restaurant@example.com"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="password">Restaurant Login Password</label>
+            <input
+                id="password"
+                type="password"
+                placeholder="Minimum 6 characters"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="upiId">Restaurant UPI ID</label>
+            <input
+                id="upiId"
+                type="text"
+                placeholder="restaurant@upi"
+            >
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Restaurant Phone (Optional)</label>
+            <input
+                id="phone"
+                type="tel"
+                placeholder="9876543210"
+            >
+        </div>
+
+        <button
+            id="createBtn"
+            class="save-btn"
+            onclick="createRestaurant()"
+            disabled
+        >
+            🏪 Create Restaurant
+        </button>
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+        >
+            ← Back to Dashboard
+        </button>
+
+        <div id="successBox" class="success"></div>
+
+    </div>
+</div>
+
+<script type="module">
+
+    import {
+        initializeApp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+    import {
+        getAuth,
+        onAuthStateChanged,
+        signOut,
+        createUserWithEmailAndPassword
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    import {
+        getFirestore,
+        doc,
+        setDoc,
+        serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+    /* =====================================
+       FIREBASE CONFIGURATION
+    ===================================== */
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+        authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+        projectId: "restaurant-qr-ordering-fdf9b",
+        storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+        messagingSenderId: "907571024375",
+        appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
+        measurementId: "G-G3Q89BDFF9"
+    };
+
+
+    /* =====================================
+       IMPORTANT
+       The main app is used only to verify
+       that an administrator is logged in.
+
+       A SECOND Firebase app is used for
+       creating the restaurant account so
+       the current administrator session is
+       not replaced.
+    ===================================== */
+
+    const adminApp =
+        initializeApp(
+            firebaseConfig,
+            "adminApp"
+        );
+
+    const restaurantApp =
+        initializeApp(
+            firebaseConfig,
+            "restaurantCreationApp"
+        );
+
+    const adminAuth =
+        getAuth(adminApp);
+
+    const restaurantAuth =
+        getAuth(restaurantApp);
+
+    const db =
+        getFirestore(restaurantApp);
+
+
+    let adminUser = null;
+
+
+    /* =====================================
+       ADMIN LOGIN CHECK
+    ===================================== */
+
+    onAuthStateChanged(
+        adminAuth,
+        (user) => {
+
+            const status =
+                document.getElementById("status");
+
+            const createBtn =
+                document.getElementById("createBtn");
+
+            if (!user) {
+
+                adminUser = null;
+
+                status.textContent =
+                    "❌ Please login as administrator first.";
+
+                createBtn.disabled = true;
+
+                return;
+            }
+
+            adminUser = user;
+
+            status.textContent =
+                "✅ Administrator logged in.";
+
+            createBtn.disabled = false;
+
+        }
+    );
+
+
+    /* =====================================
+       CREATE RESTAURANT
+    ===================================== */
+
+    window.createRestaurant =
+        async function () {
+
+            if (!adminUser) {
+
+                alert(
+                    "Please login as administrator first."
+                );
+
+                return;
+            }
+
+
+            const restaurantName =
+                document
+                .getElementById("restaurantName")
+                .value
+                .trim();
+
+
+            const email =
+                document
+                .getElementById("email")
+                .value
+                .trim();
+
+
+            const password =
+                document
+                .getElementById("password")
+                .value;
+
+
+            const upiId =
+                document
+                .getElementById("upiId")
+                .value
+                .trim();
+
+
+            const phone =
+                document
+                .getElementById("phone")
+                .value
+                .trim();
+
+
+            /* Validation */
+
+            if (!restaurantName) {
+
+                alert(
+                    "Please enter the restaurant name."
+                );
+
+                return;
+            }
+
+
+            if (!email) {
+
+                alert(
+                    "Please enter the restaurant login email."
+                );
+
+                return;
+            }
+
+
+            if (password.length < 6) {
+
+                alert(
+                    "Password must contain at least 6 characters."
+                );
+
+                return;
+            }
+
+
+            if (!upiId) {
+
+                alert(
+                    "Please enter the restaurant UPI ID."
+                );
+
+                return;
+            }
+
+
+            const createBtn =
+                document.getElementById("createBtn");
+
+            createBtn.disabled = true;
+
+            createBtn.textContent =
+                "Creating Restaurant...";
+
+
+            try {
+
+                /*
+                 * Create Firebase Authentication
+                 * account for the new restaurant.
+                 */
+
+                const credential =
+                    await createUserWithEmailAndPassword(
+                        restaurantAuth,
+                        email,
+                        password
+                    );
+
+
+                const restaurantUid =
+                    credential.user.uid;
+
+
+                /*
+                 * Create restaurant profile.
+                 *
+                 * This document ID is exactly the
+                 * Firebase Authentication UID.
+                 */
+
+                await setDoc(
+                    doc(
+                        db,
+                        "restaurants",
+                        restaurantUid
+                    ),
+                    {
+                        restaurantName:
+                            restaurantName,
+
+                        email:
+                            email,
+
+                        upiId:
+                            upiId,
+
+                        phone:
+                            phone,
+
+                        role:
+                            "restaurant",
+
+                        createdAt:
+                            serverTimestamp()
+                    }
+                );
+
+
+                /*
+                 * Sign the temporary restaurant
+                 * authentication session out.
+                 *
+                 * The administrator's main session
+                 * remains untouched because this is
+                 * a separate Firebase app instance.
+                 */
+
+                await signOut(
+                    restaurantAuth
+                );
+
+
+                const successBox =
+                    document.getElementById(
+                        "successBox"
+                    );
+
+
+                successBox.style.display =
+                    "block";
+
+
+                successBox.innerHTML = `
+                    <strong>✅ Restaurant created successfully!</strong>
+
+                    <div style="margin-top:10px;">
+                        <strong>Restaurant:</strong>
+                        ${escapeHTML(restaurantName)}
+                    </div>
+
+                    <div>
+                        <strong>Login Email:</strong>
+                        ${escapeHTML(email)}
+                    </div>
+
+                    <div>
+                        <strong>Restaurant UID:</strong>
+                        ${escapeHTML(restaurantUid)}
+                    </div>
+
+                    <div>
+                        <strong>UPI ID:</strong>
+                        ${escapeHTML(upiId)}
+                    </div>
+
+                    <div class="warning">
+                        Save the restaurant login email and password securely.
+                        The password is not stored in Firestore.
+                    </div>
+                `;
+
+
+                alert(
+                    "✅ Restaurant created successfully!"
+                );
+
+
+                /*
+                 * Clear only the sensitive password.
+                 */
+
+                document.getElementById(
+                    "password"
+                ).value = "";
+
+
+            }
+
+            catch (error) {
+
+                console.error(
+                    "Create restaurant error:",
+                    error
+                );
+
+
+                let message =
+                    error.message;
+
+
+                if (
+                    error.code ===
+                    "auth/email-already-in-use"
+                ) {
+
+                    message =
+                        "This email is already registered in Firebase Authentication.";
+
+                }
+
+                else if (
+                    error.code ===
+                    "auth/invalid-email"
+                ) {
+
+                    message =
+                        "Please enter a valid email address.";
+
+                }
+
+                else if (
+                    error.code ===
+                    "auth/weak-password"
+                ) {
+
+                    message =
+                        "The password is too weak. Use at least 6 characters.";
+
+                }
+
+                else if (
+                    error.code ===
+                    "permission-denied"
+                ) {
+
+                    message =
+                        "Firestore permission denied. Check your Firestore security rules.";
+
+                }
+
+
+                alert(
+                    "❌ Could not create restaurant:\n\n" +
+                    message
+                );
+
+            }
+
+            finally {
+
+                createBtn.disabled =
+                    !adminUser;
+
+                createBtn.textContent =
+                    "🏪 Create Restaurant";
+
+            }
+
+        };
+
+
+    /* =====================================
+       ESCAPE HTML
+    ===================================== */
+
+    function escapeHTML(value) {
+
+        return String(value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    /* =====================================
+       BACK TO DASHBOARD
+    ===================================== */
+
+    window.goBack =
+        function () {
+
+            window.location.href =
+                "dashboard.html";
+
+        };
+
+</script>
+
+</body>
+</html>
