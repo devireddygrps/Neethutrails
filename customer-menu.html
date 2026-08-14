@@ -1832,6 +1832,11 @@
                         currentOrderId
                     );
 
+                    // Start the realtime listener immediately after the order is created.
+                    // This is what makes Accept / Preparing / Ready / Delivered / Bill
+                    // changes appear without the customer refreshing the page.
+                    listenToCurrentOrder();
+
                     document.getElementById(
                         "cartModal"
                     ).style.display =
