@@ -2,12 +2,19 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>Restaurant Menu</title>
 
+
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -15,506 +22,759 @@
             font-family: Arial, sans-serif;
         }
 
+
         body {
             background: #f5f5f5;
             padding-bottom: 90px;
         }
 
+
+        /* ================================
+           HEADER
+        ================================= */
+
         .header {
+
             background: #ff5722;
+
             color: white;
+
             padding: 20px;
+
             text-align: center;
+
         }
+
 
         .header h2 {
+
             margin-bottom: 5px;
+
         }
+
 
         .table-info {
+
             margin-top: 8px;
+
             font-size: 15px;
+
         }
+
+
+        /* ================================
+           STATUS
+        ================================= */
 
         .status {
+
             text-align: center;
+
             padding: 15px;
+
             color: #666;
+
         }
+
+
+        /* ================================
+           MENU CONTAINER
+        ================================= */
 
         .container {
+
             max-width: 900px;
+
             margin: auto;
+
             padding: 20px;
+
         }
+
 
         .menu-list {
+
             display: grid;
+
             gap: 18px;
+
         }
 
-        .menu-card,
-        .success,
-        .order-panel,
-        .bill-panel {
+
+        /* ================================
+           MENU CARD
+        ================================= */
+
+        .menu-card {
+
             background: white;
+
             padding: 18px;
+
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+
+            box-shadow:
+                0 3px 10px rgba(0,0,0,0.1);
+
         }
+
 
         .menu-card h3 {
+
             margin-bottom: 8px;
+
             color: #333;
+
         }
+
 
         .category {
+
             display: inline-block;
+
             background: #fff3e0;
+
             color: #e65100;
+
             padding: 5px 9px;
+
             border-radius: 12px;
+
             font-size: 12px;
+
             margin-bottom: 8px;
+
         }
+
 
         .description {
+
             color: #666;
+
             font-size: 14px;
+
             margin-bottom: 12px;
+
             line-height: 1.4;
+
         }
+
 
         .price {
+
             font-size: 19px;
+
             font-weight: bold;
+
             color: #ff5722;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        /* ================================
+           QUANTITY
+        ================================= */
+
+        .quantity-row {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+        }
+
+
+        .quantity-row button {
+
+            width: 38px;
+
+            height: 38px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #ff5722;
+
+            color: white;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+        }
+
+
+        .quantity {
+
+            min-width: 30px;
+
+            text-align: center;
+
+            font-size: 17px;
+
+            font-weight: bold;
+
+        }
+
+
+        /* ================================
+           CART BAR
+        ================================= */
+
+        .cart-bar {
+
+            position: fixed;
+
+            left: 0;
+
+            right: 0;
+
+            bottom: 0;
+
+            background: white;
+
+            padding: 15px;
+
+            box-shadow:
+                0 -3px 12px rgba(0,0,0,0.15);
+
+            z-index: 1000;
+
+        }
+
+
+        .cart-inner {
+
+            max-width: 900px;
+
+            margin: auto;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 15px;
+
+        }
+
+
+        .cart-total {
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+        }
+
+
+        .view-cart-btn {
+
+            background: #ff5722;
+
+            color: white;
+
+            border: none;
+
+            padding: 12px 20px;
+
+            border-radius: 8px;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+
+        /* ================================
+           CART MODAL
+        ================================= */
+
+        .modal {
+
+            display: none;
+
+            position: fixed;
+
+            inset: 0;
+
+            background: rgba(0,0,0,0.55);
+
+            z-index: 2000;
+
+            padding: 20px;
+
+            overflow-y: auto;
+
+        }
+
+
+        .modal-content {
+
+            background: white;
+
+            max-width: 600px;
+
+            margin: 40px auto;
+
+            padding: 22px;
+
+            border-radius: 14px;
+
+        }
+
+
+        .modal-content h2 {
+
+            margin-bottom: 15px;
+
+        }
+
+
+        .cart-item {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 12px 0;
+
+            border-bottom: 1px solid #eee;
+
+        }
+
+
+        .cart-item-name {
+
+            font-weight: bold;
+
+        }
+
+
+        .cart-item-price {
+
+            color: #555;
+
+        }
+
+
+        .cart-quantity {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+        }
+
+
+        .cart-quantity button {
+
+            width: 30px;
+
+            height: 30px;
+
+            border: none;
+
+            background: #ff5722;
+
+            color: white;
+
+            border-radius: 5px;
+
+            cursor: pointer;
+
+        }
+
+
+        .instructions {
+
+            width: 100%;
+
+            min-height: 90px;
+
+            margin-top: 15px;
+
+            padding: 12px;
+
+            border: 1px solid #ccc;
+
+            border-radius: 8px;
+
+            resize: vertical;
+
+        }
+
+
+        .modal-total {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            margin-top: 15px;
+
+        }
+
+
+        .modal-buttons {
+
+            display: flex;
+
+            gap: 10px;
+
+            margin-top: 18px;
+
+        }
+
+
+        .modal-buttons button {
+
+            flex: 1;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            color: white;
+
+            cursor: pointer;
+
+            font-size: 15px;
+
+        }
+
+
+        .place-order-btn {
+
+            background: #4caf50;
+
+        }
+
+
+        .close-btn {
+
+            background: #333;
+
+        }
+
+
+        /* ================================
+           EMPTY
+        ================================= */
+
+        .empty {
+
+            background: white;
+
+            padding: 35px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            color: #666;
+
+        }
+
+
+        /* ================================
+           ORDER SUCCESS
+        ================================= */
+
+        .success {
+
+            background: white;
+
+            padding: 30px;
+
+            text-align: center;
+
+            border-radius: 12px;
+
+            margin-top: 20px;
+
+        }
+
+
+        .success h2 {
+
+            color: #4caf50;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        .success .order-number {
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+            margin: 15px 0;
+
+        }
+
+
+
+        /* ================================
+           CUSTOMER ORDER TRACKING
+        ================================= */
+        .order-panel {
+            display: none;
+            background: white;
+            margin: 0 auto 20px;
+            padding: 20px;
+            max-width: 900px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .order-panel h3 {
             margin-bottom: 12px;
         }
 
-        .quantity-row,
-        .action-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .quantity-row button,
-        .cart-quantity button {
-            width: 38px;
-            height: 38px;
-            border: none;
-            border-radius: 7px;
-            background: #ff5722;
-            color: white;
-            font-size: 20px;
-            cursor: pointer;
-        }
-
-        .quantity {
-            min-width: 30px;
-            text-align: center;
-            font-size: 17px;
-            font-weight: bold;
-        }
-
-        .cart-bar {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: white;
-            padding: 15px;
-            box-shadow: 0 -3px 12px rgba(0,0,0,0.15);
-            z-index: 1000;
-        }
-
-        .cart-inner {
-            max-width: 900px;
-            margin: auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .cart-total {
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        button {
-            cursor: pointer;
-        }
-
-        .view-cart-btn,
-        .primary-btn {
-            background: #ff5722;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.55);
-            z-index: 2000;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .modal-content {
-            background: white;
-            max-width: 600px;
-            margin: 40px auto;
-            padding: 22px;
-            border-radius: 14px;
-        }
-
-        .modal-content h2 {
+        .order-number-display {
+            color: #666;
+            font-size: 13px;
             margin-bottom: 15px;
         }
 
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-        .cart-item-name {
-            font-weight: bold;
-        }
-
-        .cart-item-price {
-            color: #555;
-        }
-
-        .cart-quantity {
-            display: flex;
-            align-items: center;
-            gap: 7px;
-        }
-
-        .cart-quantity button {
-            width: 30px;
-            height: 30px;
-            border: none;
-            background: #ff5722;
-            color: white;
-            border-radius: 5px;
-        }
-
-        .instructions {
-            width: 100%;
-            min-height: 90px;
-            margin-top: 15px;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            resize: vertical;
-        }
-
-        .modal-total {
-            font-size: 20px;
-            font-weight: bold;
-            margin-top: 15px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 18px;
-        }
-
-        .modal-buttons button {
-            flex: 1;
-            padding: 12px;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 15px;
-        }
-
-        .place-order-btn {
-            background: #4caf50;
-        }
-
-        .close-btn {
-            background: #333;
-        }
-
-        .empty {
-            background: white;
-            padding: 35px;
-            text-align: center;
-            border-radius: 12px;
-            color: #666;
-        }
-
-        .success {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .success h2 {
-            color: #4caf50;
-            margin-bottom: 10px;
-        }
-
-        .order-number {
-            font-size: 21px;
-            font-weight: bold;
-            margin: 15px 0;
-        }
-
-        .section-title {
-            margin: 24px 0 10px;
-        }
-
-        .order-panel {
-            display: none;
-            margin-bottom: 18px;
-        }
-
-        .status-flow {
+        .flow {
             display: grid;
-            gap: 8px;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
             margin: 15px 0;
         }
 
         .flow-step {
-            padding: 10px 12px;
+            text-align: center;
+            padding: 10px 4px;
             border-radius: 8px;
             background: #eee;
             color: #777;
+            font-size: 12px;
         }
 
         .flow-step.active {
+            background: #ff5722;
+            color: white;
+            font-weight: bold;
+        }
+
+        .flow-step.done {
             background: #d4edda;
             color: #155724;
             font-weight: bold;
         }
 
-        .flow-step.current {
-            outline: 2px solid #ff5722;
+        .customer-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
         }
 
-        .current-status {
-            font-size: 18px;
-            font-weight: bold;
-            margin: 10px 0;
-        }
-
-        .action-btn {
+        .customer-actions button {
             flex: 1;
-            min-width: 140px;
+            min-width: 150px;
+            padding: 12px;
             border: none;
             border-radius: 8px;
-            padding: 12px;
             color: white;
-            font-size: 15px;
+            cursor: pointer;
+            font-size: 14px;
         }
 
         .waiter-btn {
-            background: #ff9800;
+            background: #2196f3;
         }
 
         .bill-btn {
             background: #00897b;
         }
 
-        .action-btn:disabled {
-            opacity: 0.6;
+        .bill-btn:disabled,
+        .waiter-btn:disabled {
+            opacity: 0.65;
             cursor: not-allowed;
         }
 
-        .bill-panel {
-            display: none;
-            margin-bottom: 18px;
-        }
-
-        .bill-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 7px 0;
-        }
-
-        .bill-total {
-            border-top: 1px solid #ddd;
-            margin-top: 8px;
-            padding-top: 10px;
-            font-size: 19px;
+        .live-status {
+            text-align: center;
+            font-size: 17px;
             font-weight: bold;
+            margin-top: 10px;
         }
 
-        .payment-btn {
-            width: 100%;
-            margin-top: 14px;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #1565c0;
-            color: white;
-            font-size: 16px;
-        }
+        /* ================================
+           MOBILE
+        ================================= */
 
         @media (max-width: 600px) {
+
             .container {
+
                 padding: 15px;
+
             }
+
 
             .cart-inner {
+
                 flex-direction: row;
+
             }
+
 
             .modal-content {
+
                 margin: 15px auto;
+
             }
+
 
             .cart-item {
+
                 flex-direction: column;
+
                 align-items: flex-start;
+
             }
 
-            .action-row,
-            .modal-buttons {
-                flex-direction: column;
-            }
-
-            .action-btn,
-            .modal-buttons button {
-                width: 100%;
-            }
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
+    <!-- ================================
+         HEADER
+    ================================= -->
+
     <div class="header">
-        <h2 id="restaurantName">🍽️ Restaurant Menu</h2>
-        <div id="tableInfo" class="table-info">🪑 Loading table...</div>
-    </div>
 
-    <div id="status" class="status">Checking customer login...</div>
+        <h2 id="restaurantName">
+            🍽️ Restaurant Menu
+        </h2>
 
-    <div class="container">
-
-        <div id="currentOrderPanel" class="order-panel">
-
-            <h2>📦 My Current Order</h2>
-
-            <div id="customerOrderNumber" class="order-number"></div>
-
-            <div id="customerCurrentStatus" class="current-status">
-                Loading order status...
-            </div>
-
-            <div class="status-flow">
-
-                <div id="step-new" class="flow-step">
-                    🆕 Order Received
-                </div>
-
-                <div id="step-accepted" class="flow-step">
-                    🔵 Accepted
-                </div>
-
-                <div id="step-preparing" class="flow-step">
-                    👨‍🍳 Preparing
-                </div>
-
-                <div id="step-ready" class="flow-step">
-                    🟢 Ready
-                </div>
-
-                <div id="step-completed" class="flow-step">
-                    🚚 Delivered
-                </div>
-
-            </div>
-
-            <div class="action-row">
-
-                <button
-                    id="callWaiterBtn"
-                    class="action-btn waiter-btn"
-                    onclick="callWaiter()"
-                >
-                    🔔 Call Waiter
-                </button>
-
-                <button
-                    id="requestBillBtn"
-                    class="action-btn bill-btn"
-                    onclick="requestBill()"
-                    disabled
-                >
-                    🧾 Request Bill
-                </button>
-
-            </div>
-
-            <div
-                id="orderMessage"
-                style="margin-top:12px;color:#666;"
-            ></div>
-
+        <div
+            id="tableInfo"
+            class="table-info"
+        >
+            🪑 Loading table...
         </div>
 
+    </div>
 
-        <div id="generatedBill" class="bill-panel">
 
-            <h2>🧾 Your Bill</h2>
+    <!-- ================================
+         STATUS
+    ================================= -->
 
-            <div class="bill-row">
-                <span>Subtotal</span>
-                <strong id="billSubtotal">₹0.00</strong>
-            </div>
+    <div
+        id="status"
+        class="status"
+    >
+        Loading menu...
+    </div>
 
-            <div class="bill-row">
-                <span>Discount</span>
-                <strong id="billDiscount">₹0.00</strong>
-            </div>
+    <div id="orderPanel" class="order-panel">
 
-            <div class="bill-row bill-total">
-                <span>Total</span>
-                <strong id="billTotal">₹0.00</strong>
-            </div>
+        <h3>📦 My Order Status</h3>
+
+        <div id="orderNumberDisplay" class="order-number-display"></div>
+
+        <div id="liveOrderStatus" class="live-status">
+            Waiting for order...
+        </div>
+
+        <div class="flow">
+            <div id="step-new" class="flow-step">🆕<br>New</div>
+            <div id="step-accepted" class="flow-step">🔵<br>Accepted</div>
+            <div id="step-preparing" class="flow-step">👨‍🍳<br>Preparing</div>
+            <div id="step-ready" class="flow-step">🟢<br>Ready</div>
+            <div id="step-completed" class="flow-step">🚚<br>Delivered</div>
+        </div>
+
+        <div class="customer-actions">
 
             <button
-                id="payBillBtn"
-                class="payment-btn"
-                onclick="payBill()"
-                style="display:none;"
+                id="callWaiterBtn"
+                class="waiter-btn"
+                onclick="callWaiter()"
             >
-                💳 Pay Bill
+                🔔 Call Waiter
+            </button>
+
+            <button
+                id="requestBillBtn"
+                class="bill-btn"
+                onclick="requestBill()"
+                disabled
+            >
+                🧾 Request Bill
             </button>
 
         </div>
 
-
-        <h2 class="section-title">🍽️ Menu</h2>
-
-        <div id="menuList" class="menu-list"></div>
+        <div
+            id="billMessage"
+            style="margin-top:12px;text-align:center;color:#666;"
+        ></div>
 
     </div>
 
+
+    <!-- ================================
+         MENU
+    ================================= -->
+
+    <div class="container">
+
+        <div
+            id="menuList"
+            class="menu-list"
+        >
+        </div>
+
+    </div>
+
+
+    <!-- ================================
+         CART BAR
+    ================================= -->
 
     <div class="cart-bar">
 
         <div class="cart-inner">
 
-            <div id="cartTotal" class="cart-total">
+            <div
+                id="cartTotal"
+                class="cart-total"
+            >
                 Cart: ₹0.00
             </div>
+
 
             <button
                 class="view-cart-btn"
@@ -528,13 +788,27 @@
     </div>
 
 
-    <div id="cartModal" class="modal">
+    <!-- ================================
+         CART MODAL
+    ================================= -->
+
+    <div
+        id="cartModal"
+        class="modal"
+    >
 
         <div class="modal-content">
 
-            <h2>🛒 Your Cart</h2>
+            <h2>
+                🛒 Your Cart
+            </h2>
 
-            <div id="cartItems"></div>
+
+            <div
+                id="cartItems"
+            >
+            </div>
+
 
             <textarea
                 id="instructions"
@@ -542,9 +816,14 @@
                 placeholder="Special instructions (optional)"
             ></textarea>
 
-            <div id="modalTotal" class="modal-total">
+
+            <div
+                id="modalTotal"
+                class="modal-total"
+            >
                 Total: ₹0.00
             </div>
+
 
             <div class="modal-buttons">
 
@@ -554,6 +833,7 @@
                 >
                     ✅ Place Order
                 </button>
+
 
                 <button
                     class="close-btn"
@@ -569,16 +849,28 @@
     </div>
 
 
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
+
     <script type="module">
+
+
+        /* =====================================
+           FIREBASE IMPORTS
+        ===================================== */
 
         import {
             initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 
         import {
             getAuth,
             onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
         import {
             getFirestore,
@@ -587,11 +879,16 @@
             addDoc,
             doc,
             getDoc,
-            updateDoc,
             onSnapshot,
+            updateDoc,
             serverTimestamp
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+        }
+        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
+        /* =====================================
+           FIREBASE CONFIG
+        ===================================== */
 
         const firebaseConfig = {
 
@@ -615,118 +912,123 @@
 
             measurementId:
                 "G-G3Q89BDFF9"
+
         };
 
 
-        const app = initializeApp(firebaseConfig);
+        /* =====================================
+           INITIALIZE FIREBASE
+        ===================================== */
 
-        const auth = getAuth(app);
+        const app =
+            initializeApp(
+                firebaseConfig
+            );
 
-        const db = getFirestore(app);
 
+        const db =
+            getFirestore(app);
+
+        const auth =
+            getAuth(app);
+
+        let currentCustomer = null;
+        let restaurantUpiId = "";
+        let restaurantNameValue = "Restaurant";
+        let currentOrderNumber = "";
+        let currentPayableAmount = 0;
+        let currentOrderId =
+            sessionStorage.getItem("customerOrderId") || null;
+
+        let unsubscribeOrder = null;
+
+
+        /* =====================================
+           CUSTOMER AUTHENTICATION
+        ===================================== */
+
+        onAuthStateChanged(
+            auth,
+            (user) => {
+
+                if (!user) {
+                    document.getElementById("status").textContent =
+                        "Please login to continue.";
+
+                    return;
+                }
+
+                currentCustomer = user;
+
+                if (currentOrderId) {
+                    listenToCurrentOrder();
+                }
+            }
+        );
+
+        /* =====================================
+           READ QR PARAMETERS
+        ===================================== */
 
         const urlParams =
             new URLSearchParams(
                 window.location.search
             );
 
+
         const restaurantId =
-            urlParams.get("restaurant");
+            urlParams.get(
+                "restaurant"
+            );
+
 
         const tableNumber =
-            urlParams.get("table");
+            urlParams.get(
+                "table"
+            );
 
+
+        /* =====================================
+           CHECK RESTAURANT ID
+        ===================================== */
 
         if (!restaurantId) {
 
-            document.getElementById("status").textContent =
+            document.getElementById(
+                "status"
+            ).textContent =
                 "Restaurant information is missing.";
+
 
             throw new Error(
                 "Restaurant ID is missing from QR URL."
             );
+
         }
 
 
-        document.getElementById("tableInfo").textContent =
-            tableNumber
-                ? "🪑 Table " + tableNumber
-                : "🪑 Table not specified";
+        /* =====================================
+           SHOW TABLE
+        ===================================== */
 
+        document.getElementById(
+            "tableInfo"
+        ).textContent =
+            tableNumber
+            ? "🪑 Table " + tableNumber
+            : "🪑 Table not specified";
+
+
+        /* =====================================
+           CART
+        ===================================== */
 
         let cart = [];
 
-        let currentUser = null;
 
-        let activeOrderId =
-            sessionStorage.getItem(
-                "activeOrderId"
-            );
-
-        let unsubscribeOrder = null;
-
-
-        /*
-         * AUTHENTICATION
-         *
-         * IMPORTANT:
-         * The customer must really be authenticated before
-         * an order can be created. This matches the Firestore
-         * security rules.
-         */
-
-        onAuthStateChanged(
-            auth,
-            async (user) => {
-
-                currentUser = user;
-
-                if (!user) {
-
-                    document.getElementById(
-                        "status"
-                    ).textContent =
-                        "Please login to continue.";
-
-                    const loginUrl =
-                        "customer-login.html" +
-                        "?restaurant=" +
-                        encodeURIComponent(
-                            restaurantId
-                        ) +
-                        "&table=" +
-                        encodeURIComponent(
-                            tableNumber || ""
-                        );
-
-                    window.location.href =
-                        loginUrl;
-
-                    return;
-                }
-
-
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "Customer login verified. Loading menu...";
-
-
-                await loadRestaurant();
-
-                await loadMenu();
-
-
-                if (activeOrderId) {
-
-                    startOrderListener(
-                        activeOrderId
-                    );
-
-                }
-            }
-        );
-
+        /* =====================================
+           LOAD RESTAURANT
+        ===================================== */
 
         async function loadRestaurant() {
 
@@ -739,10 +1041,12 @@
                         restaurantId
                     );
 
+
                 const restaurantSnap =
                     await getDoc(
                         restaurantRef
                     );
+
 
                 if (
                     restaurantSnap.exists()
@@ -751,27 +1055,49 @@
                     const restaurant =
                         restaurantSnap.data();
 
+
                     if (
                         restaurant.restaurantName
                     ) {
+
+                        restaurantNameValue =
+                            String(
+                                restaurant.restaurantName
+                            );
 
                         document.getElementById(
                             "restaurantName"
                         ).textContent =
                             "🍽️ " +
-                            restaurant.restaurantName;
+                            restaurantNameValue;
+
                     }
+
+                    restaurantUpiId =
+                        String(
+                            restaurant.upiId ||
+                            ""
+                        ).trim();
+
                 }
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(
                     "Restaurant loading error:",
                     error
                 );
+
             }
+
         }
 
+
+        /* =====================================
+           LOAD MENU
+        ===================================== */
 
         async function loadMenu() {
 
@@ -780,10 +1106,12 @@
                     "menuList"
                 );
 
+
             const status =
                 document.getElementById(
                     "status"
                 );
+
 
             try {
 
@@ -795,10 +1123,12 @@
                         "menu"
                     );
 
+
                 const snapshot =
                     await getDocs(
                         menuRef
                     );
+
 
                 menuList.innerHTML = "";
 
@@ -810,14 +1140,25 @@
                     status.textContent =
                         "Menu is empty.";
 
+
                     menuList.innerHTML = `
+
                         <div class="empty">
-                            <h3>🍽️ Menu Empty</h3>
-                            <p>No menu items are available right now.</p>
+
+                            <h3>
+                                🍽️ Menu Empty
+                            </h3>
+
+                            <p>
+                                No menu items are available right now.
+                            </p>
+
                         </div>
+
                     `;
 
                     return;
+
                 }
 
 
@@ -831,21 +1172,26 @@
                         const item =
                             menuDoc.data();
 
+
                         const itemId =
                             menuDoc.id;
+
 
                         const name =
                             item.name ||
                             item.foodName ||
                             "Food Item";
 
+
                         const description =
                             item.description ||
                             "";
 
+
                         const category =
                             item.category ||
                             "Food";
+
 
                         const price =
                             Number(
@@ -858,6 +1204,7 @@
                                 "div"
                             );
 
+
                         card.className =
                             "menu-card";
 
@@ -865,26 +1212,46 @@
                         card.innerHTML = `
 
                             <span class="category">
-                                ${escapeHTML(category)}
+
+                                ${escapeHTML(
+                                    category
+                                )}
+
                             </span>
 
+
                             <h3>
-                                ${escapeHTML(name)}
+
+                                ${escapeHTML(
+                                    name
+                                )}
+
                             </h3>
+
 
                             ${
                                 description
                                 ? `
+
                                     <div class="description">
-                                        ${escapeHTML(description)}
+
+                                        ${escapeHTML(
+                                            description
+                                        )}
+
                                     </div>
+
                                 `
                                 : ""
                             }
 
+
                             <div class="price">
+
                                 ₹${price.toFixed(2)}
+
                             </div>
+
 
                             <div class="quantity-row">
 
@@ -897,12 +1264,14 @@
                                     −
                                 </button>
 
+
                                 <span
                                     id="quantity-${itemId}"
                                     class="quantity"
                                 >
                                     0
                                 </span>
+
 
                                 <button
                                     onclick="changeQuantity(
@@ -914,34 +1283,57 @@
                                 </button>
 
                             </div>
+
                         `;
 
 
                         menuList.appendChild(
                             card
                         );
+
                     }
                 );
 
-            } catch (error) {
+            }
+
+            catch (error) {
 
                 console.error(
                     "Menu loading error:",
                     error
                 );
 
+
                 status.textContent =
                     "Unable to load menu.";
 
+
                 menuList.innerHTML = `
+
                     <div class="empty">
-                        <h3>⚠️ Unable to Load Menu</h3>
-                        <p>${escapeHTML(error.message)}</p>
+
+                        <h3>
+                            ⚠️ Unable to Load Menu
+                        </h3>
+
+                        <p>
+                            ${escapeHTML(
+                                error.message
+                            )}
+                        </p>
+
                     </div>
+
                 `;
+
             }
+
         }
 
+
+        /* =====================================
+           CHANGE QUANTITY
+        ===================================== */
 
         window.changeQuantity =
             async function(
@@ -978,6 +1370,7 @@
                                 itemId
                             );
 
+
                         const itemSnap =
                             await getDoc(
                                 itemRef
@@ -997,8 +1390,7 @@
 
                         cart.push({
 
-                            id:
-                                itemId,
+                            id: itemId,
 
                             name:
                                 item.name ||
@@ -1010,26 +1402,26 @@
                                     item.price || 0
                                 ),
 
-                            quantity:
-                                1
+                            quantity: 1
+
                         });
 
-                    } catch (error) {
+                    }
+
+                    catch (error) {
 
                         console.error(
                             "Item loading error:",
                             error
                         );
 
-                        alert(
-                            "Could not add this item:\n\n" +
-                            error.message
-                        );
-
                         return;
+
                     }
 
-                } else {
+                }
+
+                else {
 
                     cart[
                         existingIndex
@@ -1046,7 +1438,9 @@
                             existingIndex,
                             1
                         );
+
                     }
+
                 }
 
 
@@ -1055,8 +1449,13 @@
                 updateMenuQuantity(
                     itemId
                 );
+
             };
 
+
+        /* =====================================
+           UPDATE MENU QUANTITY
+        ===================================== */
 
         function updateMenuQuantity(
             itemId
@@ -1083,10 +1482,15 @@
 
             quantityElement.textContent =
                 item
-                    ? item.quantity
-                    : 0;
+                ? item.quantity
+                : 0;
+
         }
 
+
+        /* =====================================
+           CART TOTAL
+        ===================================== */
 
         function getCartTotal() {
 
@@ -1109,8 +1513,13 @@
                 },
                 0
             );
+
         }
 
+
+        /* =====================================
+           UPDATE CART BAR
+        ===================================== */
 
         function updateCartDisplay() {
 
@@ -1139,8 +1548,13 @@
                 "cartTotal"
             ).textContent =
                 `Cart: ${count} item(s) • ₹${total.toFixed(2)}`;
+
         }
 
+
+        /* =====================================
+           OPEN CART
+        ===================================== */
 
         window.openCart =
             function() {
@@ -1151,8 +1565,13 @@
                     "cartModal"
                 ).style.display =
                     "block";
+
             };
 
+
+        /* =====================================
+           CLOSE CART
+        ===================================== */
 
         window.closeCart =
             function() {
@@ -1161,8 +1580,13 @@
                     "cartModal"
                 ).style.display =
                     "none";
+
             };
 
+
+        /* =====================================
+           RENDER CART
+        ===================================== */
 
         function renderCart() {
 
@@ -1170,6 +1594,7 @@
                 document.getElementById(
                     "cartItems"
                 );
+
 
             cartItems.innerHTML = "";
 
@@ -1179,12 +1604,18 @@
             ) {
 
                 cartItems.innerHTML = `
+
                     <div class="empty">
+
                         🛒 Your cart is empty.
+
                     </div>
+
                 `;
 
-            } else {
+            }
+
+            else {
 
                 cart.forEach(
                     item => {
@@ -1193,6 +1624,7 @@
                             document.createElement(
                                 "div"
                             );
+
 
                         row.className =
                             "cart-item";
@@ -1203,14 +1635,24 @@
                             <div>
 
                                 <div class="cart-item-name">
-                                    ${escapeHTML(item.name)}
+
+                                    ${escapeHTML(
+                                        item.name
+                                    )}
+
                                 </div>
 
+
                                 <div class="cart-item-price">
-                                    ₹${Number(item.price).toFixed(2)}
+
+                                    ₹${Number(
+                                        item.price
+                                    ).toFixed(2)}
+
                                 </div>
 
                             </div>
+
 
                             <div class="cart-quantity">
 
@@ -1223,9 +1665,11 @@
                                     −
                                 </button>
 
+
                                 <span>
                                     ${item.quantity}
                                 </span>
+
 
                                 <button
                                     onclick="changeQuantity(
@@ -1237,14 +1681,17 @@
                                 </button>
 
                             </div>
+
                         `;
 
 
                         cartItems.appendChild(
                             row
                         );
+
                     }
                 );
+
             }
 
 
@@ -1253,28 +1700,16 @@
             ).textContent =
                 "Total: ₹" +
                 getCartTotal().toFixed(2);
+
         }
 
 
-        /*
-         * PLACE ORDER
-         *
-         * customerUid is now included.
-         * This is required by the Firestore rules.
-         */
+        /* =====================================
+           PLACE ORDER
+        ===================================== */
 
         window.placeOrder =
             async function() {
-
-                if (!currentUser) {
-
-                    alert(
-                        "Customer login has expired. Please login again."
-                    );
-
-                    return;
-                }
-
 
                 if (
                     cart.length === 0
@@ -1285,20 +1720,7 @@
                     );
 
                     return;
-                }
 
-
-                /*
-                 * Prevent accidentally creating another active order.
-                 */
-
-                if (activeOrderId) {
-
-                    alert(
-                        "You already have an active order. Please complete that order before placing another one."
-                    );
-
-                    return;
                 }
 
 
@@ -1354,16 +1776,6 @@
                         orderNumber:
                             orderNumber,
 
-                        restaurantId:
-                            restaurantId,
-
-                        customerUid:
-                            currentUser.uid,
-
-                        customerPhone:
-                            currentUser.phoneNumber ||
-                            "",
-
                         tableNumber:
                             tableNumber ||
                             "N/A",
@@ -1371,16 +1783,7 @@
                         items:
                             orderItems,
 
-                        subtotal:
-                            total,
-
                         total:
-                            total,
-
-                        discountAmount:
-                            0,
-
-                        finalTotal:
                             total,
 
                         instructions:
@@ -1389,61 +1792,50 @@
                         status:
                             "new",
 
-                        billRequested:
-                            false,
+                        customerUid:
+                            currentCustomer
+                            ? currentCustomer.uid
+                            : "",
 
-                        billGenerated:
-                            false,
+                        paymentStatus:
+                            "pending",
 
-                        waiterCalled:
-                            false,
+                        paymentMethod:
+                            "upi",
+
+                        restaurantUpiId:
+                            restaurantUpiId,
 
                         createdAt:
                             serverTimestamp()
+
                     };
 
 
-                    const orderRef =
+                    const newOrderRef =
                         await addDoc(
                             ordersRef,
                             orderData
                         );
 
+                    currentOrderId =
+                        newOrderRef.id;
 
-                    /*
-                     * Save the exact Firestore document ID.
-                     */
+                    currentOrderNumber =
+                        orderNumber;
 
-                    activeOrderId =
-                        orderRef.id;
-
+                    currentPayableAmount =
+                        total;
 
                     sessionStorage.setItem(
-                        "activeOrderId",
-                        activeOrderId
+                        "customerOrderId",
+                        currentOrderId
                     );
-
 
                     document.getElementById(
                         "cartModal"
                     ).style.display =
                         "none";
-
-
-                    cart = [];
-
-                    updateCartDisplay();
-
-
-                    document.getElementById(
-                        "instructions"
-                    ).value = "";
-
-
-                    document.getElementById(
-                        "status"
-                    ).textContent =
-                        "Order successfully placed.";
 
 
                     document.getElementById(
@@ -1460,32 +1852,51 @@
                                 Your order has been sent to the restaurant.
                             </p>
 
+
                             <div class="order-number">
-                                ${escapeHTML(orderNumber)}
+
+                                ${escapeHTML(
+                                    orderNumber
+                                )}
+
                             </div>
+
 
                             <p>
                                 Table:
                                 ${escapeHTML(
-                                    tableNumber || "N/A"
+                                    tableNumber ||
+                                    "N/A"
                                 )}
                             </p>
 
+
                             <p style="margin-top:10px;">
+
                                 Total:
                                 ₹${total.toFixed(2)}
+
                             </p>
 
                         </div>
+
                     `;
 
 
-                    startOrderListener(
-                        activeOrderId
-                    );
+                    document.getElementById(
+                        "status"
+                    ).textContent =
+                        "Order successfully placed.";
 
 
-                } catch (error) {
+                    cart = [];
+
+
+                    updateCartDisplay();
+
+                }
+
+                catch (error) {
 
                     console.error(
                         "Order error:",
@@ -1497,33 +1908,26 @@
                         "Could not place order:\n\n" +
                         error.message
                     );
+
                 }
+
             };
 
 
-        /*
-         * LIVE ORDER STATUS
-         */
+        /* =====================================
+           LIVE CUSTOMER ORDER TRACKING
+        ===================================== */
 
-        function startOrderListener(
-            orderId
-        ) {
+        function listenToCurrentOrder() {
 
-            if (
-                unsubscribeOrder
-            ) {
-
-                unsubscribeOrder();
-
-                unsubscribeOrder =
-                    null;
-            }
-
-
-            if (!currentUser) {
+            if (!currentCustomer || !currentOrderId) {
                 return;
             }
 
+            if (unsubscribeOrder) {
+                unsubscribeOrder();
+                unsubscribeOrder = null;
+            }
 
             const orderRef =
                 doc(
@@ -1531,108 +1935,100 @@
                     "restaurants",
                     restaurantId,
                     "orders",
-                    orderId
+                    currentOrderId
                 );
-
 
             unsubscribeOrder =
                 onSnapshot(
                     orderRef,
                     (snapshot) => {
 
-                        if (
-                            !snapshot.exists()
-                        ) {
-
+                        if (!snapshot.exists()) {
                             document.getElementById(
-                                "orderMessage"
-                            ).textContent =
-                                "Order could not be found.";
+                                "orderPanel"
+                            ).style.display = "none";
 
                             return;
                         }
 
-
                         const order =
                             snapshot.data();
 
-
-                        /*
-                         * Extra client-side ownership check.
-                         */
-
+                        // Extra client-side safety check.
                         if (
                             order.customerUid &&
-                            order.customerUid !==
-                                currentUser.uid
+                            order.customerUid !== currentCustomer.uid
                         ) {
-
                             document.getElementById(
-                                "orderMessage"
+                                "status"
                             ).textContent =
                                 "This order does not belong to this customer.";
 
                             return;
                         }
 
-
-                        showOrderPanel(
-                            order,
-                            orderId
+                        renderCustomerOrderStatus(
+                            order
                         );
                     },
                     (error) => {
 
                         console.error(
-                            "Order listener error:",
+                            "Order status listener error:",
                             error
                         );
 
                         document.getElementById(
-                            "orderMessage"
+                            "liveOrderStatus"
                         ).textContent =
-                            "Unable to receive live order updates: " +
+                            "Unable to track order status.";
+
+                        document.getElementById(
+                            "billMessage"
+                        ).textContent =
                             error.message;
                     }
                 );
         }
 
 
-        function showOrderPanel(
-            order,
-            orderId
-        ) {
+        function renderCustomerOrderStatus(order) {
+
+            const panel =
+                document.getElementById(
+                    "orderPanel"
+                );
+
+            panel.style.display = "block";
 
             document.getElementById(
-                "currentOrderPanel"
-            ).style.display =
-                "block";
-
-
-            document.getElementById(
-                "customerOrderNumber"
+                "orderNumberDisplay"
             ).textContent =
-                "📦 " +
+                "Order #" +
                 (
                     order.orderNumber ||
-                    orderId.substring(0, 8)
+                    currentOrderId.substring(0, 6)
                 );
-
 
             const status =
-                order.status ||
-                "new";
+                order.status || "new";
 
+            const statusText = {
+                new: "🆕 Order Received",
+                accepted: "🔵 Order Accepted",
+                preparing: "👨‍🍳 Preparing Your Order",
+                ready: "🟢 Order Ready",
+                completed: "🚚 Order Delivered",
+                cancelled: "❌ Order Cancelled"
+            };
 
             document.getElementById(
-                "customerCurrentStatus"
+                "liveOrderStatus"
             ).textContent =
-                getStatusText(
-                    status
-                );
+                statusText[status] ||
+                "Order Status: " + status;
 
-
-            const flow = [
+            const stages = [
                 "new",
                 "accepted",
                 "preparing",
@@ -1640,258 +2036,294 @@
                 "completed"
             ];
 
-
             const currentIndex =
-                flow.indexOf(
-                    status
-                );
+                stages.indexOf(status);
 
-
-            flow.forEach(
-                (
-                    step,
-                    index
-                ) => {
+            stages.forEach(
+                (stage, index) => {
 
                     const element =
                         document.getElementById(
-                            "step-" +
-                            step
+                            "step-" + stage
                         );
-
 
                     if (!element) {
                         return;
                     }
 
-
                     element.classList.remove(
                         "active",
-                        "current"
+                        "done"
                     );
 
+                    if (
+                        status === "cancelled"
+                    ) {
+                        return;
+                    }
 
                     if (
-                        index <=
-                        currentIndex
+                        index < currentIndex
                     ) {
-
                         element.classList.add(
-                            "active"
+                            "done"
                         );
                     }
 
-
                     if (
-                        index ===
-                        currentIndex
+                        index === currentIndex
                     ) {
-
                         element.classList.add(
-                            "current"
+                            "active"
                         );
                     }
                 }
             );
 
-
-            const requestBillBtn =
-                document.getElementById(
-                    "requestBillBtn"
-                );
-
-
-            if (
-                status === "completed"
-            ) {
-
-                requestBillBtn.disabled =
-                    false;
-
-            } else {
-
-                requestBillBtn.disabled =
-                    true;
-            }
-
-
-            const waiterBtn =
+            const callWaiterBtn =
                 document.getElementById(
                     "callWaiterBtn"
                 );
 
-
             if (
-                order.waiterCalled
+                order.waiterCalled === true
             ) {
-
-                waiterBtn.disabled =
-                    true;
-
-                waiterBtn.textContent =
+                callWaiterBtn.disabled = true;
+                callWaiterBtn.textContent =
                     "✅ Waiter Called";
-
             } else {
-
-                waiterBtn.disabled =
-                    false;
-
-                waiterBtn.textContent =
+                callWaiterBtn.disabled = false;
+                callWaiterBtn.textContent =
                     "🔔 Call Waiter";
             }
 
+            const billBtn =
+                document.getElementById(
+                    "requestBillBtn"
+                );
 
             if (
-                order.billRequested
+                status === "completed" &&
+                order.billRequested !== true
             ) {
-
-                requestBillBtn.disabled =
-                    true;
-
-                requestBillBtn.textContent =
-                    order.billGenerated
-                        ? "✅ Bill Generated"
-                        : "✅ Bill Requested";
-
+                billBtn.disabled = false;
+                billBtn.textContent =
+                    "🧾 Request Bill";
+            } else if (
+                order.billRequested === true
+            ) {
+                billBtn.disabled = true;
+                billBtn.textContent =
+                    "✅ Bill Requested";
             } else {
-
-                requestBillBtn.textContent =
+                billBtn.disabled = true;
+                billBtn.textContent =
                     "🧾 Request Bill";
             }
 
-
-            document.getElementById(
-                "orderMessage"
-            ).textContent =
-                getCustomerMessage(
-                    status,
-                    order
+            const billMessage =
+                document.getElementById(
+                    "billMessage"
                 );
 
+            if (order.billGenerated) {
 
-            if (
-                order.billGenerated
-            ) {
+                const subtotal =
+                    Number(
+                        order.billSubtotal ??
+                        order.subtotal ??
+                        order.total ??
+                        0
+                    );
 
-                showBill(
-                    order
-                );
+                const discount =
+                    Number(
+                        order.billDiscountAmount ??
+                        order.discountAmount ??
+                        0
+                    );
 
-            } else {
+                const total =
+                    Number(
+                        order.billTotal ??
+                        order.finalTotal ??
+                        order.total ??
+                        0
+                    );
+
+                currentOrderNumber =
+                    order.orderNumber ||
+                    currentOrderNumber;
+
+                currentPayableAmount =
+                    total;
+
+                const upiId =
+                    String(
+                        order.restaurantUpiId ||
+                        restaurantUpiId ||
+                        ""
+                    ).trim();
+
+                billMessage.innerHTML =
+                    `
+                    <div style="
+                        background:#e8f5e9;
+                        padding:15px;
+                        border-radius:10px;
+                        color:#155724;
+                        text-align:left;
+                    ">
+                        <strong style="font-size:18px;">
+                            🧾 Bill Generated
+                        </strong>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            margin-top:10px;
+                        ">
+                            <span>Subtotal</span>
+                            <strong>₹${subtotal.toFixed(2)}</strong>
+                        </div>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            margin-top:6px;
+                        ">
+                            <span>Discount</span>
+                            <strong>-₹${discount.toFixed(2)}</strong>
+                        </div>
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            border-top:1px solid #b7d8bc;
+                            margin-top:10px;
+                            padding-top:10px;
+                            font-size:20px;
+                        ">
+                            <strong>Total</strong>
+                            <strong>₹${total.toFixed(2)}</strong>
+                        </div>
+
+                        ${
+                            upiId
+                            ? `
+                                <div style="
+                                    margin-top:15px;
+                                    background:white;
+                                    padding:12px;
+                                    border-radius:8px;
+                                    color:#333;
+                                ">
+                                    <strong>💳 Payment</strong>
+
+                                    <div style="
+                                        margin-top:6px;
+                                        font-size:13px;
+                                        color:#666;
+                                    ">
+                                        Pay directly to restaurant
+                                    </div>
+
+                                    <div style="
+                                        margin-top:6px;
+                                        font-weight:bold;
+                                    ">
+                                        UPI: ${escapeHTML(upiId)}
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        onclick="payBillViaUPI()"
+                                        style="
+                                            width:100%;
+                                            margin-top:12px;
+                                            padding:13px;
+                                            border:none;
+                                            border-radius:8px;
+                                            background:#00897b;
+                                            color:white;
+                                            font-size:16px;
+                                            font-weight:bold;
+                                            cursor:pointer;
+                                        "
+                                    >
+                                        💳 Pay ₹${total.toFixed(2)} Now
+                                    </button>
+
+                                    <div style="
+                                        margin-top:8px;
+                                        font-size:12px;
+                                        color:#666;
+                                    ">
+                                        Your UPI app will open with the
+                                        restaurant UPI ID and exact bill amount.
+                                    </div>
+                                </div>
+                            `
+                            : `
+                                <div style="
+                                    margin-top:15px;
+                                    background:#fff3cd;
+                                    padding:12px;
+                                    border-radius:8px;
+                                    color:#856404;
+                                ">
+                                    ⚠️ Restaurant UPI ID is not configured.
+                                </div>
+                            `
+                        }
+                    </div>
+                    `;
+
+                document.querySelector(
+                    ".container"
+                ).style.display = "none";
+
+                document.querySelector(
+                    ".cart-bar"
+                ).style.display = "none";
 
                 document.getElementById(
-                    "generatedBill"
-                ).style.display =
-                    "none";
-            }
-
-
-            /*
-             * Keep the current order until it is paid later.
-             * Payment integration will be added after this flow
-             * is confirmed working.
-             */
-        }
-
-
-        function getStatusText(
-            status
-        ) {
-
-            if (
-                status === "accepted"
+                    "status"
+                ).textContent =
+                    "Bill generated. Please complete payment.";
+            } else if (
+                order.billRequested
             ) {
-                return "🔵 Order Accepted";
-            }
-
-            if (
-                status === "preparing"
-            ) {
-                return "👨‍🍳 Order is Preparing";
-            }
-
-            if (
-                status === "ready"
-            ) {
-                return "🟢 Order is Ready";
-            }
-
-            if (
+                billMessage.textContent =
+                    "Bill requested. Please wait for the restaurant.";
+            } else if (
                 status === "completed"
             ) {
-                return "🚚 Order Delivered";
+                billMessage.textContent =
+                    "Your order is delivered. You can request your bill.";
+            } else {
+                billMessage.textContent = "";
             }
-
-            if (
-                status === "cancelled"
-            ) {
-                return "❌ Order Cancelled";
-            }
-
-            return "🆕 Order Received";
         }
 
 
-        function getCustomerMessage(
-            status,
-            order
-        ) {
-
-            if (
-                status === "accepted"
-            ) {
-                return "Restaurant accepted your order.";
-            }
-
-            if (
-                status === "preparing"
-            ) {
-                return "Your food is being prepared.";
-            }
-
-            if (
-                status === "ready"
-            ) {
-                return "Your order is ready.";
-            }
-
-            if (
-                status === "completed"
-            ) {
-                return order.billRequested
-                    ? "Your order was delivered. Your bill request has been sent."
-                    : "Your order was delivered. You can now request your bill.";
-            }
-
-            if (
-                status === "cancelled"
-            ) {
-                return "The restaurant cancelled this order.";
-            }
-
-            return "Your order has been received by the restaurant.";
-        }
-
-
-        /*
-         * CALL WAITER
-         */
+        /* =====================================
+           CALL WAITER
+        ===================================== */
 
         window.callWaiter =
             async function() {
 
                 if (
-                    !currentUser ||
-                    !activeOrderId
+                    !currentCustomer ||
+                    !currentOrderId
                 ) {
-
                     alert(
-                        "There is no active order."
+                        "Please place an order first."
                     );
 
                     return;
                 }
-
 
                 const orderRef =
                     doc(
@@ -1899,19 +2331,16 @@
                         "restaurants",
                         restaurantId,
                         "orders",
-                        activeOrderId
+                        currentOrderId
                     );
-
 
                 try {
 
                     await updateDoc(
                         orderRef,
                         {
-
                             waiterCalled:
                                 true,
-
                             waiterRequestedAt:
                                 serverTimestamp()
                         }
@@ -1932,25 +2361,77 @@
             };
 
 
-        /*
-         * REQUEST BILL
-         */
+        /* =====================================
+           PAY BILL VIA UPI
+        ===================================== */
+
+        window.payBillViaUPI =
+            function() {
+
+                const upiId =
+                    String(
+                        restaurantUpiId ||
+                        ""
+                    ).trim();
+
+                if (!upiId) {
+                    alert(
+                        "The restaurant has not configured a UPI ID yet."
+                    );
+                    return;
+                }
+
+                if (
+                    !currentOrderNumber ||
+                    currentPayableAmount <= 0
+                ) {
+                    alert(
+                        "Payment details are not available."
+                    );
+                    return;
+                }
+
+                const params =
+                    new URLSearchParams({
+                        pa: upiId,
+                        pn:
+                            restaurantNameValue ||
+                            "Restaurant",
+                        am:
+                            currentPayableAmount
+                                .toFixed(2),
+                        cu: "INR",
+                        tn:
+                            "Order " +
+                            currentOrderNumber
+                    });
+
+                const upiUrl =
+                    "upi://pay?" +
+                    params.toString();
+
+                window.location.href =
+                    upiUrl;
+            };
+
+
+        /* =====================================
+           REQUEST BILL
+        ===================================== */
 
         window.requestBill =
             async function() {
 
                 if (
-                    !currentUser ||
-                    !activeOrderId
+                    !currentCustomer ||
+                    !currentOrderId
                 ) {
-
                     alert(
-                        "There is no active order."
+                        "No active order found."
                     );
 
                     return;
                 }
-
 
                 const orderRef =
                     doc(
@@ -1958,19 +2439,16 @@
                         "restaurants",
                         restaurantId,
                         "orders",
-                        activeOrderId
+                        currentOrderId
                     );
-
 
                 try {
 
                     await updateDoc(
                         orderRef,
                         {
-
                             billRequested:
                                 true,
-
                             billRequestedAt:
                                 serverTimestamp()
                         }
@@ -1991,84 +2469,9 @@
             };
 
 
-        function showBill(
-            order
-        ) {
-
-            const subtotal =
-                Number(
-                    order.billSubtotal ??
-                    order.subtotal ??
-                    order.total ??
-                    0
-                );
-
-
-            const discount =
-                Number(
-                    order.billDiscountAmount ??
-                    order.discountAmount ??
-                    0
-                );
-
-
-            const total =
-                Number(
-                    order.billTotal ??
-                    order.finalTotal ??
-                    order.total ??
-                    Math.max(
-                        0,
-                        subtotal - discount
-                    )
-                );
-
-
-            document.getElementById(
-                "generatedBill"
-            ).style.display =
-                "block";
-
-
-            document.getElementById(
-                "billSubtotal"
-            ).textContent =
-                "₹" +
-                subtotal.toFixed(2);
-
-
-            document.getElementById(
-                "billDiscount"
-            ).textContent =
-                discount > 0
-                    ? "-₹" +
-                      discount.toFixed(2)
-                    : "₹0.00";
-
-
-            document.getElementById(
-                "billTotal"
-            ).textContent =
-                "₹" +
-                total.toFixed(2);
-
-
-            /*
-             * Payment is intentionally not activated yet.
-             * Once the bill/status flow is confirmed, the
-             * production UPI payment integration can be connected.
-             */
-        }
-
-
-        window.payBill =
-            function() {
-
-                alert(
-                    "Payment integration will be connected after the bill flow is confirmed."
-                );
-            };
-
+        /* =====================================
+           ESCAPE HTML
+        ===================================== */
 
         function escapeHTML(
             value
@@ -2100,12 +2503,23 @@
                     /'/g,
                     "&#039;"
                 );
+
         }
 
 
+        /* =====================================
+           INITIAL LOAD
+        ===================================== */
+
+        loadRestaurant();
+
+        loadMenu();
+
         updateCartDisplay();
+
 
     </script>
 
 </body>
+
 </html>
