@@ -100,14 +100,23 @@ function loadOrdersRealtime(){
     }
 
     const ordersCollection=collection(db,"restaurants",currentUser.uid,"orders");
-    const ordersQuery=query(ordersCollection,orderBy("createdAt","desc"));
 
-    stopOrdersListener=onSnapshot(ordersQuery,()=>{
+    // Realtime listener: watch every order document.
+    // Do not order this listener by createdAt because a newly-created order
+    // can briefly have a pending serverTimestamp().
+    stopOrdersListener=onSnapshot(ordersCollection,()=>{
         loadOrders();
     },error=>{
         console.error("Realtime orders listener error:",error);
     });
 }
+
+// If a mobile browser temporarily suspends the page, catch up when it becomes visible.
+document.addEventListener("visibilitychange",()=>{
+    if(document.visibilityState === "visible" && currentUser){
+        loadOrders();
+    }
+});
 
 async function loadOrders(){
     if(!currentUser)return;
