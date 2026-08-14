@@ -64,6 +64,12 @@
             color: #ff5722;
             font-weight: bold;
             font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .subcategory {
+            color: #777;
+            font-size: 13px;
             margin-bottom: 8px;
         }
 
@@ -275,6 +281,94 @@
 
 
         /* ================================
+           CATEGORY / SUBCATEGORY DATA
+        ================================= */
+
+        const subcategories = {
+
+            "Biryanis": [
+                "Chicken Biryani",
+                "Mutton Biryani",
+                "Veg Biryani",
+                "Egg Biryani",
+                "Fish Biryani",
+                "Prawn Biryani",
+                "Special Biryani"
+            ],
+
+            "Main Course": [
+                "Chicken",
+                "Mutton",
+                "Seafood",
+                "Vegetarian",
+                "Rice & Noodles",
+                "Breads",
+                "Gravies"
+            ],
+
+            "Starters": [
+                "Chicken Starters",
+                "Mutton Starters",
+                "Seafood Starters",
+                "Veg Starters",
+                "Tandoori",
+                "Kebabs"
+            ],
+
+            "Signature Items": [
+                "Chef Special",
+                "Restaurant Special",
+                "Signature Biryani",
+                "Signature Starter",
+                "Signature Main Course",
+                "House Special"
+            ],
+
+            "Chinese": [
+                "Noodles",
+                "Fried Rice",
+                "Manchurian",
+                "Chinese Starters",
+                "Chinese Main Course"
+            ],
+
+            "Fast Food": [
+                "Burgers",
+                "Sandwiches",
+                "Pizza",
+                "Rolls",
+                "Fries",
+                "Wraps"
+            ],
+
+            "Desserts": [
+                "Ice Cream",
+                "Cakes",
+                "Indian Sweets",
+                "Puddings",
+                "Special Desserts"
+            ],
+
+            "Beverages": [
+                "Hot Beverages",
+                "Cold Beverages",
+                "Juices",
+                "Milkshakes",
+                "Mocktails",
+                "Soft Drinks"
+            ],
+
+            "Others": [
+                "Special Items",
+                "Combos",
+                "Extras",
+                "Sides"
+            ]
+
+        };
+
+
+        /* ================================
            CHECK LOGIN
         ================================= */
 
@@ -350,8 +444,6 @@
                 menuList.innerHTML = "";
 
 
-                /* No menu items */
-
                 if (snapshot.empty) {
 
                     document.getElementById(
@@ -381,15 +473,11 @@
                 }
 
 
-                /* Show number of items */
-
                 document.getElementById(
                     "status"
                 ).textContent =
                     `${snapshot.size} menu item(s)`;
 
-
-                /* Display every menu item */
 
                 snapshot.forEach((menuDoc) => {
 
@@ -413,6 +501,17 @@
                         : "🔴 Unavailable";
 
 
+                    /*
+                     * Support both the new subcategory
+                     * field and older menu records.
+                     */
+
+                    const itemSubcategory =
+                        item.subcategory ||
+                        item.subCategory ||
+                        "";
+
+
                     const card =
                         document.createElement(
                             "div"
@@ -433,10 +532,34 @@
 
 
                         <div class="category">
+                            Main Category:
                             ${escapeHTML(
                                 item.category || ""
                             )}
                         </div>
+
+
+                        ${
+                            itemSubcategory
+                            ? `
+
+                                <div class="subcategory">
+                                    Subcategory:
+                                    ${escapeHTML(
+                                        itemSubcategory
+                                    )}
+                                </div>
+
+                            `
+                            : `
+
+                                <div class="subcategory">
+                                    Subcategory:
+                                    Not set
+                                </div>
+
+                            `
+                        }
 
 
                         <div class="description">
@@ -559,8 +682,6 @@
 
             try {
 
-                /* Get existing item */
-
                 const itemSnapshot =
                     await getDoc(
                         itemRef
@@ -596,17 +717,71 @@
                 }
 
 
-                /* Category */
+                /* Main category */
 
                 const category =
                     prompt(
-                        "Category:",
+                        "Main Category (example: Biryanis, Main Course, Starters, Signature Items):",
                         item.category || ""
                     );
 
 
                 if (category === null) {
                     return;
+                }
+
+
+                const cleanCategory =
+                    category.trim();
+
+
+                if (
+                    cleanCategory === ""
+                ) {
+
+                    alert(
+                        "Main category cannot be empty."
+                    );
+
+                    return;
+
+                }
+
+
+                /* Subcategory */
+
+                const existingSubcategory =
+                    item.subcategory ||
+                    item.subCategory ||
+                    "";
+
+
+                const subcategory =
+                    prompt(
+                        "Subcategory:",
+                        existingSubcategory
+                    );
+
+
+                if (subcategory === null) {
+                    return;
+                }
+
+
+                const cleanSubcategory =
+                    subcategory.trim();
+
+
+                if (
+                    cleanSubcategory === ""
+                ) {
+
+                    alert(
+                        "Subcategory cannot be empty."
+                    );
+
+                    return;
+
                 }
 
 
@@ -678,7 +853,13 @@
                             foodName.trim(),
 
                         category:
-                            category.trim(),
+                            cleanCategory,
+
+                        subcategory:
+                            cleanSubcategory,
+
+                        subCategory:
+                            cleanSubcategory,
 
                         description:
                             description.trim(),
@@ -694,8 +875,6 @@
                     "✅ Menu item updated successfully!"
                 );
 
-
-                /* Refresh menu */
 
                 await loadMenu();
 
