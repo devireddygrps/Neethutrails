@@ -231,52 +231,7 @@
 
             </div>
 
-
-            <!-- Subcategory -->
-
-            <div class="form-group">
-
-                <label for="subcategory">
-                    Subcategory
-                </label>
-
-                <select id="subcategory">
-
-                    <option value="">
-                        Select subcategory
-                    </option>
-
-                </select>
-
-                <span class="help-text">
-                    Choose the main category first. The available subcategories will appear here.
-                </span>
-
-            </div>
-
-
-            <!-- Custom Subcategory -->
-
-            <div
-                class="form-group"
-                id="customSubcategoryGroup"
-                style="display:none;"
-            >
-
-                <label for="customSubcategory">
-                    Custom Subcategory
-                </label>
-
-                <input
-                    type="text"
-                    id="customSubcategory"
-                    placeholder="Example: Special Chicken Biryani"
-                >
-
-            </div>
-
-
-            <!-- Description -->
+            <!-- Description --><!-- Description -->
 
             <div class="form-group">
 
@@ -818,38 +773,7 @@
 
                     return;
 
-                }
-
-
-                if (
-                    selectedSubcategory === ""
-                ) {
-
-                    alert(
-                        "Please select a subcategory."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
-                    selectedSubcategory ===
-                    "__custom__" &&
-                    customSubcategory === ""
-                ) {
-
-                    alert(
-                        "Please enter the custom subcategory."
-                    );
-
-                    return;
-
-                }
-
-
-                if (
+                }if (
                     price === "" ||
                     Number(price) < 0
                 ) {
@@ -861,13 +785,6 @@
                     return;
 
                 }
-
-
-                const finalSubcategory =
-                    selectedSubcategory ===
-                    "__custom__"
-                    ? customSubcategory
-                    : selectedSubcategory;
 
 
                 const restaurantId =
@@ -971,20 +888,7 @@
                         </option>
 
                     `;
-
-
-                    document.getElementById(
-                        "customSubcategory"
-                    ).value = "";
-
-
-                    document.getElementById(
-                        "customSubcategoryGroup"
-                    ).style.display =
-                        "none";
-
-
-                    document.getElementById(
+document.getElementById(
                         "description"
                     ).value = "";
 
