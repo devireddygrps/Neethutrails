@@ -1,126 +1,815 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+>
+
 <title>Restaurant QR Codes</title>
+
+
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif;margin:0;padding:0}
-body{background:#f5f5f5;color:#333}
-.header{background:#ff5722;color:#fff;padding:20px;text-align:center}
-.container{max-width:1000px;margin:25px auto;padding:20px}
-.status,.restaurant{text-align:center;margin-bottom:15px}
-.restaurant{font-size:22px;font-weight:bold}
-.notice{background:#fff3e0;padding:12px;border-radius:10px;text-align:center;margin-bottom:20px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
-.card{background:#fff;padding:20px;border-radius:15px;box-shadow:0 3px 12px #0002;text-align:center}
-.qr{width:220px;height:220px;max-width:100%;display:block;margin:10px auto 15px}
-.url{font-size:12px;color:#666;word-break:break-all;margin-bottom:12px}
-button{width:100%;padding:12px;border:0;border-radius:8px;background:#4caf50;color:#fff;font-size:15px;cursor:pointer}
-.back{margin-top:20px;background:#333}
-.error{background:#fff;padding:20px;border-radius:10px;color:#c62828;text-align:center}
+
+*{
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:0;
+}
+
+body{
+    background:#f5f5f5;
+    color:#333;
+}
+
+.header{
+    background:#ff5722;
+    color:#fff;
+    padding:20px;
+    text-align:center;
+}
+
+.header h2{
+    margin-bottom:5px;
+}
+
+.container{
+    max-width:1000px;
+    margin:25px auto;
+    padding:20px;
+}
+
+.status{
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.restaurant{
+    font-size:22px;
+    font-weight:bold;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+
+/* TABLE COUNT SECTION */
+
+.table-section{
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 3px 12px #0002;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.table-section h3{
+    margin-bottom:10px;
+}
+
+.table-section p{
+    color:#666;
+    margin-bottom:15px;
+}
+
+.table-input{
+    width:100%;
+    max-width:300px;
+    padding:14px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:18px;
+    text-align:center;
+    margin-bottom:15px;
+}
+
+.generate-btn{
+    width:100%;
+    max-width:300px;
+    padding:14px;
+    border:0;
+    border-radius:8px;
+    background:#ff5722;
+    color:#fff;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.generate-btn:hover{
+    background:#e64a19;
+}
+
+
+/* NOTICE */
+
+.notice{
+    background:#fff3e0;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+    margin-bottom:20px;
+}
+
+
+/* QR GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#fff;
+    padding:20px;
+    border-radius:15px;
+    box-shadow:0 3px 12px #0002;
+    text-align:center;
+}
+
+.card h3{
+    margin-bottom:10px;
+}
+
+.qr{
+    width:220px;
+    height:220px;
+    max-width:100%;
+    display:block;
+    margin:10px auto 15px;
+}
+
+.url{
+    font-size:12px;
+    color:#666;
+    word-break:break-all;
+    margin-bottom:12px;
+}
+
+.download{
+    width:100%;
+    padding:12px;
+    border:0;
+    border-radius:8px;
+    background:#4caf50;
+    color:#fff;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.download:hover{
+    background:#388e3c;
+}
+
+.back{
+    width:100%;
+    margin-top:20px;
+    padding:12px;
+    border:0;
+    border-radius:8px;
+    background:#333;
+    color:#fff;
+    font-size:15px;
+    cursor:pointer;
+}
+
+.error{
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    color:#c62828;
+    text-align:center;
+}
+
 </style>
+
 </head>
+
+
 <body>
-<div class="header"><h2>📱 Restaurant QR Codes</h2><p>Customer Login + OTP + Menu</p></div>
-<div class="container">
-<div id="status" class="status">Checking restaurant login...</div>
-<div id="restaurant" class="restaurant"></div>
-<div class="notice">Each new QR opens <b>customer-login.html</b>, then OTP verification, then the correct restaurant/table menu.</div>
-<div id="grid" class="grid"></div>
-<button class="back" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+
+
+<div class="header">
+
+    <h2>📱 Restaurant QR Codes</h2>
+
+    <p>
+        Customer Login + OTP + Menu
+    </p>
+
 </div>
 
+
+<div class="container">
+
+
+    <div
+        id="status"
+        class="status"
+    >
+        Checking restaurant login...
+    </div>
+
+
+    <div
+        id="restaurant"
+        class="restaurant"
+    ></div>
+
+
+    <!-- TABLE COUNT -->
+
+    <div class="table-section">
+
+        <h3>
+            🪑 Restaurant Table Setup
+        </h3>
+
+        <p>
+            Enter the total number of tables
+            in your restaurant.
+        </p>
+
+
+        <input
+            type="number"
+            id="tableCount"
+            class="table-input"
+            min="1"
+            max="500"
+            value="10"
+            placeholder="Enter table count"
+        >
+
+
+        <br>
+
+
+        <button
+            id="generateBtn"
+            class="generate-btn"
+        >
+            Generate QR Codes
+        </button>
+
+    </div>
+
+
+    <div class="notice">
+
+        Each QR opens
+        <b>customer-login.html</b>,
+        then OTP verification,
+        then the correct restaurant/table menu.
+
+    </div>
+
+
+    <div
+        id="grid"
+        class="grid"
+    ></div>
+
+
+    <button
+        class="back"
+        onclick="location.href='dashboard.html'"
+    >
+        ← Back to Dashboard
+    </button>
+
+
+</div>
+
+
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+
+/* ==========================================
+   FIREBASE CONFIG
+========================================== */
+
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-    authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-    projectId: "restaurant-qr-ordering-fdf9b",
-    storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-    messagingSenderId: "907571024375",
-    appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
-    measurementId: "G-G3Q89BDFF9"
+
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
+
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
 };
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
-const TOTAL_TABLES=10;
 
-onAuthStateChanged(auth, async user => {
-    if(!user) {
-        document.getElementById("status").textContent="Please login first. Redirecting...";
-        setTimeout(()=>location.href="index.html",800);
-        return;
-    }
-    await loadRestaurant(user.uid);
-});
 
-async function loadRestaurant(restaurantId) {
-    try {
-        const snap=await getDoc(doc(db,"restaurants",restaurantId));
-        let name="My Restaurant";
-        if(snap.exists()) {
-            const data=snap.data();
-            name=data.restaurantName || data.name || name;
+
+/* ==========================================
+   INITIALIZE FIREBASE
+========================================== */
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+
+const status =
+    document.getElementById("status");
+
+
+const restaurant =
+    document.getElementById("restaurant");
+
+
+const grid =
+    document.getElementById("grid");
+
+
+const tableCount =
+    document.getElementById("tableCount");
+
+
+const generateBtn =
+    document.getElementById("generateBtn");
+
+
+
+/* ==========================================
+   AUTHENTICATION
+========================================== */
+
+
+onAuthStateChanged(
+    auth,
+    async user => {
+
+        if(!user){
+
+            status.textContent =
+                "Please login first. Redirecting...";
+
+            setTimeout(
+                () => location.href="index.html",
+                800
+            );
+
+            return;
         }
-        document.getElementById("restaurant").textContent="🏪 "+name;
-        document.getElementById("status").textContent="QR codes ready";
-        generateQRCodes(restaurantId);
-    } catch(e) {
+
+
+        await loadRestaurant(user.uid);
+
+    }
+);
+
+
+
+/* ==========================================
+   LOAD RESTAURANT
+========================================== */
+
+
+async function loadRestaurant(
+    restaurantId
+){
+
+    try{
+
+        const snap =
+            await getDoc(
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId
+                )
+            );
+
+
+        let name =
+            "My Restaurant";
+
+
+        if(snap.exists()){
+
+            const data =
+                snap.data();
+
+
+            name =
+                data.restaurantName ||
+                data.name ||
+                name;
+
+        }
+
+
+        restaurant.textContent =
+            "🏪 " + name;
+
+
+        status.textContent =
+            "Restaurant verified";
+
+
+    }
+
+    catch(e){
+
         console.error(e);
-        document.getElementById("status").textContent="Could not load restaurant.";
-        document.getElementById("grid").innerHTML='<div class="error">'+escapeHTML(e.message)+'</div>';
+
+
+        status.textContent =
+            "Could not load restaurant.";
+
+
+        grid.innerHTML =
+            '<div class="error">' +
+            escapeHTML(e.message) +
+            '</div>';
+
     }
+
 }
 
-function generateQRCodes(restaurantId) {
-    const grid=document.getElementById("grid");
-    grid.innerHTML="";
-    const loginURL=new URL("customer-login.html",window.location.href).href;
 
-    for(let table=1; table<=TOTAL_TABLES; table++) {
-        const customerURL=loginURL+
-            "?restaurantId="+encodeURIComponent(restaurantId)+
-            "&table="+encodeURIComponent(table);
 
-        const qrURL="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+
-            encodeURIComponent(customerURL);
+/* ==========================================
+   GENERATE BUTTON
+========================================== */
 
-        const card=document.createElement("div");
-        card.className="card";
-        card.innerHTML=`
-            <h3>🪑 Table ${table}</h3>
-            <img class="qr" src="${qrURL}" alt="Table ${table} QR">
-            <div class="url">${escapeHTML(customerURL)}</div>
-            <button>⬇️ Download QR</button>`;
-        card.querySelector("button").onclick=()=>downloadQR(qrURL,table);
-        grid.appendChild(card);
+
+generateBtn.addEventListener(
+    "click",
+    async function(){
+
+        const count =
+            Number(
+                tableCount.value
+            );
+
+
+        /* VALIDATION */
+
+        if(
+            !Number.isInteger(count) ||
+            count < 1 ||
+            count > 500
+        ){
+
+            alert(
+                "Please enter a valid table count between 1 and 500."
+            );
+
+            return;
+
+        }
+
+
+        /* GET CURRENT USER */
+
+        const user =
+            auth.currentUser;
+
+
+        if(!user){
+
+            alert(
+                "Admin login session expired. Please login again."
+            );
+
+            location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        /* DISABLE BUTTON */
+
+        generateBtn.disabled =
+            true;
+
+        generateBtn.textContent =
+            "Generating QR Codes...";
+
+
+        try{
+
+            await generateQRCodes(
+                user.uid,
+                count
+            );
+
+
+        }
+
+        catch(e){
+
+            console.error(e);
+
+            alert(
+                "Could not generate QR codes."
+            );
+
+        }
+
+
+        generateBtn.disabled =
+            false;
+
+        generateBtn.textContent =
+            "Generate QR Codes";
+
     }
-}
+);
 
-async function downloadQR(url,table) {
-    try {
-        const response=await fetch(url);
-        const blob=await response.blob();
-        const objectURL=URL.createObjectURL(blob);
-        const a=document.createElement("a");
-        a.href=objectURL;
-        a.download=`table-${table}-customer-login-qr.png`;
-        document.body.appendChild(a); a.click(); a.remove();
-        URL.revokeObjectURL(objectURL);
-    } catch(e) {
-        alert("Download failed. Right-click the QR image and save it instead.");
+
+
+/* ==========================================
+   GENERATE QR CODES
+========================================== */
+
+
+async function generateQRCodes(
+    restaurantId,
+    totalTables
+){
+
+    grid.innerHTML = "";
+
+
+    /*
+       Customer login page.
+
+       Example:
+
+       customer-login.html
+       ?restaurantId=ABC
+       &table=1
+    */
+
+    const loginURL =
+        new URL(
+            "customer-login.html",
+            window.location.href
+        ).href;
+
+
+
+    for(
+        let table = 1;
+        table <= totalTables;
+        table++
+    ){
+
+        /* CUSTOMER URL */
+
+        const customerURL =
+            loginURL +
+            "?restaurantId=" +
+            encodeURIComponent(
+                restaurantId
+            ) +
+            "&table=" +
+            encodeURIComponent(
+                table
+            );
+
+
+        /* QR API */
+
+        const qrURL =
+            "https://api.qrserver.com/v1/create-qr-code/" +
+            "?size=300x300&data=" +
+            encodeURIComponent(
+                customerURL
+            );
+
+
+        /* CARD */
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "card";
+
+
+        card.innerHTML = `
+
+            <h3>
+                🪑 Table ${table}
+            </h3>
+
+            <img
+                class="qr"
+                src="${qrURL}"
+                alt="Table ${table} QR"
+            >
+
+            <div class="url">
+                ${escapeHTML(customerURL)}
+            </div>
+
+            <button class="download">
+                ⬇️ Download QR
+            </button>
+
+        `;
+
+
+        /* DOWNLOAD BUTTON */
+
+        card
+            .querySelector(".download")
+            .onclick = () =>
+                downloadQR(
+                    qrURL,
+                    table
+                );
+
+
+        grid.appendChild(
+            card
+        );
+
     }
+
 }
 
-function escapeHTML(v) {
-    return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;")
-        .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+
+
+/* ==========================================
+   DOWNLOAD QR
+========================================== */
+
+
+async function downloadQR(
+    url,
+    table
+){
+
+    try{
+
+        const response =
+            await fetch(url);
+
+
+        const blob =
+            await response.blob();
+
+
+        const objectURL =
+            URL.createObjectURL(
+                blob
+            );
+
+
+        const a =
+            document.createElement(
+                "a"
+            );
+
+
+        a.href =
+            objectURL;
+
+
+        a.download =
+            `table-${table}-customer-login-qr.png`;
+
+
+        document.body.appendChild(a);
+
+
+        a.click();
+
+
+        a.remove();
+
+
+        URL.revokeObjectURL(
+            objectURL
+        );
+
+    }
+
+    catch(e){
+
+        console.error(e);
+
+        alert(
+            "Download failed. Right-click the QR image and save it instead."
+        );
+
+    }
+
 }
+
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+
+function escapeHTML(v){
+
+    return String(v)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
 </script>
+
+
 </body>
+
 </html>
