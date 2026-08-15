@@ -982,6 +982,8 @@ async function savePaidOrderToHistory(){
         The extra history fields make it clear that this
         copy is a completed/paid order.
         */
+        const existingHistory = await getDoc(historyRef);
+
         const historyData = {
             ...orderData,
             orderId: orderId,
@@ -993,6 +995,15 @@ async function savePaidOrderToHistory(){
             historySavedAt: serverTimestamp(),
             updatedAt: serverTimestamp()
         };
+
+        /*
+        completedAt is created only the first time the paid
+        order is copied to history. This prevents every realtime
+        snapshot from changing the original completion time.
+        */
+        if(!existingHistory.exists()){
+            historyData.completedAt = serverTimestamp();
+        }
 
         await setDoc(
             historyRef,
