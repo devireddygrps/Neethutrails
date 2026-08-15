@@ -485,10 +485,6 @@ font-size:16px;
 cursor:pointer;
 }
 
-.print-bill{
-display:none;
-}
-
 @media(max-width:500px){
 
 .bill-print-actions{
@@ -498,6 +494,23 @@ flex-direction:column;
 .upi-qr{
 width:220px;
 height:220px;
+}
+
+}
+
+@media print{
+
+body{
+background:white;
+}
+
+header,
+.container{
+display:none !important;
+}
+
+#printBillContainer{
+display:block !important;
 }
 
 }
@@ -530,7 +543,6 @@ class="table-info"
 Loading table...
 </div>
 
-
 <div id="statusContainer">
 
 <div class="loading">
@@ -549,10 +561,6 @@ style="display:none;"
 
 
 <script type="module">
-
-/* =========================================================
-   FIREBASE
-========================================================= */
 
 import {
 initializeApp
@@ -581,6 +589,10 @@ from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
+/* ==========================================
+   FIREBASE
+========================================== */
+
 const firebaseConfig={
 
 apiKey:
@@ -608,7 +620,9 @@ measurementId:
 
 
 const app=
-initializeApp(firebaseConfig);
+initializeApp(
+firebaseConfig
+);
 
 const db=
 getFirestore(app);
@@ -617,9 +631,9 @@ const auth=
 getAuth(app);
 
 
-/* =========================================================
-   URL
-========================================================= */
+/* ==========================================
+   URL PARAMETERS
+========================================== */
 
 const params=
 new URLSearchParams(
@@ -637,24 +651,24 @@ params.get("table");
 
 const orderId=
 params.get("orderId") ||
-localStorage.getItem("currentOrderId");
+localStorage.getItem(
+"currentOrderId"
+);
 
 
-/* =========================================================
+/* ==========================================
    ELEMENTS
-========================================================= */
+========================================== */
 
 const restaurantName=
 document.getElementById(
 "restaurantName"
 );
 
-
 const tableInfo=
 document.getElementById(
 "tableInfo"
 );
-
 
 const statusContainer=
 document.getElementById(
@@ -662,9 +676,9 @@ document.getElementById(
 );
 
 
-/* =========================================================
-   GLOBAL DATA
-========================================================= */
+/* ==========================================
+   VARIABLES
+========================================== */
 
 let currentUser=null;
 
@@ -675,9 +689,9 @@ let currentUPILink="";
 let restaurantPaymentData=null;
 
 
-/* =========================================================
-   INITIAL CHECK
-========================================================= */
+/* ==========================================
+   VALIDATE
+========================================== */
 
 if(
 !restaurantId ||
@@ -720,9 +734,9 @@ waitForLogin();
 }
 
 
-/* =========================================================
+/* ==========================================
    RESTAURANT
-========================================================= */
+========================================== */
 
 async function loadRestaurant(){
 
@@ -735,7 +749,6 @@ db,
 restaurantId
 );
 
-
 const snap=
 await getDoc(ref);
 
@@ -745,9 +758,7 @@ if(snap.exists()){
 const data=
 snap.data();
 
-restaurantPaymentData=
-data;
-
+restaurantPaymentData=data;
 
 restaurantName.textContent=
 data.restaurantName ||
@@ -760,7 +771,7 @@ data.name ||
 catch(error){
 
 console.error(
-"Restaurant error:",
+"Restaurant load error:",
 error
 );
 
@@ -769,9 +780,9 @@ error
 }
 
 
-/* =========================================================
-   LOGIN
-========================================================= */
+/* ==========================================
+   AUTH
+========================================== */
 
 function waitForLogin(){
 
@@ -796,10 +807,7 @@ return;
 
 }
 
-
-currentUser=
-user;
-
+currentUser=user;
 
 loadOrder();
 
@@ -809,9 +817,9 @@ loadOrder();
 }
 
 
-/* =========================================================
-   ORDER REALTIME
-========================================================= */
+/* ==========================================
+   LOAD ORDER REALTIME
+========================================== */
 
 function loadOrder(){
 
@@ -827,6 +835,7 @@ orderId
 
 onSnapshot(
 orderRef,
+
 function(snapshot){
 
 if(!snapshot.exists()){
@@ -851,7 +860,9 @@ snapshot.data();
 
 
 /*
-   SECURITY CHECK
+IMPORTANT:
+Customer can only view
+their own order.
 */
 
 if(
@@ -880,6 +891,7 @@ return;
 renderOrder();
 
 },
+
 function(error){
 
 console.error(
@@ -896,21 +908,24 @@ statusContainer.innerHTML=`
 
 <br><br>
 
-${escapeHTML(error.message)}
+${escapeHTML(
+error.message
+)}
 
 </div>
 
 `;
 
 }
+
 );
 
 }
 
 
-/* =========================================================
+/* ==========================================
    RENDER ORDER
-========================================================= */
+========================================== */
 
 function renderOrder(){
 
@@ -925,6 +940,10 @@ getStatusInfo(status);
 
 const waiterCalled=
 orderData.waiterCalled===true;
+
+
+const waiterRequested=
+orderData.waiterRequested===true;
 
 
 const billRequested=
@@ -956,7 +975,6 @@ ${escapeHTML(orderId)}
 <div class="status-box">
 
 ${statusInfo.icon}
-
 ${statusInfo.text}
 
 </div>
@@ -978,12 +996,10 @@ ${statusInfo.message}
 </h3>
 
 
-<p
-style="
+<p style="
 color:#777;
 font-size:14px;
-"
->
+">
 
 Call a waiter whenever you need
 assistance at your table.
@@ -994,13 +1010,22 @@ assistance at your table.
 <button
 id="waiterBtn"
 class="action-btn waiter-btn
-${waiterCalled?"requested":""}"
-${waiterCalled?"disabled":""}
+${
+waiterCalled ||
+waiterRequested
+?"requested":""
+}"
+${
+waiterCalled ||
+waiterRequested
+?"disabled":""
+}
 onclick="callWaiter()"
 >
 
 ${
-waiterCalled
+waiterCalled ||
+waiterRequested
 ?
 "✅ Waiter Requested"
 :
@@ -1019,12 +1044,10 @@ waiterCalled
 </h3>
 
 
-<p
-style="
+<p style="
 color:#777;
 font-size:14px;
-"
->
+">
 
 When you are ready to pay,
 request your bill.
@@ -1068,7 +1091,8 @@ renderGeneratedBill()
 
 
 <div class="bill-status
-${billRequested?"bill-requested":""}">
+${billRequested?"bill-requested":""}"
+>
 
 ${
 billRequested
@@ -1100,9 +1124,9 @@ onclick="goBackToMenu()"
 }
 
 
-/* =========================================================
+/* ==========================================
    GENERATED BILL
-========================================================= */
+========================================== */
 
 function renderGeneratedBill(){
 
@@ -1149,8 +1173,8 @@ const cashRequested=
 orderData.cashPaymentRequested===true;
 
 
-const cashCompleted=
-orderData.cashPaymentCompleted===true;
+const upiRequested=
+orderData.upiPaymentRequested===true;
 
 
 const items=
@@ -1164,9 +1188,9 @@ orderData.items
 let paymentSection="";
 
 
-/* =========================================================
+/* ==========================================
    PAID
-========================================================= */
+========================================== */
 
 if(
 paymentStatus==="paid"
@@ -1181,9 +1205,7 @@ paymentSection=`
 <br>
 
 <small
-style="
-font-weight:normal;
-"
+style="font-weight:normal;"
 >
 
 Payment method:
@@ -1209,46 +1231,34 @@ paymentMethod==="upi"
 }
 
 
-/* =========================================================
+/* ==========================================
    CASH REQUESTED
-========================================================= */
+========================================== */
 
 else if(
-paymentMethod==="cash" &&
-cashRequested
+paymentStatus==="payment_selected" &&
+paymentMethod==="cash"
 ){
 
 paymentSection=`
 
 <div class="cash-requested-box">
 
-💵 Cash Collection Requested
-
-<br><br>
-
-<small
-style="
-font-weight:normal;
-"
->
-
-🔔 The restaurant has received
-your cash collection request.
-
-<br><br>
-
-Please keep
-
-<strong>
-₹${total.toFixed(2)}
-</strong>
-
-ready.
+💵 Cash Payment Requested
 
 <br>
 
-A waiter will come to your table
-to collect the cash.
+<small
+style="font-weight:normal;"
+>
+
+🔔 The waiter has been notified.
+
+<br>
+
+Please keep the cash ready.
+The waiter will come to your table
+to collect it.
 
 </small>
 
@@ -1259,9 +1269,9 @@ to collect the cash.
 }
 
 
-/* =========================================================
+/* ==========================================
    UPI SELECTED
-========================================================= */
+========================================== */
 
 else if(
 paymentStatus==="payment_selected" &&
@@ -1277,12 +1287,10 @@ paymentSection=`
 <br>
 
 <small
-style="
-font-weight:normal;
-"
+style="font-weight:normal;"
 >
 
-Please complete your UPI payment
+Complete the UPI payment
 and tap "I Have Paid".
 
 </small>
@@ -1294,9 +1302,9 @@ and tap "I Have Paid".
 }
 
 
-/* =========================================================
+/* ==========================================
    PAYMENT CHOICE
-========================================================= */
+========================================== */
 
 else{
 
@@ -1374,7 +1382,7 @@ notified to collect your cash.
 
 <div class="cash-request-button">
 
-🔔 Request Cash Collection
+🔔 Tap to Request Cash Collection
 
 </div>
 
@@ -1396,13 +1404,11 @@ style="display:none;"
 </strong>
 
 
-<p
-style="
+<p style="
 color:#777;
 font-size:14px;
 margin-top:6px;
-"
->
+">
 
 Scan the QR code using any UPI app.
 
@@ -1484,9 +1490,9 @@ the payment.
 }
 
 
-/* =========================================================
+/* ==========================================
    BILL ITEMS
-========================================================= */
+========================================== */
 
 let itemsHTML="";
 
@@ -1504,18 +1510,18 @@ item.foodName ||
 
 const quantity=
 Number(
-item.quantity || 1
+item.quantity||1
 );
 
 
 const price=
 Number(
-item.price || 0
+item.price||0
 );
 
 
 const lineTotal=
-price * quantity;
+price*quantity;
 
 
 itemsHTML+=`
@@ -1552,21 +1558,18 @@ ${quantity}
 
 `;
 
-}
-);
+});
 
 }
 else{
 
 itemsHTML=`
 
-<div
-style="
+<div style="
 text-align:center;
 color:#777;
 padding:10px;
-"
->
+">
 
 No item details available.
 
@@ -1577,9 +1580,9 @@ No item details available.
 }
 
 
-/* =========================================================
+/* ==========================================
    BILL DATE
-========================================================= */
+========================================== */
 
 const generatedAt=
 getTimestampMillis(
@@ -1597,9 +1600,9 @@ generatedAt
 new Date().toLocaleString();
 
 
-/* =========================================================
+/* ==========================================
    PAYMENT TEXT
-========================================================= */
+========================================== */
 
 let paymentText=
 "Payment Pending";
@@ -1635,9 +1638,9 @@ paymentMethod==="cash"
 }
 
 
-/* =========================================================
+/* ==========================================
    BILL HTML
-========================================================= */
+========================================== */
 
 const billHTML=`
 
@@ -1684,7 +1687,9 @@ Table
 <span>
 
 🪑
-${escapeHTML(String(table))}
+${escapeHTML(
+String(table)
+)}
 
 </span>
 
@@ -1789,16 +1794,14 @@ Total
 </div>
 
 
-<div
-style="
+<div style="
 margin-top:15px;
 padding:12px;
 border-radius:9px;
 background:#f5f5f5;
 text-align:center;
 color:#555;
-"
->
+">
 
 <strong>
 Payment:
@@ -1840,9 +1843,7 @@ ${paymentSection}
 `;
 
 
-/*
-   Load UPI after HTML exists.
-*/
+/* Load UPI after DOM exists */
 
 setTimeout(
 function(){
@@ -1859,9 +1860,9 @@ return billHTML;
 }
 
 
-/* =========================================================
-   UPI
-========================================================= */
+/* ==========================================
+   LOAD UPI
+========================================== */
 
 async function loadUPIPayment(total){
 
@@ -1903,7 +1904,17 @@ restaurantRef
 );
 
 
-if(!snapshot.exists()){
+if(
+!snapshot.exists()
+){
+
+detailsContainer.innerHTML=`
+
+<strong>
+❌ Restaurant payment settings not found.
+</strong>
+
+`;
 
 return;
 
@@ -1941,9 +1952,7 @@ if(!upiId){
 detailsContainer.innerHTML=`
 
 <strong>
-
 ❌ UPI ID not configured.
-
 </strong>
 
 `;
@@ -1981,6 +1990,9 @@ if(
 typeof QRCode==="undefined"
 ){
 
+qrContainer.textContent=
+"QR code unavailable.";
+
 return;
 
 }
@@ -1989,13 +2001,25 @@ return;
 new QRCode(
 qrContainer,
 {
-text:currentUPILink,
-width:210,
-height:210,
-colorDark:"#000000",
-colorLight:"#ffffff",
+
+text:
+currentUPILink,
+
+width:
+210,
+
+height:
+210,
+
+colorDark:
+"#000000",
+
+colorLight:
+"#ffffff",
+
 correctLevel:
 QRCode.CorrectLevel.M
+
 }
 );
 
@@ -2034,18 +2058,24 @@ Amount:
 catch(error){
 
 console.error(
-"UPI error:",
+"UPI load error:",
 error
 );
 
-}
+detailsContainer.innerHTML=`
+
+❌ Unable to load UPI details.
+
+`;
 
 }
 
+}
 
-/* =========================================================
+
+/* ==========================================
    OPEN UPI
-========================================================= */
+========================================== */
 
 window.openUPIApp=
 function(){
@@ -2067,9 +2097,9 @@ currentUPILink;
 };
 
 
-/* =========================================================
+/* ==========================================
    CALL WAITER
-========================================================= */
+========================================== */
 
 window.callWaiter=
 async function(){
@@ -2093,7 +2123,8 @@ return;
 
 
 if(
-orderData.waiterCalled===true
+orderData.waiterCalled===true ||
+orderData.waiterRequested===true
 ){
 
 return;
@@ -2129,6 +2160,11 @@ orderId
 );
 
 
+/*
+Only fields allowed by
+your customer Firestore rule.
+*/
+
 await updateDoc(
 orderRef,
 {
@@ -2154,7 +2190,7 @@ alert(
 catch(error){
 
 console.error(
-"Waiter error:",
+"Waiter request error:",
 error
 );
 
@@ -2179,9 +2215,9 @@ button.textContent=
 };
 
 
-/* =========================================================
+/* ==========================================
    REQUEST BILL
-========================================================= */
+========================================== */
 
 window.requestBill=
 async function(){
@@ -2266,7 +2302,7 @@ alert(
 catch(error){
 
 console.error(
-"Bill error:",
+"Bill request error:",
 error
 );
 
@@ -2291,9 +2327,9 @@ button.textContent=
 };
 
 
-/* =========================================================
+/* ==========================================
    PAYMENT TABS
-========================================================= */
+========================================== */
 
 window.showPaymentPanel=
 function(method){
@@ -2361,7 +2397,9 @@ orderData?.total ??
 
 if(total>0){
 
-loadUPIPayment(total);
+loadUPIPayment(
+total
+);
 
 }
 
@@ -2387,9 +2425,9 @@ upiTab.classList.remove(
 };
 
 
-/* =========================================================
+/* ==========================================
    SELECT PAYMENT
-========================================================= */
+========================================== */
 
 window.selectPayment=
 async function(method){
@@ -2437,41 +2475,31 @@ return;
 }
 
 
-/* =====================================================
-   CASH
-===================================================== */
-
-if(method==="cash"){
-
 /*
-   Prevent duplicate requests.
+IMPORTANT:
+
+The following fields are ALL
+allowed by your Firestore
+customer update rule:
+
+paymentMethod
+paymentStatus
+cashPaymentRequested
+cashPaymentRequestedAt
+updatedAt
+
+For UPI:
+paymentMethod
+paymentStatus
+upiPaymentRequested
+upiPaymentRequestedAt
+updatedAt
+
+If your rules do not include the
+two UPI fields, UPI would fail.
+Cash does not use any extra
+unauthorized field.
 */
-
-if(
-orderData.cashPaymentRequested===true
-){
-
-alert(
-"💵 Cash collection has already been requested."
-);
-
-return;
-
-}
-
-
-const cashButton=
-document.querySelector(
-"#cashPanel .cash-request-button"
-);
-
-
-if(cashButton){
-
-cashButton.innerHTML=
-"⏳ Sending request...";
-
-}
 
 
 try{
@@ -2486,170 +2514,32 @@ orderId
 );
 
 
-/*
-   THIS IS THE IMPORTANT PART.
-
-   These fields are written to Firestore.
-   The Admin dashboard must listen for them.
-*/
-
-await updateDoc(
-orderRef,
-{
+const updateData={
 
 paymentMethod:
-"cash",
+method,
 
 paymentStatus:
 "payment_selected",
 
-paymentSelectedAt:
-serverTimestamp(),
-
-
-/*
-   CASH ALERT FLAG
-*/
-
-cashPaymentRequested:
-true,
-
-
-/*
-   TIME REQUEST WAS CREATED
-*/
-
-cashPaymentRequestedAt:
-serverTimestamp(),
-
-
-/*
-   EXPLICIT ADMIN NOTIFICATION FLAG
-*/
-
-cashPaymentNotification:
-true,
-
-
-/*
-   TIME ADMIN NOTIFICATION WAS CREATED
-*/
-
-cashPaymentNotificationAt:
-serverTimestamp(),
-
-
-/*
-   HUMAN-READABLE STATUS
-*/
-
-cashPaymentStatus:
-"waiting_for_collection",
-
-
 updatedAt:
 serverTimestamp()
 
-}
-);
+};
 
 
-/*
-   Read the document again to verify
-   that Firestore actually contains
-   the cash request.
-*/
+if(method==="cash"){
 
-const verifySnapshot=
-await getDoc(orderRef);
+updateData.cashPaymentRequested=
+true;
 
-
-if(
-!verifySnapshot.exists()
-){
-
-throw new Error(
-"Order could not be verified after update."
-);
+updateData.cashPaymentRequestedAt=
+serverTimestamp();
 
 }
 
-
-const verifiedData=
-verifySnapshot.data();
-
-
-if(
-verifiedData.cashPaymentRequested!==true
-){
-
-throw new Error(
-"Cash request was not saved to Firestore."
-);
-
-}
-
-
-/*
-   SUCCESS
-*/
-
-alert(
-"💵 CASH COLLECTION REQUEST SENT!\n\n"+
-"🔔 The restaurant has been notified.\n\n"+
-"Please keep ₹"+
-Number(
-orderData.billTotal ??
-orderData.finalTotal ??
-orderData.total ??
-0
-).toFixed(2)+
-" ready.\n\n"+
-"A waiter will come to your table."
-);
-
-
-renderOrder();
-
-return;
-
-}
-catch(error){
-
-console.error(
-"Cash payment error:",
-error
-);
-
-
-if(cashButton){
-
-cashButton.innerHTML=
-"🔔 Request Cash Collection";
-
-}
-
-
-alert(
-"❌ CASH REQUEST FAILED.\n\n"+
-error.message
-);
-
-
-return;
-
-}
-
-}
-
-
-/* =====================================================
-   UPI
-===================================================== */
 
 if(method==="upi"){
-
-try{
 
 const restaurantRef=
 doc(
@@ -2705,41 +2595,31 @@ return;
 }
 
 
-const orderRef=
-doc(
-db,
-"restaurants",
-restaurantId,
-"orders",
-orderId
-);
+updateData.upiPaymentRequested=
+true;
+
+updateData.upiPaymentRequestedAt=
+serverTimestamp();
+
+}
 
 
 await updateDoc(
 orderRef,
-{
-
-paymentMethod:
-"upi",
-
-paymentStatus:
-"payment_selected",
-
-paymentSelectedAt:
-serverTimestamp(),
-
-upiPaymentRequested:
-true,
-
-upiPaymentRequestedAt:
-serverTimestamp(),
-
-updatedAt:
-serverTimestamp()
-
-}
+updateData
 );
 
+
+if(method==="cash"){
+
+alert(
+"💵 Cash payment requested!\n\n"+
+"🔔 The waiter has been notified.\n"+
+"Please keep the cash ready."
+);
+
+}
+else{
 
 alert(
 "📱 UPI payment selected.\n\n"+
@@ -2747,29 +2627,29 @@ alert(
 );
 
 }
+
+}
 catch(error){
 
 console.error(
-"UPI payment error:",
+"Payment selection error:",
 error
 );
 
 
 alert(
-"❌ Unable to select UPI payment.\n\n"+
+"❌ Unable to select payment method.\n\n"+
 error.message
 );
-
-}
 
 }
 
 };
 
 
-/* =========================================================
+/* ==========================================
    PRINT
-========================================================= */
+========================================== */
 
 window.printBill=
 function(){
@@ -2789,9 +2669,9 @@ window.print();
 };
 
 
-/* =========================================================
+/* ==========================================
    PDF
-========================================================= */
+========================================== */
 
 window.downloadBillPDF=
 function(){
@@ -2811,9 +2691,9 @@ window.print();
 };
 
 
-/* =========================================================
+/* ==========================================
    CREATE PRINT BILL
-========================================================= */
+========================================== */
 
 function createPrintBill(){
 
@@ -2856,9 +2736,15 @@ orderData.paymentMethod ||
 "";
 
 
-const paymentText=
+let paymentText=
+"Payment Pending";
+
+
+if(
 paymentStatus==="paid"
-?
+){
+
+paymentText=
 paymentMethod==="cash"
 ?
 "Paid - Cash"
@@ -2867,40 +2753,112 @@ paymentMethod==="upi"
 ?
 "Paid - UPI"
 :
-"Paid"
-:
+"Paid";
+
+}
+else if(
 paymentStatus==="payment_selected"
-?
+){
+
+paymentText=
 paymentMethod==="cash"
 ?
 "Cash Collection Requested"
 :
-"UPI Selected"
-:
-"Payment Pending";
+"UPI Selected";
+
+}
+
+
+let itemsHTML="";
+
+
+if(
+Array.isArray(orderData.items)
+){
+
+orderData.items.forEach(
+item=>{
+
+const qty=
+Number(
+item.quantity||1
+);
+
+
+const price=
+Number(
+item.price||0
+);
+
+
+itemsHTML+=`
+
+<tr>
+
+<td style="padding:8px;border-bottom:1px solid #ddd;">
+
+${escapeHTML(
+item.name ||
+"Item"
+)}
+
+</td>
+
+
+<td style="padding:8px;border-bottom:1px solid #ddd;text-align:center;">
+
+${qty}
+
+</td>
+
+
+<td style="padding:8px;border-bottom:1px solid #ddd;text-align:right;">
+
+₹${(
+price*qty
+).toFixed(2)}
+
+</td>
+
+</tr>
+
+`;
+
+});
+
+}
 
 
 container.innerHTML=`
 
-<div
-style="
+<div style="
 padding:30px;
 background:white;
 color:#111;
 font-family:Arial;
-"
->
+max-width:600px;
+margin:auto;
+">
 
 <h1 style="text-align:center;">
 
 ${escapeHTML(
-restaurantName.textContent
+restaurantName.textContent ||
+"Restaurant"
 )}
 
 </h1>
 
 
-<hr>
+<p style="text-align:center;">
+
+Order Bill
+
+</p>
+
+
+<hr style="margin:20px 0;">
 
 
 <p>
@@ -2920,15 +2878,76 @@ ${escapeHTML(orderId)}
 Table:
 </strong>
 
-${escapeHTML(String(table))}
+${escapeHTML(
+String(table)
+)}
 
 </p>
 
 
-<hr>
+<hr style="margin:20px 0;">
 
 
-<h2>
+<table style="
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+">
+
+<thead>
+
+<tr>
+
+<th style="
+text-align:left;
+padding:8px;
+border-bottom:2px solid #333;
+">
+
+Item
+
+</th>
+
+
+<th style="
+text-align:center;
+padding:8px;
+border-bottom:2px solid #333;
+">
+
+Qty
+
+</th>
+
+
+<th style="
+text-align:right;
+padding:8px;
+border-bottom:2px solid #333;
+">
+
+Amount
+
+</th>
+
+</tr>
+
+</thead>
+
+
+<tbody>
+
+${itemsHTML}
+
+</tbody>
+
+</table>
+
+
+<hr style="margin:20px 0;">
+
+
+<h2 style="text-align:right;">
 
 Total:
 ₹${total.toFixed(2)}
@@ -2936,13 +2955,27 @@ Total:
 </h2>
 
 
-<p>
+<p style="
+margin-top:15px;
+text-align:right;
+">
 
 <strong>
 Payment:
 </strong>
 
 ${escapeHTML(paymentText)}
+
+</p>
+
+
+<p style="
+margin-top:30px;
+text-align:center;
+color:#777;
+">
+
+Thank you for visiting!
 
 </p>
 
@@ -2953,9 +2986,9 @@ ${escapeHTML(paymentText)}
 }
 
 
-/* =========================================================
+/* ==========================================
    BACK
-========================================================= */
+========================================== */
 
 window.goBackToMenu=
 function(){
@@ -2974,9 +3007,9 @@ table
 };
 
 
-/* =========================================================
+/* ==========================================
    STATUS
-========================================================= */
+========================================== */
 
 function getStatusInfo(status){
 
@@ -3100,9 +3133,9 @@ message:
 }
 
 
-/* =========================================================
+/* ==========================================
    TIMESTAMP
-========================================================= */
+========================================== */
 
 function getTimestampMillis(value){
 
@@ -3126,7 +3159,9 @@ if(
 value.seconds!==undefined
 ){
 
-return Number(value.seconds)*1000;
+return Number(
+value.seconds
+)*1000;
 
 }
 
@@ -3147,6 +3182,7 @@ typeof value==="string"
 const parsed=
 Date.parse(value);
 
+
 return Number.isNaN(parsed)
 ?
 0
@@ -3161,9 +3197,9 @@ return 0;
 }
 
 
-/* =========================================================
+/* ==========================================
    ESCAPE HTML
-========================================================= */
+========================================== */
 
 function escapeHTML(value){
 
