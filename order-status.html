@@ -12,7 +12,6 @@
 
 <title>Order Status - Restaurant</title>
 
-<!-- QR CODE LIBRARY -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
@@ -183,8 +182,6 @@ header p {
     color: #2e7d32;
 }
 
-/* BILL ITEMS */
-
 .bill-items {
     margin-top: 15px;
     background: white;
@@ -220,8 +217,6 @@ header p {
     white-space: nowrap;
 }
 
-/* PRINT */
-
 .bill-print-actions {
     display: flex;
     gap: 10px;
@@ -247,16 +242,6 @@ header p {
 .bill-pdf-btn {
     background: #6a1b9a;
 }
-
-.bill-print-btn:hover {
-    background: #1565c0;
-}
-
-.bill-pdf-btn:hover {
-    background: #4a148c;
-}
-
-/* BILL META */
 
 .bill-meta {
     margin-top: 15px;
@@ -340,9 +325,24 @@ header p {
     margin-top: 10px;
 }
 
+.payment-action-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
 .payment-selected {
     margin-top: 15px;
     padding: 14px;
+    border-radius: 9px;
+    background: #fff3cd;
+    color: #856404;
+    text-align: center;
+    font-weight: bold;
+}
+
+.payment-claimed {
+    margin-top: 15px;
+    padding: 16px;
     border-radius: 9px;
     background: #fff3cd;
     color: #856404;
@@ -419,6 +419,16 @@ header p {
     line-height: 1.5;
 }
 
+.upi-warning {
+    margin-top: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    background: #fff3cd;
+    color: #856404;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
 /* GENERAL */
 
 .hidden {
@@ -455,7 +465,7 @@ header p {
     cursor: pointer;
 }
 
-/* PRINT ONLY */
+/* PRINT */
 
 .print-bill {
     display: none;
@@ -602,6 +612,7 @@ header p {
 
 </header>
 
+
 <div class="container">
 
     <div
@@ -610,6 +621,7 @@ header p {
     >
         Loading table...
     </div>
+
 
     <div id="statusContainer">
 
@@ -620,6 +632,7 @@ header p {
     </div>
 
 </div>
+
 
 <div
     id="printBillContainer"
@@ -742,6 +755,10 @@ const statusContainer =
     );
 
 
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
 let currentUser = null;
 
 let orderData = null;
@@ -774,7 +791,9 @@ if (
                 class="back-btn"
                 onclick="goBackToMenu()"
             >
+
                 ← Back to Menu
+
             </button>
 
         </div>
@@ -1006,23 +1025,30 @@ function renderOrder() {
         <div class="order-card">
 
             <div class="order-title">
+
                 📋 Order Status
+
             </div>
 
             <div class="order-id">
+
                 Order ID:
                 ${escapeHTML(orderId)}
+
             </div>
 
             <div class="status-box">
 
                 ${statusInfo.icon}
+
                 ${statusInfo.text}
 
             </div>
 
             <div class="status-message">
+
                 ${statusInfo.message}
+
             </div>
 
         </div>
@@ -1046,8 +1072,11 @@ function renderOrder() {
 
             <button
                 id="waiterBtn"
-                class="action-btn waiter-btn
-                ${waiterCalled ? "requested" : ""}"
+                class="
+                    action-btn
+                    waiter-btn
+                    ${waiterCalled ? "requested" : ""}
+                "
                 ${waiterCalled ? "disabled" : ""}
                 onclick="callWaiter()"
             >
@@ -1083,8 +1112,11 @@ function renderOrder() {
 
             <button
                 id="billBtn"
-                class="action-btn bill-btn
-                ${billRequested ? "requested" : ""}"
+                class="
+                    action-btn
+                    bill-btn
+                    ${billRequested ? "requested" : ""}
+                "
                 ${billRequested ? "disabled" : ""}
                 onclick="requestBill()"
             >
@@ -1184,13 +1216,16 @@ function renderGeneratedBill() {
             )
         );
 
+
     const paymentStatus =
         orderData.paymentStatus ||
         "unpaid";
 
+
     const paymentMethod =
         orderData.paymentMethod ||
         "";
+
 
     const items =
         Array.isArray(
@@ -1201,10 +1236,13 @@ function renderGeneratedBill() {
         :
         [];
 
+
     let paymentSection = "";
 
 
-    /* PAID */
+    /* =================================================
+       PAYMENT COMPLETED
+    ================================================= */
 
     if (
         paymentStatus === "paid"
@@ -1245,7 +1283,47 @@ function renderGeneratedBill() {
     }
 
 
-    /* CASH SELECTED */
+    /* =================================================
+       UPI PAYMENT CLAIMED
+    ================================================= */
+
+    else if (
+        paymentStatus === "payment_claimed" &&
+        paymentMethod === "upi"
+    ) {
+
+        paymentSection = `
+
+            <div class="payment-claimed">
+
+                🟡 UPI Payment Submitted
+
+                <br>
+
+                <small style="
+                    font-weight:normal;
+                ">
+
+                    Your payment claim has been
+                    sent to the restaurant.
+
+                    <br><br>
+
+                    The restaurant will verify the
+                    payment before marking it as paid.
+
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =================================================
+       CASH SELECTED
+    ================================================= */
 
     else if (
         paymentStatus === "payment_selected" &&
@@ -1276,7 +1354,10 @@ function renderGeneratedBill() {
     }
 
 
-    /* UPI SELECTED */
+    /* =================================================
+       OLD UPI PAYMENT SELECTED
+       Compatibility with old orders
+    ================================================= */
 
     else if (
         paymentStatus === "payment_selected" &&
@@ -1285,9 +1366,9 @@ function renderGeneratedBill() {
 
         paymentSection = `
 
-            <div class="payment-selected">
+            <div class="payment-claimed">
 
-                📱 UPI Payment Selected
+                🟡 UPI Payment Pending Verification
 
                 <br>
 
@@ -1295,8 +1376,8 @@ function renderGeneratedBill() {
                     font-weight:normal;
                 ">
 
-                    Your UPI payment selection has
-                    been recorded.
+                    Please contact the restaurant
+                    if you have already paid.
 
                 </small>
 
@@ -1307,7 +1388,9 @@ function renderGeneratedBill() {
     }
 
 
-    /* PAYMENT NOT SELECTED */
+    /* =================================================
+       PAYMENT NOT SELECTED
+    ================================================= */
 
     else {
 
@@ -1327,6 +1410,7 @@ function renderGeneratedBill() {
 
                 </div>
 
+
                 <div class="payment-tabs">
 
                     <button
@@ -1338,6 +1422,7 @@ function renderGeneratedBill() {
                         💵 Cash
 
                     </button>
+
 
                     <button
                         id="upiTab"
@@ -1352,7 +1437,7 @@ function renderGeneratedBill() {
                 </div>
 
 
-                <!-- CASH -->
+                <!-- CASH PANEL -->
 
                 <div
                     id="cashPanel"
@@ -1360,7 +1445,9 @@ function renderGeneratedBill() {
                 >
 
                     <strong>
+
                         💵 Pay by Cash
+
                     </strong>
 
                     <p style="
@@ -1386,7 +1473,7 @@ function renderGeneratedBill() {
                 </div>
 
 
-                <!-- UPI -->
+                <!-- UPI PANEL -->
 
                 <div
                     id="upiPanel"
@@ -1395,8 +1482,11 @@ function renderGeneratedBill() {
                 >
 
                     <strong>
+
                         📱 Pay by UPI
+
                     </strong>
+
 
                     <p style="
                         color:#777;
@@ -1415,7 +1505,9 @@ function renderGeneratedBill() {
                         Amount to Pay
 
                         <strong>
+
                             ₹${total.toFixed(2)}
+
                         </strong>
 
                     </div>
@@ -1452,6 +1544,7 @@ function renderGeneratedBill() {
 
 
                     <button
+                        id="upiPaidBtn"
                         class="payment-action-btn"
                         style="background:#2e7d32;"
                         onclick="selectPayment('upi')"
@@ -1462,15 +1555,26 @@ function renderGeneratedBill() {
                     </button>
 
 
+                    <div class="upi-warning">
+
+                        ⚠️ Only tap "I Have Paid" after
+                        you have actually completed the
+                        UPI payment.
+
+                        <br><br>
+
+                        Your payment will remain pending
+                        until the restaurant verifies the
+                        payment in its UPI/bank account.
+
+                    </div>
+
+
                     <p class="upi-note">
 
-                        After completing the payment,
-                        tap <strong>"I Have Paid"</strong>.
-
-                        <br>
-
-                        The restaurant will verify the
-                        payment before marking it as paid.
+                        Direct UPI payment does not provide
+                        automatic payment confirmation to
+                        this website.
 
                     </p>
 
@@ -1483,9 +1587,12 @@ function renderGeneratedBill() {
     }
 
 
-    /* BILL ITEMS */
+    /* =================================================
+       BILL ITEMS
+    ================================================= */
 
     let itemsHTML = "";
+
 
     if (items.length) {
 
@@ -1497,18 +1604,22 @@ function renderGeneratedBill() {
                     item.foodName ||
                     "Item";
 
+
                 const quantity =
                     Number(
                         item.quantity || 1
                     );
+
 
                 const price =
                     Number(
                         item.price || 0
                     );
 
+
                 const lineTotal =
                     price * quantity;
+
 
                 itemsHTML += `
 
@@ -1517,7 +1628,9 @@ function renderGeneratedBill() {
                         <div>
 
                             <div class="bill-item-name">
+
                                 ${escapeHTML(name)}
+
                             </div>
 
                             <div class="bill-item-quantity">
@@ -1528,6 +1641,7 @@ function renderGeneratedBill() {
                             </div>
 
                         </div>
+
 
                         <div class="bill-item-price">
 
@@ -1562,12 +1676,15 @@ function renderGeneratedBill() {
     }
 
 
-    /* BILL DATE */
+    /* =================================================
+       BILL DATE
+    ================================================= */
 
     const generatedAt =
         getTimestampMillis(
             orderData.billGeneratedAt
         );
+
 
     const billDate =
         generatedAt
@@ -1579,10 +1696,13 @@ function renderGeneratedBill() {
         new Date().toLocaleString();
 
 
-    /* PAYMENT TEXT */
+    /* =================================================
+       PAYMENT TEXT
+    ================================================= */
 
     let paymentText =
         "Payment Pending";
+
 
     if (
         paymentStatus === "paid"
@@ -1590,6 +1710,14 @@ function renderGeneratedBill() {
 
         paymentText =
             "Paid";
+
+    }
+    else if (
+        paymentStatus === "payment_claimed"
+    ) {
+
+        paymentText =
+            "UPI Payment Submitted - Verification Pending";
 
     }
     else if (
@@ -1601,10 +1729,14 @@ function renderGeneratedBill() {
             ?
             "Cash Selected"
             :
-            "UPI Selected";
+            "Payment Selected";
 
     }
 
+
+    /* =================================================
+       BILL HTML
+    ================================================= */
 
     const billHTML = `
 
@@ -1613,6 +1745,7 @@ function renderGeneratedBill() {
             <h3>
                 🧾 Your Bill
             </h3>
+
 
             <div class="bill-status bill-generated">
 
@@ -1630,10 +1763,12 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
+
                         ${escapeHTML(
                             restaurantName.textContent ||
                             "Restaurant"
                         )}
+
                     </span>
 
                 </div>
@@ -1646,9 +1781,11 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
+
                         🪑 ${escapeHTML(
                             String(table)
                         )}
+
                     </span>
 
                 </div>
@@ -1661,7 +1798,9 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
+
                         ${escapeHTML(orderId)}
+
                     </span>
 
                 </div>
@@ -1674,7 +1813,9 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
+
                         ${escapeHTML(billDate)}
+
                     </span>
 
                 </div>
@@ -1698,7 +1839,9 @@ function renderGeneratedBill() {
                     </span>
 
                     <span>
+
                         ₹${subtotal.toFixed(2)}
+
                     </span>
 
                 </div>
@@ -1719,7 +1862,9 @@ function renderGeneratedBill() {
                         </span>
 
                         <span>
+
                             -₹${discount.toFixed(2)}
+
                         </span>
 
                     </div>
@@ -1796,10 +1941,9 @@ function renderGeneratedBill() {
     `;
 
 
-    /*
-     * Generate QR after the payment
-     * panel has been inserted into DOM.
-     */
+    /* =================================================
+       GENERATE UPI QR
+    ================================================= */
 
     setTimeout(
         function() {
@@ -1817,7 +1961,7 @@ function renderGeneratedBill() {
 
 
 /* =====================================================
-   LOAD UPI PAYMENT
+   LOAD DIRECT UPI PAYMENT
 ===================================================== */
 
 async function loadUPIPayment(total) {
@@ -1882,11 +2026,19 @@ async function loadUPIPayment(total) {
             restaurantSnapshot.data();
 
 
+        /*
+         * Merchant UPI ID
+         */
+
         const upiId =
             restaurant.upiId ||
             restaurant.upi ||
             "";
 
+
+        /*
+         * Merchant display name
+         */
 
         const upiName =
             restaurant.upiName ||
@@ -1916,15 +2068,19 @@ async function loadUPIPayment(total) {
 
 
         /*
-         * Create standard UPI payment URI.
+         * Standard UPI payment URI
          */
 
         currentUPILink =
             "upi://pay" +
             "?pa=" +
-            encodeURIComponent(upiId) +
+            encodeURIComponent(
+                upiId
+            ) +
             "&pn=" +
-            encodeURIComponent(upiName) +
+            encodeURIComponent(
+                upiName
+            ) +
             "&am=" +
             encodeURIComponent(
                 Number(total).toFixed(2)
@@ -1984,14 +2140,18 @@ async function loadUPIPayment(total) {
         detailsContainer.innerHTML = `
 
             <strong>
+
                 ${escapeHTML(upiName)}
+
             </strong>
 
             <br>
 
             <span>
+
                 UPI ID:
                 ${escapeHTML(upiId)}
+
             </span>
 
         `;
@@ -2036,8 +2196,584 @@ window.openUPIApp =
         }
 
 
+        /*
+         * Open the UPI URI.
+         *
+         * On Android/iOS this normally launches
+         * an installed UPI application.
+         */
+
         window.location.href =
             currentUPILink;
+
+    };
+
+
+/* =====================================================
+   PAYMENT TABS
+===================================================== */
+
+window.showPaymentPanel =
+    function(method) {
+
+        const cashPanel =
+            document.getElementById(
+                "cashPanel"
+            );
+
+
+        const upiPanel =
+            document.getElementById(
+                "upiPanel"
+            );
+
+
+        const cashTab =
+            document.getElementById(
+                "cashTab"
+            );
+
+
+        const upiTab =
+            document.getElementById(
+                "upiTab"
+            );
+
+
+        if (
+            !cashPanel ||
+            !upiPanel ||
+            !cashTab ||
+            !upiTab
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            method === "upi"
+        ) {
+
+            cashPanel.style.display =
+                "none";
+
+            upiPanel.style.display =
+                "block";
+
+            cashTab.classList.remove(
+                "active"
+            );
+
+            upiTab.classList.add(
+                "active"
+            );
+
+        }
+        else {
+
+            cashPanel.style.display =
+                "block";
+
+            upiPanel.style.display =
+                "none";
+
+            cashTab.classList.add(
+                "active"
+            );
+
+            upiTab.classList.remove(
+                "active"
+            );
+
+        }
+
+    };
+
+
+/* =====================================================
+   SELECT / CLAIM PAYMENT
+===================================================== */
+
+window.selectPayment =
+    async function(method) {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (!orderData) {
+
+            return;
+
+        }
+
+
+        const billGenerated =
+            orderData.billGenerated === true ||
+            orderData.billStatus === "generated";
+
+
+        if (!billGenerated) {
+
+            alert(
+                "The bill has not been generated yet."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            orderData.paymentStatus ===
+            "paid"
+        ) {
+
+            return;
+
+        }
+
+
+        /*
+         * Do not allow duplicate UPI claims.
+         */
+
+        if (
+            method === "upi" &&
+            orderData.paymentStatus ===
+            "payment_claimed"
+        ) {
+
+            return;
+
+        }
+
+
+        const methodName =
+            method === "upi"
+            ?
+            "UPI"
+            :
+            "Cash";
+
+
+        /*
+         * For UPI, the customer must confirm
+         * that they actually paid.
+         */
+
+        if (
+            method === "upi"
+        ) {
+
+            const confirmed =
+                confirm(
+                    "Have you completed the UPI payment?\n\n" +
+                    "Only continue if the payment was actually made."
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+        }
+        else {
+
+            const confirmed =
+                confirm(
+                    "Select Cash as your payment method?"
+                );
+
+
+            if (!confirmed) {
+
+                return;
+
+            }
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            let updateData;
+
+
+            /* =========================================
+               UPI
+            ========================================= */
+
+            if (
+                method === "upi"
+            ) {
+
+                updateData = {
+
+                    paymentMethod:
+                        "upi",
+
+                    paymentStatus:
+                        "payment_claimed",
+
+                    upiPaymentClaimed:
+                        true,
+
+                    upiPaymentClaimedAt:
+                        serverTimestamp(),
+
+                    paymentSelectedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                };
+
+            }
+
+
+            /* =========================================
+               CASH
+            ========================================= */
+
+            else {
+
+                updateData = {
+
+                    paymentMethod:
+                        "cash",
+
+                    paymentStatus:
+                        "payment_selected",
+
+                    cashPaymentRequested:
+                        true,
+
+                    cashPaymentRequestedAt:
+                        serverTimestamp(),
+
+                    paymentSelectedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                };
+
+            }
+
+
+            await updateDoc(
+                orderRef,
+                updateData
+            );
+
+
+            /*
+             * Real-time listener will update the UI.
+             */
+
+            if (
+                method === "upi"
+            ) {
+
+                alert(
+
+                    "🟡 UPI payment submitted.\n\n" +
+
+                    "The restaurant will verify your payment " +
+                    "and mark the order as paid."
+
+                );
+
+            }
+            else {
+
+                alert(
+
+                    "💵 Cash payment selected.\n\n" +
+
+                    "Please wait for the waiter " +
+                    "to collect your payment."
+
+                );
+
+            }
+
+        }
+        catch(error) {
+
+            console.error(
+                "Payment selection error:",
+                error
+            );
+
+
+            alert(
+
+                "❌ Unable to update payment.\n\n" +
+                error.message
+
+            );
+
+        }
+
+    };
+
+
+/* =====================================================
+   CALL WAITER
+===================================================== */
+
+window.callWaiter =
+    async function() {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (!orderData) {
+
+            return;
+
+        }
+
+
+        if (
+            orderData.waiterCalled === true
+        ) {
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "waiterBtn"
+            );
+
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "⏳ Calling Waiter...";
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    waiterCalled:
+                        true,
+
+                    waiterRequestedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            alert(
+                "🔔 Waiter has been requested."
+            );
+
+        }
+        catch(error) {
+
+            console.error(
+                "Waiter request error:",
+                error
+            );
+
+
+            alert(
+
+                "❌ Unable to call waiter.\n\n" +
+                error.message
+
+            );
+
+
+            if (button) {
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "🔔 Call Waiter";
+
+            }
+
+        }
+
+    };
+
+
+/* =====================================================
+   REQUEST BILL
+===================================================== */
+
+window.requestBill =
+    async function() {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (!orderData) {
+
+            return;
+
+        }
+
+
+        if (
+            orderData.billRequested === true
+        ) {
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "billBtn"
+            );
+
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "⏳ Requesting Bill...";
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    billRequested:
+                        true,
+
+                    billRequestedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            alert(
+
+                "🧾 Bill requested. " +
+                "The restaurant will generate it shortly."
+
+            );
+
+        }
+        catch(error) {
+
+            console.error(
+                "Bill request error:",
+                error
+            );
+
+
+            alert(
+
+                "❌ Unable to request bill.\n\n" +
+                error.message
+
+            );
+
+
+            if (button) {
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "🧾 Request Bill";
+
+            }
+
+        }
 
     };
 
@@ -2049,7 +2785,9 @@ window.openUPIApp =
 function createPrintBill() {
 
     if (!orderData) {
+
         return;
+
     }
 
 
@@ -2060,7 +2798,9 @@ function createPrintBill() {
 
 
     if (!printContainer) {
+
         return;
+
     }
 
 
@@ -2155,6 +2895,14 @@ function createPrintBill() {
 
     }
     else if (
+        paymentStatus === "payment_claimed"
+    ) {
+
+        paymentText =
+            "UPI Payment Submitted - Verification Pending";
+
+    }
+    else if (
         paymentStatus === "payment_selected"
     ) {
 
@@ -2163,7 +2911,7 @@ function createPrintBill() {
             ?
             "Cash Selected"
             :
-            "UPI Selected";
+            "Payment Selected";
 
     }
 
@@ -2203,19 +2951,27 @@ function createPrintBill() {
                     <tr>
 
                         <td>
+
                             ${escapeHTML(name)}
+
                         </td>
 
                         <td>
+
                             ${quantity}
+
                         </td>
 
                         <td>
+
                             ₹${price.toFixed(2)}
+
                         </td>
 
                         <td>
+
                             ₹${lineTotal.toFixed(2)}
+
                         </td>
 
                     </tr>
@@ -2233,7 +2989,9 @@ function createPrintBill() {
             <tr>
 
                 <td colspan="4">
+
                     No item details available.
+
                 </td>
 
             </tr>
@@ -2250,11 +3008,15 @@ function createPrintBill() {
             <div class="print-header">
 
                 <h1>
+
                     ${escapeHTML(restaurant)}
+
                 </h1>
 
                 <p>
+
                     Restaurant Bill
+
                 </p>
 
             </div>
@@ -2269,7 +3031,9 @@ function createPrintBill() {
                     </strong>
 
                     <span>
+
                         ${escapeHTML(orderId)}
+
                     </span>
 
                 </div>
@@ -2282,9 +3046,11 @@ function createPrintBill() {
                     </strong>
 
                     <span>
+
                         ${escapeHTML(
                             String(table)
                         )}
+
                     </span>
 
                 </div>
@@ -2297,7 +3063,9 @@ function createPrintBill() {
                     </strong>
 
                     <span>
+
                         ${escapeHTML(billDate)}
+
                     </span>
 
                 </div>
@@ -2350,7 +3118,9 @@ function createPrintBill() {
                     </span>
 
                     <span>
+
                         ₹${subtotal.toFixed(2)}
+
                     </span>
 
                 </div>
@@ -2368,7 +3138,9 @@ function createPrintBill() {
                         </span>
 
                         <span>
+
                             -₹${discount.toFixed(2)}
+
                         </span>
 
                     </div>
@@ -2389,7 +3161,9 @@ function createPrintBill() {
                     </span>
 
                     <span>
+
                         ₹${total.toFixed(2)}
+
                     </span>
 
                 </div>
@@ -2400,7 +3174,9 @@ function createPrintBill() {
             <div class="print-payment">
 
                 <strong>
+
                     Payment Status
+
                 </strong>
 
                 <br>
@@ -2521,476 +3297,6 @@ window.downloadBillPDF =
             },
             100
         );
-
-    };
-
-
-/* =====================================================
-   CALL WAITER
-===================================================== */
-
-window.callWaiter =
-    async function() {
-
-        if (!currentUser) {
-
-            alert(
-                "Please login first."
-            );
-
-            return;
-
-        }
-
-
-        if (!orderData) {
-            return;
-        }
-
-
-        if (
-            orderData.waiterCalled === true
-        ) {
-
-            return;
-
-        }
-
-
-        const button =
-            document.getElementById(
-                "waiterBtn"
-            );
-
-
-        if (button) {
-
-            button.disabled =
-                true;
-
-            button.textContent =
-                "⏳ Calling Waiter...";
-
-        }
-
-
-        try {
-
-            const orderRef =
-                doc(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "orders",
-                    orderId
-                );
-
-
-            await updateDoc(
-                orderRef,
-                {
-
-                    waiterCalled:
-                        true,
-
-                    waiterRequestedAt:
-                        serverTimestamp(),
-
-                    updatedAt:
-                        serverTimestamp()
-
-                }
-            );
-
-
-            alert(
-                "🔔 Waiter has been requested."
-            );
-
-        }
-        catch(error) {
-
-            console.error(
-                "Waiter request error:",
-                error
-            );
-
-
-            alert(
-                "❌ Unable to call waiter.\n\n" +
-                error.message
-            );
-
-
-            if (button) {
-
-                button.disabled =
-                    false;
-
-                button.textContent =
-                    "🔔 Call Waiter";
-
-            }
-
-        }
-
-    };
-
-
-/* =====================================================
-   REQUEST BILL
-===================================================== */
-
-window.requestBill =
-    async function() {
-
-        if (!currentUser) {
-
-            alert(
-                "Please login first."
-            );
-
-            return;
-
-        }
-
-
-        if (!orderData) {
-            return;
-        }
-
-
-        if (
-            orderData.billRequested === true
-        ) {
-
-            return;
-
-        }
-
-
-        const button =
-            document.getElementById(
-                "billBtn"
-            );
-
-
-        if (button) {
-
-            button.disabled =
-                true;
-
-            button.textContent =
-                "⏳ Requesting Bill...";
-
-        }
-
-
-        try {
-
-            const orderRef =
-                doc(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "orders",
-                    orderId
-                );
-
-
-            await updateDoc(
-                orderRef,
-                {
-
-                    billRequested:
-                        true,
-
-                    billRequestedAt:
-                        serverTimestamp(),
-
-                    updatedAt:
-                        serverTimestamp()
-
-                }
-            );
-
-
-            alert(
-                "🧾 Bill requested. The restaurant will generate it shortly."
-            );
-
-        }
-        catch(error) {
-
-            console.error(
-                "Bill request error:",
-                error
-            );
-
-
-            alert(
-                "❌ Unable to request bill.\n\n" +
-                error.message
-            );
-
-
-            if (button) {
-
-                button.disabled =
-                    false;
-
-                button.textContent =
-                    "🧾 Request Bill";
-
-            }
-
-        }
-
-    };
-
-
-/* =====================================================
-   PAYMENT TABS
-===================================================== */
-
-window.showPaymentPanel =
-    function(method) {
-
-        const cashPanel =
-            document.getElementById(
-                "cashPanel"
-            );
-
-
-        const upiPanel =
-            document.getElementById(
-                "upiPanel"
-            );
-
-
-        const cashTab =
-            document.getElementById(
-                "cashTab"
-            );
-
-
-        const upiTab =
-            document.getElementById(
-                "upiTab"
-            );
-
-
-        if (
-            !cashPanel ||
-            !upiPanel ||
-            !cashTab ||
-            !upiTab
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            method === "upi"
-        ) {
-
-            cashPanel.style.display =
-                "none";
-
-            upiPanel.style.display =
-                "block";
-
-            cashTab.classList.remove(
-                "active"
-            );
-
-            upiTab.classList.add(
-                "active"
-            );
-
-        }
-        else {
-
-            cashPanel.style.display =
-                "block";
-
-            upiPanel.style.display =
-                "none";
-
-            cashTab.classList.add(
-                "active"
-            );
-
-            upiTab.classList.remove(
-                "active"
-            );
-
-        }
-
-    };
-
-
-/* =====================================================
-   SELECT PAYMENT
-===================================================== */
-
-window.selectPayment =
-    async function(method) {
-
-        if (!currentUser) {
-
-            alert(
-                "Please login first."
-            );
-
-            return;
-
-        }
-
-
-        if (!orderData) {
-            return;
-        }
-
-
-        const billGenerated =
-            orderData.billGenerated === true ||
-            orderData.billStatus === "generated";
-
-
-        if (!billGenerated) {
-
-            alert(
-                "The bill has not been generated yet."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            orderData.paymentStatus ===
-            "paid"
-        ) {
-
-            return;
-
-        }
-
-
-        const methodName =
-            method === "upi"
-            ?
-            "UPI"
-            :
-            "Cash";
-
-
-        const confirmed =
-            confirm(
-                "Select " +
-                methodName +
-                " as your payment method?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        try {
-
-            const orderRef =
-                doc(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "orders",
-                    orderId
-                );
-
-
-            const updateData = {
-
-                paymentMethod:
-                    method,
-
-                paymentStatus:
-                    "payment_selected",
-
-                paymentSelectedAt:
-                    serverTimestamp(),
-
-                updatedAt:
-                    serverTimestamp()
-
-            };
-
-
-            if (
-                method === "cash"
-            ) {
-
-                updateData.cashPaymentRequested =
-                    true;
-
-                updateData.cashPaymentRequestedAt =
-                    serverTimestamp();
-
-            }
-
-
-            if (
-                method === "upi"
-            ) {
-
-                updateData.upiPaymentRequested =
-                    true;
-
-                updateData.upiPaymentRequestedAt =
-                    serverTimestamp();
-
-            }
-
-
-            await updateDoc(
-                orderRef,
-                updateData
-            );
-
-
-            alert(
-                "✅ " +
-                methodName +
-                " selected.\n\n" +
-                (
-                    method === "cash"
-                    ?
-                    "Please wait for the waiter to collect your cash."
-                    :
-                    "Please complete the UPI payment and tap 'I Have Paid'."
-                )
-            );
-
-        }
-        catch(error) {
-
-            console.error(
-                "Payment selection error:",
-                error
-            );
-
-
-            alert(
-                "❌ Unable to select payment method.\n\n" +
-                error.message
-            );
-
-        }
 
     };
 
@@ -3165,7 +3471,9 @@ function getStatusInfo(status) {
 function getTimestampMillis(value) {
 
     if (!value) {
+
         return 0;
+
     }
 
 
