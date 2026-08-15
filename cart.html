@@ -1,19 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Cart - Restaurant</title>
 
 <style>
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -25,8 +17,6 @@ body {
     background: #f5f5f5;
     padding-bottom: 30px;
 }
-
-/* HEADER */
 
 header {
     background: #ff5722;
@@ -43,15 +33,11 @@ header p {
     font-size: 14px;
 }
 
-/* CONTAINER */
-
 .container {
     max-width: 600px;
     margin: auto;
     padding: 15px;
 }
-
-/* TABLE */
 
 .table-info {
     background: white;
@@ -62,8 +48,6 @@ header p {
     color: #ff5722;
     margin-bottom: 15px;
 }
-
-/* CART CARD */
 
 .cart-card {
     background: white;
@@ -110,8 +94,6 @@ header p {
     font-size: 13px;
 }
 
-/* TOTAL */
-
 .total-card {
     background: white;
     padding: 18px;
@@ -131,9 +113,8 @@ header p {
     color: #ff5722;
 }
 
-/* BUTTONS */
-
-.place-btn {
+.place-btn,
+.status-btn {
     width: 100%;
     margin-top: 15px;
     padding: 15px;
@@ -146,7 +127,8 @@ header p {
     cursor: pointer;
 }
 
-.place-btn:hover {
+.place-btn:hover,
+.status-btn:hover {
     background: #e64a19;
 }
 
@@ -167,8 +149,6 @@ header p {
     cursor: pointer;
 }
 
-/* EMPTY */
-
 .empty {
     background: white;
     padding: 30px;
@@ -176,8 +156,6 @@ header p {
     text-align: center;
     color: #777;
 }
-
-/* SUCCESS */
 
 .success {
     background: white;
@@ -199,77 +177,48 @@ header p {
     border-radius: 8px;
     font-weight: bold;
     color: #e65100;
+    word-break: break-all;
 }
 
 .status-btn {
-    width: 100%;
-    margin-top: 15px;
-    padding: 14px;
-    border: none;
-    border-radius: 8px;
-    background: #ff5722;
-    color: white;
     font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
 }
 
 </style>
-
 </head>
 
 <body>
 
-
 <header>
-
-    <h1 id="restaurantName">
-        Restaurant
-    </h1>
-
-    <p>
-        Your Cart
-    </p>
-
+    <h1 id="restaurantName">Restaurant</h1>
+    <p>Your Cart</p>
 </header>
-
 
 <div class="container">
 
-
-    <div
-        id="tableInfo"
-        class="table-info"
-    >
+    <div id="tableInfo" class="table-info">
         Loading table...
     </div>
 
-
     <div id="cartContainer">
-
         <div class="empty">
             Loading cart...
         </div>
-
     </div>
-
 
 </div>
 
-
 <script type="module">
 
-
-/* ==========================================
+/* =====================================================
    FIREBASE
-========================================== */
+===================================================== */
 
 import {
     initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
 
 import {
     getFirestore,
@@ -281,6 +230,12 @@ import {
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    getAuth
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
 const firebaseConfig = {
@@ -305,7 +260,6 @@ const firebaseConfig = {
 
     measurementId:
         "G-G3Q89BDFF9"
-
 };
 
 
@@ -317,9 +271,13 @@ const db =
     getFirestore(app);
 
 
-/* ==========================================
+const auth =
+    getAuth(app);
+
+
+/* =====================================================
    URL PARAMETERS
-========================================== */
+===================================================== */
 
 const params =
     new URLSearchParams(
@@ -335,9 +293,9 @@ const table =
     params.get("table");
 
 
-/* ==========================================
+/* =====================================================
    ELEMENTS
-========================================== */
+===================================================== */
 
 const restaurantName =
     document.getElementById(
@@ -357,16 +315,16 @@ const cartContainer =
     );
 
 
-/* ==========================================
+/* =====================================================
    CART
-========================================== */
+===================================================== */
 
 let cartItems = [];
 
 
-/* ==========================================
+/* =====================================================
    CHECK INFORMATION
-========================================== */
+===================================================== */
 
 if (
     !restaurantId ||
@@ -384,7 +342,6 @@ if (
     `;
 
 }
-
 else {
 
     tableInfo.textContent =
@@ -397,9 +354,9 @@ else {
 }
 
 
-/* ==========================================
+/* =====================================================
    LOAD RESTAURANT
-========================================== */
+===================================================== */
 
 async function loadRestaurant() {
 
@@ -435,7 +392,6 @@ async function loadRestaurant() {
         }
 
     }
-
     catch(error) {
 
         console.error(
@@ -448,9 +404,9 @@ async function loadRestaurant() {
 }
 
 
-/* ==========================================
+/* =====================================================
    LOAD CART
-========================================== */
+===================================================== */
 
 function loadCart() {
 
@@ -492,14 +448,12 @@ function loadCart() {
         renderCart();
 
     }
-
     catch(error) {
 
         console.error(
             "Cart loading error:",
             error
         );
-
 
         showEmptyCart();
 
@@ -508,9 +462,9 @@ function loadCart() {
 }
 
 
-/* ==========================================
-   SHOW EMPTY CART
-========================================== */
+/* =====================================================
+   EMPTY CART
+===================================================== */
 
 function showEmptyCart() {
 
@@ -538,14 +492,13 @@ function showEmptyCart() {
 }
 
 
-/* ==========================================
+/* =====================================================
    RENDER CART
-========================================== */
+===================================================== */
 
 function renderCart() {
 
     cartContainer.innerHTML = "";
-
 
     let total = 0;
 
@@ -599,14 +552,12 @@ function renderCart() {
                         <div class="item-category">
 
                             ${escapeHTML(
-                                item.category ||
-                                ""
+                                item.category || ""
                             )}
 
                         </div>
 
                     </div>
-
 
                     <div class="item-price">
 
@@ -626,11 +577,8 @@ function renderCart() {
 
                 ${
                     item.instruction
-
                     ?
-
                     `
-
                     <div class="instruction">
 
                         📝 ${escapeHTML(
@@ -638,13 +586,9 @@ function renderCart() {
                         )}
 
                     </div>
-
                     `
-
                     :
-
                     ""
-
                 }
 
             `;
@@ -677,7 +621,9 @@ function renderCart() {
             </span>
 
             <span class="total-price">
+
                 ₹${total}
+
             </span>
 
         </div>
@@ -687,7 +633,9 @@ function renderCart() {
             class="place-btn"
             id="placeOrderBtn"
         >
+
             🍽️ Place Order
+
         </button>
 
 
@@ -695,7 +643,9 @@ function renderCart() {
             class="back-btn"
             onclick="goBack()"
         >
+
             ← Back to Menu
+
         </button>
 
     `;
@@ -716,9 +666,9 @@ function renderCart() {
 }
 
 
-/* ==========================================
+/* =====================================================
    PLACE ORDER
-========================================== */
+===================================================== */
 
 async function placeOrder(total) {
 
@@ -743,6 +693,25 @@ async function placeOrder(total) {
     }
 
 
+    /* ---------------------------------------------
+       CHECK LOGIN
+    --------------------------------------------- */
+
+    const user =
+        auth.currentUser;
+
+
+    if (!user) {
+
+        alert(
+            "Please login before placing your order."
+        );
+
+        return;
+
+    }
+
+
     const confirmOrder =
         confirm(
             "Are you sure you want to place this order?"
@@ -758,20 +727,25 @@ async function placeOrder(total) {
 
     try {
 
-        placeButton.disabled = true;
+        placeButton.disabled =
+            true;
+
 
         placeButton.textContent =
             "⏳ Placing Order...";
 
 
-        /* ==================================
+        /* -----------------------------------------
            ORDER DATA
-        ================================== */
+        ----------------------------------------- */
 
         const orderData = {
 
             restaurantId:
                 restaurantId,
+
+            customerUid:
+                user.uid,
 
             table:
                 table,
@@ -823,8 +797,14 @@ async function placeOrder(total) {
             waiterRequested:
                 false,
 
+            waiterRequestedAt:
+                null,
+
             billRequested:
                 false,
+
+            billRequestedAt:
+                null,
 
             createdAt:
                 serverTimestamp(),
@@ -835,9 +815,9 @@ async function placeOrder(total) {
         };
 
 
-        /* ==================================
+        /* -----------------------------------------
            SAVE ORDER
-        ================================== */
+        ----------------------------------------- */
 
         const ordersRef =
             collection(
@@ -865,9 +845,9 @@ async function placeOrder(total) {
         );
 
 
-        /* ==================================
-           SAVE ORDER ID LOCALLY
-        ================================== */
+        /* -----------------------------------------
+           SAVE ORDER INFORMATION
+        ----------------------------------------- */
 
         localStorage.setItem(
             "currentOrderId",
@@ -887,25 +867,24 @@ async function placeOrder(total) {
         );
 
 
-        /* ==================================
+        /* -----------------------------------------
            CLEAR CART
-        ================================== */
+        ----------------------------------------- */
 
         localStorage.removeItem(
             "restaurantCart"
         );
 
 
-        /* ==================================
-           SHOW SUCCESS
-        ================================== */
+        /* -----------------------------------------
+           SUCCESS
+        ----------------------------------------- */
 
         showOrderSuccess(
             orderId
         );
 
     }
-
     catch(error) {
 
         console.error(
@@ -932,9 +911,9 @@ async function placeOrder(total) {
 }
 
 
-/* ==========================================
+/* =====================================================
    ORDER SUCCESS
-========================================== */
+===================================================== */
 
 function showOrderSuccess(orderId) {
 
@@ -969,7 +948,7 @@ function showOrderSuccess(orderId) {
 
                 Order ID
 
-                <br>
+                <br><br>
 
                 ${escapeHTML(
                     orderId
@@ -1007,12 +986,18 @@ function showOrderSuccess(orderId) {
 }
 
 
-/* ==========================================
+/* =====================================================
    OPEN ORDER STATUS
-========================================== */
+===================================================== */
 
 window.openOrderStatus =
     function() {
+
+        const savedOrderId =
+            localStorage.getItem(
+                "currentOrderId"
+            );
+
 
         const url =
             "order-status.html" +
@@ -1026,9 +1011,7 @@ window.openOrderStatus =
             ) +
             "&orderId=" +
             encodeURIComponent(
-                localStorage.getItem(
-                    "currentOrderId"
-                )
+                savedOrderId
             );
 
 
@@ -1038,9 +1021,9 @@ window.openOrderStatus =
     };
 
 
-/* ==========================================
+/* =====================================================
    BACK TO MENU
-========================================== */
+===================================================== */
 
 window.goBack =
     function() {
@@ -1059,9 +1042,9 @@ window.goBack =
     };
 
 
-/* ==========================================
+/* =====================================================
    ESCAPE HTML
-========================================== */
+===================================================== */
 
 function escapeHTML(value) {
 
@@ -1097,5 +1080,4 @@ function escapeHTML(value) {
 </script>
 
 </body>
-
 </html>
