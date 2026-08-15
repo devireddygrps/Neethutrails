@@ -12,7 +12,6 @@
 
 <title>Admin Orders</title>
 
-
 <style>
 
 *{
@@ -22,12 +21,10 @@
     font-family:Arial,sans-serif;
 }
 
-
 body{
     background:#f5f5f5;
     padding-bottom:40px;
 }
-
 
 header{
     background:#ff5722;
@@ -36,27 +33,30 @@ header{
     text-align:center;
 }
 
-
 header h1{
     margin-bottom:5px;
 }
 
-
 .container{
-    max-width:800px;
+    max-width:900px;
     margin:auto;
     padding:15px;
 }
-
 
 .info{
     background:white;
     padding:15px;
     border-radius:10px;
     margin-bottom:15px;
-    box-shadow:0 2px 8px rgba(0,0,0,.06);
 }
 
+.info input{
+    width:100%;
+    padding:11px;
+    margin-top:7px;
+    border:1px solid #ddd;
+    border-radius:8px;
+}
 
 .order{
     background:white;
@@ -66,14 +66,10 @@ header h1{
     box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-
 .order.cash-alert{
-    border:3px solid #e53935;
-    box-shadow:
-        0 0 0 3px rgba(229,57,53,.10),
-        0 4px 14px rgba(229,57,53,.20);
+    border:3px solid #ff9800;
+    box-shadow:0 0 15px rgba(255,152,0,.35);
 }
-
 
 .order-head{
     display:flex;
@@ -83,12 +79,10 @@ header h1{
     padding-bottom:12px;
 }
 
-
 .table{
     font-size:20px;
     font-weight:bold;
 }
-
 
 .order-id{
     font-size:12px;
@@ -97,36 +91,53 @@ header h1{
     word-break:break-all;
 }
 
-
 .total{
     font-size:18px;
     font-weight:bold;
     color:#ff5722;
 }
 
+.customer-box{
+    margin-top:12px;
+    padding:12px;
+    background:#f8f8f8;
+    border-radius:9px;
+}
+
+.customer-box h4{
+    margin-bottom:7px;
+}
+
+.customer-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:4px 0;
+    font-size:14px;
+}
+
+.customer-row span:first-child{
+    color:#777;
+}
 
 .item{
     padding:10px 0;
     border-bottom:1px solid #eee;
 }
 
-
 .item:last-child{
     border-bottom:none;
 }
 
-
 .item-name{
     font-weight:bold;
 }
-
 
 .item-detail{
     font-size:14px;
     color:#666;
     margin-top:4px;
 }
-
 
 .instruction{
     background:#fff8f4;
@@ -136,7 +147,6 @@ header h1{
     margin-top:5px;
 }
 
-
 .badges{
     display:flex;
     gap:7px;
@@ -144,39 +154,34 @@ header h1{
     margin:12px 0;
 }
 
-
 .badge{
-    padding:6px 9px;
+    padding:7px 10px;
     border-radius:15px;
     font-size:12px;
     font-weight:bold;
     background:#eee;
 }
 
-
 .badge.alert{
     background:#ffe0b2;
     color:#e65100;
 }
 
+.badge.cash{
+    background:#fff3cd;
+    color:#856404;
+    border:1px solid #ffca28;
+}
 
 .badge.paid{
     background:#dcedc8;
     color:#33691e;
 }
 
-
-.badge.cash{
-    background:#ffebee;
-    color:#c62828;
+.badge.upi{
+    background:#e3f2fd;
+    color:#1565c0;
 }
-
-
-.badge.green{
-    background:#e8f5e9;
-    color:#2e7d32;
-}
-
 
 select,
 button{
@@ -186,13 +191,11 @@ button{
     font-size:15px;
 }
 
-
 select{
     border:1px solid #ddd;
     background:white;
     margin-top:8px;
 }
-
 
 button{
     border:none;
@@ -203,158 +206,39 @@ button{
     margin-top:8px;
 }
 
-
 button.secondary{
     background:#333;
 }
-
 
 button.green{
     background:#388e3c;
 }
 
-
-button.red{
-    background:#d32f2f;
-}
-
-
 button.blue{
     background:#1976d2;
 }
 
+button.orange{
+    background:#ef6c00;
+}
 
 button:disabled{
     background:#aaa;
     cursor:not-allowed;
 }
 
-
-/* =====================================================
-   CASH PAYMENT NOTIFICATION
-===================================================== */
-
-.cash-notification{
-    display:none;
-    background:#c62828;
-    color:white;
-    border-radius:12px;
-    padding:18px;
-    margin-bottom:15px;
-    box-shadow:0 4px 15px rgba(198,40,40,.30);
-    animation:pulseNotification 1.5s infinite;
-}
-
-
-.cash-notification.show{
-    display:block;
-}
-
-
-.cash-notification-title{
-    font-size:20px;
-    font-weight:bold;
-    margin-bottom:8px;
-}
-
-
-.cash-notification-text{
-    font-size:14px;
-    line-height:1.6;
-}
-
-
-.cash-notification-button{
-    background:white;
-    color:#c62828;
-    margin-top:12px;
-}
-
-
-@keyframes pulseNotification{
-
-    0%{
-        box-shadow:0 4px 15px rgba(198,40,40,.25);
-    }
-
-    50%{
-        box-shadow:0 4px 25px rgba(198,40,40,.55);
-    }
-
-    100%{
-        box-shadow:0 4px 15px rgba(198,40,40,.25);
-    }
-
-}
-
-
-/* =====================================================
-   CASH PAYMENT BOX
-===================================================== */
-
-.cash-payment-box{
-    background:#fff3e0;
-    border:2px solid #ff9800;
-    border-radius:10px;
+.cash-request-box{
+    margin-top:15px;
     padding:15px;
-    margin-top:14px;
+    border-radius:10px;
+    background:#fff3cd;
+    border:2px solid #ffb300;
+    color:#7a5200;
 }
 
-
-.cash-payment-title{
-    color:#e65100;
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:8px;
+.cash-request-box h3{
+    margin-bottom:7px;
 }
-
-
-.cash-payment-amount{
-    font-size:28px;
-    color:#e65100;
-    font-weight:bold;
-    margin:10px 0;
-}
-
-
-.cash-payment-message{
-    color:#6d4c41;
-    font-size:14px;
-    line-height:1.5;
-}
-
-
-.collect-cash-button{
-    background:#2e7d32;
-    font-size:16px;
-    padding:14px;
-}
-
-
-.collect-cash-button:hover{
-    background:#1b5e20;
-}
-
-
-/* =====================================================
-   PAID BOX
-===================================================== */
-
-.paid-box{
-    background:#e8f5e9;
-    border:1px solid #a5d6a7;
-    color:#2e7d32;
-    border-radius:9px;
-    padding:13px;
-    margin-top:12px;
-    text-align:center;
-    font-weight:bold;
-}
-
-
-/* =====================================================
-   BILL
-===================================================== */
 
 .bill{
     background:#f7f7f7;
@@ -364,17 +248,11 @@ button:disabled{
     margin-top:12px;
 }
 
-
 .bill-row{
     display:flex;
     justify-content:space-between;
     margin:6px 0;
 }
-
-
-/* =====================================================
-   GENERAL
-===================================================== */
 
 .loading,
 .empty,
@@ -386,11 +264,44 @@ button:disabled{
     color:#777;
 }
 
-
 .error{
     color:#c62828;
 }
 
+.notification{
+    position:fixed;
+    top:20px;
+    right:20px;
+    width:340px;
+    max-width:calc(100% - 40px);
+    background:white;
+    border-left:6px solid #ff9800;
+    border-radius:10px;
+    padding:16px;
+    box-shadow:0 5px 25px rgba(0,0,0,.25);
+    z-index:9999;
+    animation:slideIn .3s ease;
+}
+
+.notification h3{
+    color:#e65100;
+    margin-bottom:6px;
+}
+
+.notification button{
+    margin-top:10px;
+}
+
+@keyframes slideIn{
+    from{
+        transform:translateX(120%);
+        opacity:0;
+    }
+    to{
+        transform:translateX(0);
+        opacity:1;
+    }
+}
 
 .small{
     font-size:12px;
@@ -398,52 +309,35 @@ button:disabled{
     margin-top:8px;
 }
 
-
-.no-cash{
-    background:#e8f5e9;
-    color:#2e7d32;
-    padding:12px;
-    border-radius:9px;
-    text-align:center;
-    margin-bottom:15px;
-}
-
-
-@media(max-width:600px){
-
-    .order-head{
-        align-items:flex-start;
-    }
-
-
-    .table{
-        font-size:18px;
-    }
-
-
-    .total{
-        font-size:16px;
-    }
-
+.online{
+    display:inline-block;
+    background:#4caf50;
+    color:white;
+    padding:5px 9px;
+    border-radius:15px;
+    font-size:12px;
+    margin-top:8px;
 }
 
 </style>
 
 </head>
 
-
 <body>
-
 
 <header>
 
 <h1 id="restaurantName">
-    Admin Orders
+Admin Orders
 </h1>
 
 <p>
-    Order Management
+Real-Time Order Management
 </p>
+
+<div class="online">
+● Live Updates Enabled
+</div>
 
 </header>
 
@@ -451,85 +345,36 @@ button:disabled{
 <div class="container">
 
 
-<!-- =====================================================
-     RESTAURANT
-===================================================== -->
-
 <div class="info">
 
 <label>
-    <b>Restaurant ID</b>
+<b>Restaurant ID</b>
 </label>
 
 <input
     id="restaurantId"
     type="text"
-    style="
-        width:100%;
-        padding:11px;
-        margin-top:7px;
-        border:1px solid #ddd;
-        border-radius:8px
-    "
     placeholder="Enter restaurant ID"
 >
 
-
 <button onclick="loadOrders()">
-    Load Orders
+Load Orders
 </button>
-
 
 <button
     class="secondary"
     onclick="location.reload()"
 >
-    Refresh
+Refresh
 </button>
 
 </div>
 
 
-<!-- =====================================================
-     CASH PAYMENT NOTIFICATION
-===================================================== -->
-
-<div
-    id="cashNotification"
-    class="cash-notification"
->
-
-    <div class="cash-notification-title">
-        🔔 CASH PAYMENT REQUEST
-    </div>
-
-
-    <div
-        id="cashNotificationText"
-        class="cash-notification-text"
-    >
-        A customer is waiting for cash collection.
-    </div>
-
-
-    <button
-        class="cash-notification-button"
-        onclick="scrollToCashPayment()"
-    >
-        💵 Go to Cash Payment
-    </button>
-
-</div>
-
-
-<!-- =====================================================
-     ORDERS
-===================================================== -->
-
 <div id="ordersContainer">
 
 <div class="empty">
-    Enter Restaurant ID and load orders.
+Enter Restaurant ID and load orders.
 </div>
 
 </div>
@@ -542,7 +387,7 @@ button:disabled{
 
 
 /* =====================================================
-   FIREBASE IMPORTS
+   FIREBASE
 ===================================================== */
 
 import {
@@ -553,38 +398,23 @@ from
 
 
 import {
-
     getFirestore,
-
     collection,
-
-    getDocs,
-
     doc,
-
     getDoc,
-
     updateDoc,
-
     serverTimestamp,
-
     query,
-
     orderBy,
-
     onSnapshot
-
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
 import {
-
     getAuth,
-
     onAuthStateChanged
-
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
@@ -621,18 +451,14 @@ const firebaseConfig = {
 
 
 /* =====================================================
-   INITIALIZE FIREBASE
+   INITIALIZE
 ===================================================== */
 
 const app =
-    initializeApp(
-        firebaseConfig
-    );
-
+    initializeApp(firebaseConfig);
 
 const db =
     getFirestore(app);
-
 
 const auth =
     getAuth(app);
@@ -647,12 +473,10 @@ const ordersContainer =
         "ordersContainer"
     );
 
-
 const restaurantName =
     document.getElementById(
         "restaurantName"
     );
-
 
 const restaurantInput =
     document.getElementById(
@@ -660,20 +484,8 @@ const restaurantInput =
     );
 
 
-const cashNotification =
-    document.getElementById(
-        "cashNotification"
-    );
-
-
-const cashNotificationText =
-    document.getElementById(
-        "cashNotificationText"
-    );
-
-
 /* =====================================================
-   GLOBAL VARIABLES
+   VARIABLES
 ===================================================== */
 
 let currentRestaurantId = "";
@@ -682,12 +494,11 @@ let orders = [];
 
 let unsubscribeOrders = null;
 
-let previousCashRequestIds =
-    new Set();
+let previousCashRequests = new Set();
 
 
 /* =====================================================
-   URL PARAMETERS
+   URL
 ===================================================== */
 
 const params =
@@ -695,11 +506,8 @@ const params =
         window.location.search
     );
 
-
 const urlRestaurantId =
-    params.get(
-        "restaurantId"
-    );
+    params.get("restaurantId");
 
 
 if(urlRestaurantId){
@@ -716,7 +524,6 @@ if(urlRestaurantId){
 
 onAuthStateChanged(
     auth,
-
     async function(user){
 
         if(!user){
@@ -741,9 +548,7 @@ onAuthStateChanged(
         }
 
 
-        if(
-            !restaurantInput.value
-        ){
+        if(!restaurantInput.value){
 
             restaurantInput.value =
                 user.uid;
@@ -757,15 +562,7 @@ onAuthStateChanged(
 
         await loadRestaurant();
 
-
-        if(currentRestaurantId){
-
-            startOrdersListener();
-
-        }
-
     }
-
 );
 
 
@@ -785,21 +582,10 @@ async function loadRestaurant(){
 
     try{
 
-        if(
-            !currentRestaurantId
-        ){
+        if(!currentRestaurantId){
 
             currentRestaurantId =
                 restaurantInput.value.trim();
-
-        }
-
-
-        if(
-            !currentRestaurantId
-        ){
-
-            return;
 
         }
 
@@ -813,25 +599,18 @@ async function loadRestaurant(){
 
 
         const snap =
-            await getDoc(
-                ref
-            );
+            await getDoc(ref);
 
 
-        if(
-            snap.exists()
-        ){
+        if(snap.exists()){
 
             const data =
                 snap.data();
 
 
             restaurantName.textContent =
-
                 data.restaurantName ||
-
                 data.name ||
-
                 "Admin Orders";
 
         }
@@ -840,7 +619,7 @@ async function loadRestaurant(){
     catch(error){
 
         console.error(
-            "Restaurant loading error:",
+            "Restaurant error:",
             error
         );
 
@@ -850,7 +629,7 @@ async function loadRestaurant(){
 
 
 /* =====================================================
-   LOAD ORDERS
+   LOAD ORDERS - REAL TIME
 ===================================================== */
 
 async function loadOrders(){
@@ -885,11 +664,6 @@ async function loadOrders(){
     }
 
 
-    /*
-     IMPORTANT:
-     Restaurant owner UID must equal restaurantId.
-    */
-
     if(
         user.uid !==
         currentRestaurantId
@@ -915,32 +689,25 @@ async function loadOrders(){
     }
 
 
+    ordersContainer.innerHTML = `
+
+        <div class="loading">
+
+            ⏳ Connecting to live orders...
+
+        </div>
+
+    `;
+
+
     await loadRestaurant();
 
 
-    startOrdersListener();
+    /* ---------------------------------------------
+       REMOVE OLD LISTENER
+    --------------------------------------------- */
 
-}
-
-
-/* =====================================================
-   REAL-TIME ORDER LISTENER
-===================================================== */
-
-function startOrdersListener(){
-
-    if(
-        !currentRestaurantId
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        unsubscribeOrders
-    ){
+    if(unsubscribeOrders){
 
         unsubscribeOrders();
 
@@ -950,16 +717,13 @@ function startOrdersListener(){
     }
 
 
-    ordersContainer.innerHTML = `
+    previousCashRequests =
+        new Set();
 
-        <div class="loading">
 
-            ⏳ Loading orders...
-
-        </div>
-
-    `;
-
+    /* ---------------------------------------------
+       ORDERS COLLECTION
+    --------------------------------------------- */
 
     const ordersRef =
         collection(
@@ -993,6 +757,10 @@ function startOrdersListener(){
     }
 
 
+    /* =================================================
+       REAL-TIME LISTENER
+    ================================================= */
+
     unsubscribeOrders =
         onSnapshot(
 
@@ -1000,13 +768,13 @@ function startOrdersListener(){
 
             function(snapshot){
 
-                orders = [];
+                const newOrders = [];
 
 
                 snapshot.forEach(
                     function(orderDoc){
 
-                        orders.push({
+                        newOrders.push({
 
                             id:
                                 orderDoc.id,
@@ -1019,34 +787,17 @@ function startOrdersListener(){
                 );
 
 
+                orders =
+                    newOrders;
+
+
                 /*
-                 If orderBy index/query causes
-                 an issue, Firestore listener will
-                 report the error below.
-                */
+                 * Check for new cash requests
+                 */
 
-                orders.sort(
-                    function(a,b){
-
-                        const aTime =
-                            getTimestampMillis(
-                                a.createdAt
-                            );
-
-
-                        const bTime =
-                            getTimestampMillis(
-                                b.createdAt
-                            );
-
-
-                        return bTime - aTime;
-
-                    }
+                checkForCashRequests(
+                    orders
                 );
-
-
-                checkCashPaymentRequests();
 
 
                 renderOrders();
@@ -1057,115 +808,31 @@ function startOrdersListener(){
             function(error){
 
                 console.error(
-                    "Real-time order listener error:",
+                    "Real-time listener error:",
                     error
                 );
 
 
-                /*
-                 Fallback to getDocs without
-                 orderBy if necessary.
-                */
+                ordersContainer.innerHTML = `
 
-                loadOrdersFallback();
+                    <div class="error">
 
-            }
+                        ❌ Unable to listen
+                        for live orders.
 
-        );
+                        <br><br>
 
-}
+                        ${escapeHTML(
+                            error.message
+                        )}
 
+                    </div>
 
-/* =====================================================
-   FALLBACK ORDER LOADING
-===================================================== */
-
-async function loadOrdersFallback(){
-
-    try{
-
-        const ordersRef =
-            collection(
-                db,
-                "restaurants",
-                currentRestaurantId,
-                "orders"
-            );
-
-
-        const snapshot =
-            await getDocs(
-                ordersRef
-            );
-
-
-        orders = [];
-
-
-        snapshot.forEach(
-            function(orderDoc){
-
-                orders.push({
-
-                    id:
-                        orderDoc.id,
-
-                    ...orderDoc.data()
-
-                });
+                `;
 
             }
+
         );
-
-
-        orders.sort(
-            function(a,b){
-
-                return (
-                    getTimestampMillis(
-                        b.createdAt
-                    )
-                    -
-                    getTimestampMillis(
-                        a.createdAt
-                    )
-                );
-
-            }
-        );
-
-
-        checkCashPaymentRequests();
-
-
-        renderOrders();
-
-    }
-    catch(error){
-
-        console.error(
-            "Fallback loading error:",
-            error
-        );
-
-
-        ordersContainer.innerHTML = `
-
-            <div class="error">
-
-                ❌ Unable to load orders.
-
-                <br><br>
-
-                ${escapeHTML(
-                    error.message
-                )}
-
-            </div>
-
-        `;
-
-    }
 
 }
 
@@ -1174,178 +841,139 @@ async function loadOrdersFallback(){
    CHECK CASH PAYMENT REQUESTS
 ===================================================== */
 
-function checkCashPaymentRequests(){
+function checkForCashRequests(
+    currentOrders
+){
 
-    const cashOrders =
-        orders.filter(
-            function(order){
+    currentOrders.forEach(
+        function(order){
 
-                return (
+            const isCashRequest =
+                order.paymentMethod === "cash" &&
+                order.paymentStatus ===
+                    "payment_selected" &&
+                order.cashPaymentRequested === true;
 
-                    order.paymentMethod ===
-                    "cash"
 
-                    &&
+            if(!isCashRequest){
 
-                    order.paymentStatus ===
-                    "payment_selected"
+                return;
 
-                    &&
+            }
 
-                    order.cashPaymentRequested ===
-                    true
 
-                    &&
+            /*
+             * First page load:
+             * remember existing requests
+             * without showing alerts.
+             */
 
-                    order.cashPaymentCollected !==
-                    true
+            if(
+                previousCashRequests.size === 0
+            ){
 
+                previousCashRequests.add(
+                    order.id
+                );
+
+                return;
+
+            }
+
+
+            /*
+             * New cash request
+             */
+
+            if(
+                !previousCashRequests.has(
+                    order.id
+                )
+            ){
+
+                previousCashRequests.add(
+                    order.id
+                );
+
+
+                showCashNotification(
+                    order
                 );
 
             }
-        );
 
-
-    if(
-        cashOrders.length === 0
-    ){
-
-        cashNotification.classList.remove(
-            "show"
-        );
-
-        return;
-
-    }
-
-
-    cashNotification.classList.add(
-        "show"
-    );
-
-
-    const first =
-        cashOrders[0];
-
-
-    const amount =
-        getBillTotal(
-            first
-        );
-
-
-    cashNotificationText.innerHTML = `
-
-        <b>
-            ${cashOrders.length}
-            customer${cashOrders.length > 1 ? "s" : ""}
-        </b>
-        waiting for cash collection.
-
-        <br><br>
-
-        Next:
-
-        <b>
-            🪑 Table
-            ${escapeHTML(
-                first.table || "-"
-            )}
-        </b>
-
-        —
-
-        <b>
-            ₹${amount.toFixed(2)}
-        </b>
-
-    `;
-
-
-    /*
-     Browser notification.
-
-     This works only if the user has already
-     granted notification permission.
-    */
-
-    showBrowserNotification(
-        first
+        }
     );
 
 }
 
 
 /* =====================================================
-   BROWSER NOTIFICATION
+   CASH NOTIFICATION
 ===================================================== */
 
-let notifiedCashIds =
-    new Set();
+function showCashNotification(
+    order
+){
 
-
-function showBrowserNotification(order){
-
-    if(
-        !("Notification" in window)
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        Notification.permission !==
-        "granted"
-    ){
-
-        return;
-
-    }
-
-
-    if(
-        notifiedCashIds.has(
-            order.id
-        )
-    ){
-
-        return;
-
-    }
-
-
-    notifiedCashIds.add(
-        order.id
-    );
+    const table =
+        order.table ||
+        "-";
 
 
     const amount =
-        getBillTotal(
-            order
+        Number(
+            order.billTotal ??
+            order.finalTotal ??
+            order.total ??
+            0
         );
 
+
+    const customerName =
+        order.customerName ||
+        order.customer?.name ||
+        "Customer";
+
+
+    /*
+     * Browser notification
+     */
 
     try{
 
-        new Notification(
-            "🔔 Cash Payment Requested",
-            {
+        if(
+            "Notification"
+            in window
+        ){
 
-                body:
-                    "Table " +
-                    (order.table || "-") +
-                    " is waiting for cash collection.\n" +
-                    "Amount: ₹" +
-                    amount.toFixed(2),
+            if(
+                Notification.permission ===
+                "granted"
+            ){
 
-                tag:
-                    "cash-" +
-                    order.id
+                new Notification(
+                    "💵 Cash Payment Requested",
+                    {
+
+                        body:
+                            "Table " +
+                            table +
+                            " - " +
+                            customerName +
+                            " - ₹" +
+                            amount.toFixed(2),
+
+                        tag:
+                            "cash-" +
+                            order.id
+
+                    }
+                );
 
             }
-        );
+
+        }
 
     }
     catch(error){
@@ -1357,72 +985,227 @@ function showBrowserNotification(order){
 
     }
 
+
+    /*
+     * In-page notification
+     */
+
+    const old =
+        document.getElementById(
+            "cashNotification"
+        );
+
+
+    if(old){
+
+        old.remove();
+
+    }
+
+
+    const notification =
+        document.createElement(
+            "div"
+        );
+
+
+    notification.id =
+        "cashNotification";
+
+
+    notification.className =
+        "notification";
+
+
+    notification.innerHTML = `
+
+        <h3>
+            💵 CASH PAYMENT REQUEST
+        </h3>
+
+        <div>
+
+            <b>
+                Table ${escapeHTML(
+                    String(table)
+                )}
+            </b>
+
+        </div>
+
+        <div style="margin-top:5px">
+
+            Customer:
+            <b>
+                ${escapeHTML(
+                    customerName
+                )}
+            </b>
+
+        </div>
+
+        <div style="margin-top:5px">
+
+            Amount:
+            <b>
+                ₹${amount.toFixed(2)}
+            </b>
+
+        </div>
+
+        <button
+            class="orange"
+            onclick="closeCashNotification()"
+        >
+
+            OK - Go Collect Cash
+
+        </button>
+
+    `;
+
+
+    document.body.appendChild(
+        notification
+    );
+
+
+    /*
+     * Sound
+     */
+
+    playNotificationSound();
+
+}
+
+
+window.closeCashNotification =
+    function(){
+
+        const notification =
+            document.getElementById(
+                "cashNotification"
+            );
+
+
+        if(notification){
+
+            notification.remove();
+
+        }
+
+    };
+
+
+/* =====================================================
+   NOTIFICATION SOUND
+===================================================== */
+
+function playNotificationSound(){
+
+    try{
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+
+        if(!AudioContext){
+
+            return;
+
+        }
+
+
+        const context =
+            new AudioContext();
+
+
+        const oscillator =
+            context.createOscillator();
+
+
+        const gain =
+            context.createGain();
+
+
+        oscillator.connect(
+            gain
+        );
+
+
+        gain.connect(
+            context.destination
+        );
+
+
+        oscillator.frequency.value =
+            800;
+
+
+        gain.gain.value =
+            0.15;
+
+
+        oscillator.start();
+
+
+        setTimeout(
+            function(){
+
+                oscillator.stop();
+
+                context.close();
+
+            },
+            500
+        );
+
+    }
+    catch(error){
+
+        console.warn(
+            "Sound notification failed:",
+            error
+        );
+
+    }
+
 }
 
 
 /* =====================================================
-   ENABLE BROWSER NOTIFICATIONS
+   REQUEST NOTIFICATION PERMISSION
 ===================================================== */
 
-async function requestBrowserNotificationPermission(){
+async function requestNotificationPermission(){
 
-    if(
-        !("Notification" in window)
-    ){
+    try{
 
-        return;
+        if(
+            "Notification"
+            in window
+        ){
+
+            if(
+                Notification.permission ===
+                "default"
+            ){
+
+                await Notification.requestPermission();
+
+            }
+
+        }
 
     }
+    catch(error){
 
-
-    if(
-        Notification.permission ===
-        "default"
-    ){
-
-        try{
-
-            await Notification.requestPermission();
-
-        }
-        catch(error){
-
-            console.warn(
-                "Notification permission error:",
-                error
-            );
-
-        }
+        console.warn(error);
 
     }
 
 }
-
-
-/*
- Request permission after admin clicks
- Load Orders.
-*/
-
-document.addEventListener(
-    "click",
-    function(event){
-
-        if(
-            event.target.closest(
-                "button"
-            )
-        ){
-
-            requestBrowserNotificationPermission();
-
-        }
-
-    },
-    {
-        once:true
-    }
-);
 
 
 /* =====================================================
@@ -1453,68 +1236,11 @@ function renderOrders(){
     }
 
 
-    const cashOrders =
-        orders.filter(
-            function(order){
-
-                return (
-
-                    order.paymentMethod ===
-                    "cash"
-
-                    &&
-
-                    order.paymentStatus ===
-                    "payment_selected"
-
-                    &&
-
-                    order.cashPaymentRequested ===
-                    true
-
-                    &&
-
-                    order.cashPaymentCollected !==
-                    true
-
-                );
-
-            }
-        );
-
-
-    if(
-        cashOrders.length === 0
-    ){
-
-        const noCash =
-            document.createElement(
-                "div"
-            );
-
-
-        noCash.className =
-            "no-cash";
-
-
-        noCash.textContent =
-            "✅ No pending cash payments";
-
-
-        ordersContainer.appendChild(
-            noCash
-        );
-
-    }
-
-
     orders.forEach(
         function(order){
 
             ordersContainer.appendChild(
-                createOrderCard(
-                    order
-                )
+                createOrderCard(order)
             );
 
         }
@@ -1527,7 +1253,9 @@ function renderOrders(){
    CREATE ORDER CARD
 ===================================================== */
 
-function createOrderCard(order){
+function createOrderCard(
+    order
+){
 
     const card =
         document.createElement(
@@ -1555,9 +1283,7 @@ function createOrderCard(order){
 
 
     const waiterRequested =
-
         order.waiterRequested === true ||
-
         order.waiterCalled === true;
 
 
@@ -1566,40 +1292,23 @@ function createOrderCard(order){
 
 
     const billGenerated =
-
         order.billStatus ===
-        "generated"
+            "generated" ||
+        order.billGenerated === true ||
+        Number(
+            order.billTotal || 0
+        ) > 0;
 
-        ||
 
-        order.billGenerated ===
-        true;
-
-
-    const cashPaymentRequested =
-
-        order.paymentMethod ===
-        "cash"
-
-        &&
-
-        order.paymentStatus ===
-        "payment_selected"
-
-        &&
-
+    const cashRequested =
         order.cashPaymentRequested ===
-        true
-
-        &&
-
-        order.cashPaymentCollected !==
-        true;
+            true &&
+        paymentMethod === "cash" &&
+        paymentStatus ===
+            "payment_selected";
 
 
-    if(
-        cashPaymentRequested
-    ){
+    if(cashRequested){
 
         card.classList.add(
             "cash-alert"
@@ -1611,12 +1320,6 @@ function createOrderCard(order){
     const createdText =
         formatDate(
             order.createdAt
-        );
-
-
-    const billTotal =
-        getBillTotal(
-            order
         );
 
 
@@ -1701,254 +1404,41 @@ function createOrderCard(order){
     );
 
 
-    if(
-        !itemsHTML
-    ){
-
-        itemsHTML =
-            "<div class='item-detail'>No items</div>";
-
-    }
-
-
-    /* =================================================
-       CASH PAYMENT HTML
-    ================================================= */
-
-    let cashPaymentHTML = "";
-
-
-    if(
-        cashPaymentRequested
-    ){
-
-        cashPaymentHTML = `
-
-            <div
-                class="cash-payment-box"
-                id="cashPaymentBox-${escapeHTML(order.id)}"
-            >
-
-                <div class="cash-payment-title">
-
-                    🔔 CASH PAYMENT REQUIRED
-
-                </div>
-
-
-                <div class="cash-payment-message">
-
-                    Customer at
-
-                    <b>
-                        Table
-                        ${escapeHTML(
-                            order.table || "-"
-                        )}
-                    </b>
-
-                    selected Cash payment.
-
-                    <br><br>
-
-                    Please go to the table,
-                    collect the cash, then confirm
-                    below.
-
-                </div>
-
-
-                <div class="cash-payment-amount">
-
-                    ₹${billTotal.toFixed(2)}
-
-                </div>
-
-
-                <button
-                    class="collect-cash-button"
-                    data-order-id="${escapeHTML(order.id)}"
-                >
-
-                    💵 Collect Cash & Mark Paid
-
-                </button>
-
-            </div>
-
-        `;
-
-    }
-    else if(
-        paymentStatus === "paid"
-        &&
-        paymentMethod === "cash"
-    ){
-
-        cashPaymentHTML = `
-
-            <div class="paid-box">
-
-                ✅ CASH PAYMENT COLLECTED
-
-                <br>
-
-                <small>
-
-                    Payment marked as paid.
-
-                </small>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =================================================
-       BILL HTML
-    ================================================= */
-
-    let billHTML = "";
-
-
-    if(
-        billGenerated
-    ){
-
-        billHTML = `
-
-            <div class="bill">
-
-                <b>
-                    Generated Bill
-                </b>
-
-
-                <div class="bill-row">
-
-                    <span>
-                        Order Total
-                    </span>
-
-                    <b>
-                        ₹${Number(
-                            order.total || 0
-                        ).toFixed(2)}
-                    </b>
-
-                </div>
-
-
-                <div class="bill-row">
-
-                    <span>
-                        Bill Total
-                    </span>
-
-                    <b>
-                        ₹${billTotal.toFixed(2)}
-                    </b>
-
-                </div>
-
-
-                <div class="bill-row">
-
-                    <span>
-                        Payment
-                    </span>
-
-                    <b>
-                        ${escapeHTML(
-                            paymentMethod ||
-                            "Not selected"
-                        )}
-                    </b>
-
-                </div>
-
-
-                <div class="bill-row">
-
-                    <span>
-                        Status
-                    </span>
-
-                    <b>
-                        ${escapeHTML(
-                            paymentStatus
-                        )}
-                    </b>
-
-                </div>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =================================================
-       NORMAL PAYMENT CONTROLS
-    ================================================= */
-
-    let paymentHTML = "";
+    /*
+     * Customer information
+     */
+
+    const customerName =
+        order.customerName ||
+        order.customer?.name ||
+        order.userName ||
+        "Not available";
+
+
+    const customerEmail =
+        order.customerEmail ||
+        order.customer?.email ||
+        order.userEmail ||
+        "Not available";
+
+
+    const customerPhone =
+        order.customerPhone ||
+        order.customer?.phone ||
+        order.userPhone ||
+        "Not available";
+
+
+    const customerUid =
+        order.customerUid ||
+        order.userId ||
+        order.customer?.uid ||
+        "Not available";
 
 
     /*
-     Only show manual payment confirmation
-     when a cash request is NOT already waiting.
-
-     This prevents the admin from accidentally
-     marking the wrong payment.
-    */
-
-    if(
-        billGenerated
-        &&
-        paymentStatus !== "paid"
-        &&
-        !cashPaymentRequested
-    ){
-
-        paymentHTML = `
-
-            <select class="payment-select">
-
-                <option value="">
-                    Select payment method
-                </option>
-
-                <option value="cash">
-                    Cash
-                </option>
-
-                <option value="upi">
-                    UPI
-                </option>
-
-            </select>
-
-
-            <button
-                class="green confirm-payment"
-            >
-
-                ✓ Confirm Payment Received
-
-            </button>
-
-        `;
-
-    }
-
-
-    /* =================================================
-       ORDER CARD
-    ================================================= */
+     * Main card
+     */
 
     card.innerHTML = `
 
@@ -1960,7 +1450,9 @@ function createOrderCard(order){
 
                     🪑 Table
                     ${escapeHTML(
-                        order.table || "-"
+                        String(
+                            order.table || "-"
+                        )
                     )}
 
                 </div>
@@ -1997,6 +1489,76 @@ function createOrderCard(order){
 
         </div>
 
+
+        <!-- CUSTOMER -->
+
+        <div class="customer-box">
+
+            <h4>
+                👤 Customer Details
+            </h4>
+
+
+            <div class="customer-row">
+
+                <span>Name</span>
+
+                <b>
+                    ${escapeHTML(
+                        customerName
+                    )}
+                </b>
+
+            </div>
+
+
+            <div class="customer-row">
+
+                <span>Email</span>
+
+                <b>
+                    ${escapeHTML(
+                        customerEmail
+                    )}
+                </b>
+
+            </div>
+
+
+            <div class="customer-row">
+
+                <span>Phone</span>
+
+                <b>
+                    ${escapeHTML(
+                        customerPhone
+                    )}
+                </b>
+
+            </div>
+
+
+            <div class="customer-row">
+
+                <span>Customer UID</span>
+
+                <b style="
+                    word-break:break-all;
+                    text-align:right;
+                ">
+
+                    ${escapeHTML(
+                        customerUid
+                    )}
+
+                </b>
+
+            </div>
+
+        </div>
+
+
+        <!-- BADGES -->
 
         <div class="badges">
 
@@ -2061,13 +1623,13 @@ function createOrderCard(order){
 
 
             ${
-                cashPaymentRequested
+                cashRequested
                 ?
                 `
 
                 <span class="badge cash">
 
-                    🔔 CASH PAYMENT
+                    💵 CASH PAYMENT REQUESTED
 
                 </span>
 
@@ -2078,18 +1640,16 @@ function createOrderCard(order){
 
 
             ${
-                paymentMethod === "cash"
+                paymentMethod === "upi"
                 &&
                 paymentStatus ===
-                "payment_selected"
-                &&
-                !cashPaymentRequested
+                    "payment_selected"
                 ?
                 `
 
-                <span class="badge alert">
+                <span class="badge upi">
 
-                    💵 Cash Selected
+                    📱 UPI Payment Selected
 
                 </span>
 
@@ -2118,12 +1678,94 @@ function createOrderCard(order){
         </div>
 
 
-        <div>
+        <!-- CASH REQUEST -->
 
-            ${itemsHTML}
+        ${
+            cashRequested
+            ?
+            `
+
+            <div class="cash-request-box">
+
+                <h3>
+                    💵 Customer is Waiting for Cash Collection
+                </h3>
+
+
+                <div>
+
+                    Table:
+                    <b>
+                        ${escapeHTML(
+                            String(
+                                order.table || "-"
+                            )
+                        )}
+                    </b>
+
+                </div>
+
+
+                <div style="margin-top:5px">
+
+                    Customer:
+                    <b>
+                        ${escapeHTML(
+                            customerName
+                        )}
+                    </b>
+
+                </div>
+
+
+                <div style="margin-top:5px">
+
+                    Amount to collect:
+
+                    <b>
+                        ₹${Number(
+                            order.billTotal ??
+                            order.finalTotal ??
+                            order.total ??
+                            0
+                        ).toFixed(2)}
+                    </b>
+
+                </div>
+
+
+                <button
+                    class="green cash-collected"
+                >
+
+                    ✓ Cash Collected
+
+                </button>
+
+            </div>
+
+            `
+            :
+            ""
+        }
+
+
+        <!-- ITEMS -->
+
+        <div style="margin-top:10px">
+
+            ${
+
+                itemsHTML ||
+
+                "<div class='item-detail'>No items</div>"
+
+            }
 
         </div>
 
+
+        <!-- STATUS -->
 
         <label>
 
@@ -2138,6 +1780,10 @@ function createOrderCard(order){
 
             <option value="received">
                 Received
+            </option>
+
+            <option value="accepted">
+                Accepted
             </option>
 
             <option value="preparing">
@@ -2176,9 +1822,7 @@ function createOrderCard(order){
 
             `
 
-            <button
-                class="secondary waiter-done"
-            >
+            <button class="secondary waiter-done">
 
                 ✓ Mark Waiter Request Done
 
@@ -2189,20 +1833,18 @@ function createOrderCard(order){
             :
 
             ""
+
         }
 
 
         ${
-            billRequested
-            &&
+            billRequested &&
             !billGenerated
             ?
 
             `
 
-            <button
-                class="green generate-bill"
-            >
+            <button class="green generate-bill">
 
                 🧾 Generate Bill
 
@@ -2213,22 +1855,161 @@ function createOrderCard(order){
             :
 
             ""
+
         }
 
 
-        ${billHTML}
+        ${
+            billGenerated
+            ?
+
+            `
+
+            <div class="bill">
+
+                <b>
+                    Generated Bill
+                </b>
 
 
-        ${cashPaymentHTML}
+                <div class="bill-row">
+
+                    <span>
+                        Order Total
+                    </span>
+
+                    <b>
+                        ₹${Number(
+                            order.total || 0
+                        ).toFixed(2)}
+                    </b>
+
+                </div>
 
 
-        ${paymentHTML}
+                <div class="bill-row">
+
+                    <span>
+                        Bill Total
+                    </span>
+
+                    <b>
+                        ₹${Number(
+                            order.billTotal ||
+                            order.total ||
+                            0
+                        ).toFixed(2)}
+                    </b>
+
+                </div>
+
+
+                <div class="bill-row">
+
+                    <span>
+                        Payment
+                    </span>
+
+                    <b>
+
+                        ${
+                            paymentMethod === "cash"
+                            ?
+                            "💵 Cash"
+                            :
+                            paymentMethod === "upi"
+                            ?
+                            "📱 UPI"
+                            :
+                            "Not selected"
+                        }
+
+                    </b>
+
+                </div>
+
+
+                <div class="bill-row">
+
+                    <span>
+                        Status
+                    </span>
+
+                    <b>
+
+                        ${escapeHTML(
+                            paymentStatus
+                        )}
+
+                    </b>
+
+                </div>
+
+            </div>
+
+            `
+
+            :
+
+            ""
+
+        }
+
+
+        ${
+            billGenerated &&
+            paymentStatus !== "paid" &&
+            !cashRequested
+            ?
+
+            `
+
+            <div style="margin-top:12px">
+
+                <select class="payment-select">
+
+                    <option value="">
+
+                        Select payment method
+
+                    </option>
+
+                    <option value="cash">
+
+                        Cash
+
+                    </option>
+
+                    <option value="upi">
+
+                        UPI
+
+                    </option>
+
+                </select>
+
+
+                <button class="green confirm-payment">
+
+                    ✓ Confirm Payment Received
+
+                </button>
+
+            </div>
+
+            `
+
+            :
+
+            ""
+
+        }
 
     `;
 
 
     /* =================================================
-       STATUS SELECT
+       STATUS
     ================================================= */
 
     const statusSelect =
@@ -2241,13 +2022,9 @@ function createOrderCard(order){
         status;
 
 
-    const statusSave =
-        card.querySelector(
-            ".status-save"
-        );
-
-
-    statusSave.onclick =
+    card.querySelector(
+        ".status-save"
+    ).onclick =
         async function(){
 
             await updateOrder(
@@ -2267,7 +2044,7 @@ function createOrderCard(order){
 
 
     /* =================================================
-       WAITER REQUEST
+       WAITER DONE
     ================================================= */
 
     const waiterButton =
@@ -2276,9 +2053,7 @@ function createOrderCard(order){
         );
 
 
-    if(
-        waiterButton
-    ){
+    if(waiterButton){
 
         waiterButton.onclick =
             async function(){
@@ -2317,14 +2092,12 @@ function createOrderCard(order){
         );
 
 
-    if(
-        billButton
-    ){
+    if(billButton){
 
         billButton.onclick =
             async function(){
 
-                const confirmBill =
+                const confirmed =
                     confirm(
                         "Generate bill for Table " +
                         (
@@ -2335,9 +2108,7 @@ function createOrderCard(order){
                     );
 
 
-                if(
-                    !confirmBill
-                ){
+                if(!confirmed){
 
                     return;
 
@@ -2363,6 +2134,9 @@ function createOrderCard(order){
                         billTotal:
                             total,
 
+                        billSubtotal:
+                            total,
+
                         billGeneratedAt:
                             serverTimestamp(),
 
@@ -2378,122 +2152,86 @@ function createOrderCard(order){
 
 
     /* =================================================
-       COLLECT CASH
+       CASH COLLECTED
     ================================================= */
 
-    const collectCashButton =
+    const cashCollectedButton =
         card.querySelector(
-            ".collect-cash-button"
+            ".cash-collected"
         );
 
 
-    if(
-        collectCashButton
-    ){
+    if(cashCollectedButton){
 
-        collectCashButton.onclick =
+        cashCollectedButton.onclick =
             async function(){
 
                 const amount =
-                    getBillTotal(
-                        order
+                    Number(
+                        order.billTotal ??
+                        order.finalTotal ??
+                        order.total ??
+                        0
                     );
-
-
-                const tableNumber =
-                    order.table ||
-                    "-";
 
 
                 const confirmed =
                     confirm(
 
-                        "Confirm cash collection?\n\n" +
-
-                        "Table: " +
-                        tableNumber +
-                        "\n" +
-
-                        "Amount: ₹" +
+                        "Confirm that you collected ₹" +
                         amount.toFixed(2) +
-                        "\n\n" +
-
-                        "Only click OK after you have physically collected the cash."
+                        " cash from Table " +
+                        (
+                            order.table ||
+                            "-"
+                        ) +
+                        "?"
 
                     );
 
 
-                if(
-                    !confirmed
-                ){
+                if(!confirmed){
 
                     return;
 
                 }
 
 
-                collectCashButton.disabled =
+                cashCollectedButton.disabled =
                     true;
 
 
-                collectCashButton.textContent =
-                    "⏳ Confirming Cash...";
+                cashCollectedButton.textContent =
+                    "⏳ Saving...";
 
 
-                try{
+                await updateOrder(
+                    order.id,
+                    {
 
-                    await updateOrder(
-                        order.id,
-                        {
+                        paymentMethod:
+                            "cash",
 
-                            paymentMethod:
-                                "cash",
+                        paymentStatus:
+                            "paid",
 
-                            paymentStatus:
-                                "paid",
+                        cashPaymentRequested:
+                            false,
 
-                            paidAt:
-                                serverTimestamp(),
+                        cashPaymentCollected:
+                            true,
 
-                            cashPaymentRequested:
-                                false,
+                        cashCollectedAt:
+                            serverTimestamp(),
 
-                            cashPaymentCollected:
-                                true,
+                        paidAt:
+                            serverTimestamp(),
 
-                            cashPaymentCollectedAt:
-                                serverTimestamp(),
+                        updatedAt:
+                            serverTimestamp()
 
-                            cashPaymentCollectedBy:
-                                auth.currentUser
-                                ?
-                                auth.currentUser.uid
-                                :
-                                null,
-
-                            updatedAt:
-                                serverTimestamp()
-
-                        }
-                    );
-
-                }
-                catch(error){
-
-                    console.error(
-                        "Cash collection error:",
-                        error
-                    );
-
-
-                    collectCashButton.disabled =
-                        false;
-
-
-                    collectCashButton.textContent =
-                        "💵 Collect Cash & Mark Paid";
-
-                }
+                    }
+                );
 
             };
 
@@ -2501,7 +2239,7 @@ function createOrderCard(order){
 
 
     /* =================================================
-       NORMAL PAYMENT CONFIRMATION
+       MANUAL PAYMENT
     ================================================= */
 
     const paymentButton =
@@ -2510,9 +2248,7 @@ function createOrderCard(order){
         );
 
 
-    if(
-        paymentButton
-    ){
+    if(paymentButton){
 
         paymentButton.onclick =
             async function(){
@@ -2527,9 +2263,7 @@ function createOrderCard(order){
                     paymentSelect.value;
 
 
-                if(
-                    !method
-                ){
+                if(!method){
 
                     alert(
                         "Please select Cash or UPI."
@@ -2540,21 +2274,17 @@ function createOrderCard(order){
                 }
 
 
-                const confirmPayment =
+                const confirmed =
                     confirm(
 
                         "Confirm " +
-
                         method.toUpperCase() +
-
                         " payment received?"
 
                     );
 
 
-                if(
-                    !confirmPayment
-                ){
+                if(!confirmed){
 
                     return;
 
@@ -2573,19 +2303,6 @@ function createOrderCard(order){
 
                         paidAt:
                             serverTimestamp(),
-
-                        cashPaymentRequested:
-                            false,
-
-                        cashPaymentCollected:
-                            method === "cash",
-
-                        cashPaymentCollectedAt:
-                            method === "cash"
-                            ?
-                            serverTimestamp()
-                            :
-                            null,
 
                         updatedAt:
                             serverTimestamp()
@@ -2614,22 +2331,6 @@ async function updateOrder(
 
     try{
 
-        const activeButton =
-            document.activeElement;
-
-
-        if(
-            activeButton &&
-            activeButton.tagName ===
-            "BUTTON"
-        ){
-
-            activeButton.disabled =
-                true;
-
-        }
-
-
         await updateDoc(
 
             doc(
@@ -2644,14 +2345,6 @@ async function updateOrder(
 
         );
 
-
-        /*
-         No manual reload needed.
-
-         onSnapshot automatically updates
-         the admin panel and customer page.
-        */
-
     }
     catch(error){
 
@@ -2662,8 +2355,10 @@ async function updateOrder(
 
 
         alert(
+
             "❌ Update failed.\n\n" +
             error.message
+
         );
 
     }
@@ -2672,161 +2367,14 @@ async function updateOrder(
 
 
 /* =====================================================
-   SCROLL TO CASH PAYMENT
+   DATE
 ===================================================== */
 
-window.scrollToCashPayment =
-    function(){
+function formatDate(
+    timestamp
+){
 
-        const cashCard =
-            document.querySelector(
-                ".order.cash-alert"
-            );
-
-
-        if(
-            cashCard
-        ){
-
-            cashCard.scrollIntoView({
-
-                behavior:
-                    "smooth",
-
-                block:
-                    "center"
-
-            });
-
-
-            return;
-
-        }
-
-
-        alert(
-            "There are no pending cash payments."
-        );
-
-    };
-
-
-/* =====================================================
-   BILL TOTAL
-===================================================== */
-
-function getBillTotal(order){
-
-    const total =
-        Number(
-            order.billTotal ??
-            order.finalTotal ??
-            order.total ??
-            0
-        );
-
-
-    if(
-        Number.isFinite(total)
-    ){
-
-        return total;
-
-    }
-
-
-    return 0;
-
-}
-
-
-/* =====================================================
-   DATE / TIMESTAMP
-===================================================== */
-
-function getTimestampMillis(value){
-
-    if(
-        !value
-    ){
-
-        return 0;
-
-    }
-
-
-    if(
-        typeof value.toMillis ===
-        "function"
-    ){
-
-        return value.toMillis();
-
-    }
-
-
-    if(
-        typeof value.toDate ===
-        "function"
-    ){
-
-        return value.toDate().getTime();
-
-    }
-
-
-    if(
-        value.seconds !== undefined
-    ){
-
-        return (
-            Number(value.seconds) *
-            1000
-        );
-
-    }
-
-
-    if(
-        value instanceof Date
-    ){
-
-        return value.getTime();
-
-    }
-
-
-    if(
-        typeof value === "string"
-    ){
-
-        const parsed =
-            Date.parse(value);
-
-
-        return Number.isNaN(parsed)
-            ?
-            0
-            :
-            parsed;
-
-    }
-
-
-    return 0;
-
-}
-
-
-/* =====================================================
-   FORMAT DATE
-===================================================== */
-
-function formatDate(timestamp){
-
-    if(
-        !timestamp
-    ){
+    if(!timestamp){
 
         return "Time unavailable";
 
@@ -2835,24 +2383,15 @@ function formatDate(timestamp){
 
     try{
 
-        const millis =
-            getTimestampMillis(
-                timestamp
-            );
+        const date =
+            timestamp.toDate
+            ?
+            timestamp.toDate()
+            :
+            new Date(timestamp);
 
 
-        if(
-            !millis
-        ){
-
-            return "Time unavailable";
-
-        }
-
-
-        return new Date(
-            millis
-        ).toLocaleString();
+        return date.toLocaleString();
 
     }
     catch(error){
@@ -2868,7 +2407,9 @@ function formatDate(timestamp){
    ESCAPE HTML
 ===================================================== */
 
-function escapeHTML(value){
+function escapeHTML(
+    value
+){
 
     return String(value)
 
@@ -2900,8 +2441,23 @@ function escapeHTML(value){
 }
 
 
+/* =====================================================
+   REQUEST BROWSER NOTIFICATION PERMISSION
+===================================================== */
+
+document.addEventListener(
+    "click",
+    function(){
+
+        requestNotificationPermission();
+
+    },
+    {
+        once:true
+    }
+);
+
 </script>
 
 </body>
-
 </html>
