@@ -3,680 +3,697 @@
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Restaurant Dashboard</title>
-
-
-    <style>
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-
-        body {
-            background: #f5f5f5;
-        }
-
-
-        /* ================================
-           HEADER
-        ================================= */
-
-        .header {
-            background: #ff5722;
-            color: white;
-            padding: 18px;
-            text-align: center;
-        }
-
-
-        .header h2 {
-            margin-bottom: 5px;
-        }
-
-
-        /* ================================
-           DASHBOARD
-        ================================= */
-
-        .dashboard {
-            padding: 20px;
-            max-width: 1000px;
-            margin: auto;
-        }
-
-
-        /* ================================
-           WELCOME
-        ================================= */
-
-        .welcome {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow:
-                0 3px 10px rgba(0,0,0,0.1);
-        }
-
-
-        .welcome h3 {
-            margin-bottom: 8px;
-        }
-
-
-        .welcome p {
-            color: gray;
-        }
-
-
-        /* ================================
-           CARDS
-        ================================= */
-
-        .cards {
-            display: grid;
-
-            grid-template-columns:
-                repeat(2, 1fr);
-
-            gap: 15px;
-        }
-
-
-        .card {
-            background: white;
-
-            padding: 25px;
-
-            border-radius: 12px;
-
-            text-align: center;
-
-            box-shadow:
-                0 3px 10px rgba(0,0,0,0.1);
-
-            cursor: pointer;
-
-            transition: 0.2s;
-        }
-
-
-        .card:hover {
-            transform: translateY(-3px);
-        }
-
-
-        .card .icon {
-            font-size: 35px;
-            margin-bottom: 10px;
-        }
-
-
-        .card h3 {
-            margin-bottom: 5px;
-        }
-
-
-        .card p {
-            color: gray;
-            font-size: 14px;
-        }
-
-
-        /* ================================
-           SALES REPORT CARD
-        ================================= */
-
-        .sales-card {
-            grid-column: 1 / -1;
-        }
-
-
-        .sales-card .icon {
-            color: #00897b;
-        }
-
-
-        /* ================================
-           LOGOUT
-        ================================= */
-
-        .logout {
-            margin-top: 25px;
-
-            width: 100%;
-
-            padding: 13px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: #333;
-
-            color: white;
-
-            font-size: 16px;
-
-            cursor: pointer;
-        }
-
-
-        .logout:hover {
-            background: #111;
-        }
-
-
-        /* ================================
-           SETTINGS MODAL
-        ================================= */
-
-        .modal {
-            display: none;
-
-            position: fixed;
-
-            z-index: 1000;
-
-            left: 0;
-            top: 0;
-
-            width: 100%;
-            height: 100%;
-
-            background:
-                rgba(0,0,0,0.55);
-
-            padding: 20px;
-
-            overflow-y: auto;
-        }
-
-
-        .modal-content {
-            width: 100%;
-            max-width: 500px;
-
-            margin: 40px auto;
-
-            background: white;
-
-            border-radius: 15px;
-
-            padding: 25px;
-
-            box-shadow:
-                0 5px 25px rgba(0,0,0,0.25);
-        }
-
-
-        .modal-header {
-            display: flex;
-
-            justify-content: space-between;
-
-            align-items: center;
-
-            margin-bottom: 20px;
-        }
-
-
-        .modal-header h2 {
-            color: #333;
-        }
-
-
-        .close-btn {
-            border: none;
-
-            background: transparent;
-
-            font-size: 28px;
-
-            cursor: pointer;
-
-            color: #666;
-        }
-
-
-        /* ================================
-           FORM
-        ================================= */
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-
-        .form-group label {
-            display: block;
-
-            margin-bottom: 8px;
-
-            font-weight: bold;
-
-            color: #333;
-        }
-
-
-        .form-group input {
-            width: 100%;
-
-            padding: 13px;
-
-            border: 1px solid #ccc;
-
-            border-radius: 8px;
-
-            font-size: 16px;
-        }
-
-
-        .form-group input:focus {
-            outline: none;
-
-            border-color: #ff5722;
-        }
-
-
-        .help-text {
-            margin-top: 6px;
-
-            font-size: 13px;
-
-            color: #777;
-
-            line-height: 1.4;
-        }
-
-
-        /* ================================
-           TOGGLE
-        ================================= */
-
-        .toggle-row {
-            display: flex;
-
-            align-items: center;
-
-            justify-content: space-between;
-
-            background: #f8f8f8;
-
-            padding: 15px;
-
-            border-radius: 10px;
-        }
-
-
-        .toggle-text strong {
-            display: block;
-
-            margin-bottom: 4px;
-        }
-
-
-        .toggle-text span {
-            font-size: 13px;
-
-            color: #777;
-        }
-
-
-        .switch {
-            position: relative;
-
-            width: 52px;
-
-            height: 30px;
-
-            flex-shrink: 0;
-        }
-
-
-        .switch input {
-            opacity: 0;
-
-            width: 0;
-            height: 0;
-        }
-
-
-        .slider {
-            position: absolute;
-
-            cursor: pointer;
-
-            inset: 0;
-
-            background: #ccc;
-
-            border-radius: 30px;
-
-            transition: 0.2s;
-        }
-
-
-        .slider:before {
-            content: "";
-
-            position: absolute;
-
-            width: 22px;
-            height: 22px;
-
-            left: 4px;
-            top: 4px;
-
-            background: white;
-
-            border-radius: 50%;
-
-            transition: 0.2s;
-
-            box-shadow:
-                0 1px 3px rgba(0,0,0,0.2);
-        }
-
-
-        .switch input:checked + .slider {
-            background: #ff5722;
-        }
-
-
-        .switch input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-
-
-        /* ================================
-           SAVE BUTTON
-        ================================= */
-
-        .save-btn {
-            width: 100%;
-
-            padding: 14px;
-
-            border: none;
-
-            border-radius: 8px;
-
-            background: #ff5722;
-
-            color: white;
-
-            font-size: 16px;
-
-            cursor: pointer;
-
-            margin-top: 5px;
-        }
-
-
-        .save-btn:hover {
-            background: #e64a19;
-        }
-
-
-        .save-btn:disabled {
-            background: #aaa;
-
-            cursor: not-allowed;
-        }
-
-
-        /* ================================
-           STATUS
-        ================================= */
-
-        .settings-status {
-            margin-top: 15px;
-
-            padding: 12px;
-
-            border-radius: 8px;
-
-            display: none;
-
-            text-align: center;
-
-            font-size: 14px;
-        }
-
-
-        .settings-status.success {
-            display: block;
-
-            background: #e8f5e9;
-
-            color: #2e7d32;
-        }
-
-
-        .settings-status.error {
-            display: block;
-
-            background: #ffebee;
-
-            color: #c62828;
-        }
-
-
-        /* ================================
-           SALES REPORT
-        ================================= */
-
-        .sales-report-content {
-            max-width: 950px;
-        }
-
-
-        .report-filter {
-            display: grid;
-            grid-template-columns: 1fr 1fr auto;
-            gap: 12px;
-            align-items: end;
-            margin-bottom: 20px;
-        }
-
-
-        .report-filter-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: bold;
-            color: #333;
-        }
-
-
-        .report-filter-group input {
-            width: 100%;
-            padding: 11px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            font-size: 15px;
-        }
-
-
-        .report-filter-btn {
-            padding: 11px 18px;
-            border: none;
-            border-radius: 8px;
-            background: #ff5722;
-            color: white;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-        }
-
-
-        .report-filter-btn:hover {
-            background: #e64a19;
-        }
-
-
-        .report-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-            margin-bottom: 22px;
-        }
-
-
-        .summary-box {
-            background: #f8f8f8;
-            border-radius: 10px;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid #eee;
-        }
-
-
-        .summary-box strong {
-            display: block;
-            font-size: 23px;
-            margin-bottom: 5px;
-            color: #333;
-        }
-
-
-        .summary-box span {
-            color: #777;
-            font-size: 13px;
-        }
-
-
-        .report-section {
-            margin-top: 20px;
-        }
-
-
-        .report-section h3 {
-            margin-bottom: 10px;
-            color: #333;
-        }
-
-
-        .report-table-wrap {
-            overflow-x: auto;
-            border: 1px solid #eee;
-            border-radius: 10px;
-        }
-
-
-        .report-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            min-width: 500px;
-        }
-
-
-        .report-table th,
-        .report-table td {
-            padding: 11px 12px;
-            border-bottom: 1px solid #eee;
-            text-align: left;
-            font-size: 14px;
-        }
-
-
-        .report-table th {
-            background: #f7f7f7;
-            font-weight: bold;
-            color: #333;
-        }
-
-
-        .report-table tr:last-child td {
-            border-bottom: none;
-        }
-
-
-        .report-empty {
-            background: #f8f8f8;
-            padding: 18px;
-            border-radius: 10px;
-            text-align: center;
-            color: #777;
-        }
-
-
-        .report-note {
-            margin-top: 15px;
-            font-size: 12px;
-            color: #777;
-            line-height: 1.5;
-        }
-
-
-        .report-loading {
-            text-align: center;
-            color: #777;
-            padding: 20px;
-        }
-
-
-        /* ================================
-           MOBILE
-        ================================= */
-
-        @media (max-width: 700px) {
-
-            .cards {
-                grid-template-columns: 1fr;
-            }
-
-
-            .sales-card {
-                grid-column: auto;
-            }
-
-
-            .dashboard {
-                padding: 15px;
-            }
-
-
-            .modal-content {
-                margin: 15px auto;
-
-                padding: 20px;
-            }
-
-
-            .report-filter {
-                grid-template-columns: 1fr;
-            }
-
-
-            .report-summary {
-                grid-template-columns: 1fr 1fr;
-            }
-
-        }
-
-
-        @media (max-width: 450px) {
-
-            .report-summary {
-                grid-template-columns: 1fr;
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Restaurant Dashboard</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+    color:#333;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    background:#ff5722;
+    color:white;
+    padding:18px;
+    text-align:center;
+}
+
+.header h2{
+    margin-bottom:5px;
+}
+
+.header p{
+    margin:0;
+    color:white;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard{
+    padding:20px;
+    max-width:1100px;
+    margin:auto;
+}
+
+.welcome{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+}
+
+.welcome h3{
+    margin-bottom:8px;
+}
+
+.welcome p{
+    color:gray;
+}
+
+/* =========================
+   CARDS
+========================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.1);
+    cursor:pointer;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-3px);
+}
+
+.card .icon{
+    font-size:35px;
+    margin-bottom:10px;
+}
+
+.card h3{
+    margin-bottom:5px;
+}
+
+.card p{
+    color:gray;
+    font-size:14px;
+}
+
+.sales-card{
+    grid-column:1/-1;
+}
+
+.sales-card .icon{
+    color:#00897b;
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+.logout{
+    margin-top:25px;
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:8px;
+    background:#333;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.logout:hover{
+    background:#111;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    z-index:1000;
+    left:0;
+    top:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,.55);
+    padding:20px;
+    overflow-y:auto;
+}
+
+.modal-content{
+    width:100%;
+    max-width:950px;
+    margin:30px auto;
+    background:white;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 5px 25px rgba(0,0,0,.25);
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.modal-header h2{
+    color:#333;
+}
+
+.close-btn{
+    border:none;
+    background:transparent;
+    font-size:28px;
+    cursor:pointer;
+    color:#666;
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+}
+
+.form-group input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+}
+
+.form-group input:focus{
+    outline:none;
+    border-color:#ff5722;
+}
+
+.help-text{
+    margin-top:6px;
+    font-size:13px;
+    color:#777;
+    line-height:1.4;
+}
+
+.toggle-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:#f8f8f8;
+    padding:15px;
+    border-radius:10px;
+}
+
+.toggle-text strong{
+    display:block;
+    margin-bottom:4px;
+}
+
+.toggle-text span{
+    font-size:13px;
+    color:#777;
+}
+
+.switch{
+    position:relative;
+    width:52px;
+    height:30px;
+    flex-shrink:0;
+}
+
+.switch input{
+    opacity:0;
+    width:0;
+    height:0;
+}
+
+.slider{
+    position:absolute;
+    cursor:pointer;
+    inset:0;
+    background:#ccc;
+    border-radius:30px;
+    transition:.2s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:4px;
+    top:4px;
+    background:white;
+    border-radius:50%;
+    transition:.2s;
+}
+
+.switch input:checked + .slider{
+    background:#ff5722;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(22px);
+}
+
+.save-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#ff5722;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.save-btn:disabled{
+    background:#aaa;
+}
+
+.settings-status{
+    margin-top:15px;
+    padding:12px;
+    border-radius:8px;
+    display:none;
+    text-align:center;
+}
+
+.settings-status.success{
+    display:block;
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.settings-status.error{
+    display:block;
+    background:#ffebee;
+    color:#c62828;
+}
+
+/* =========================
+   ORDERS
+========================= */
+
+.orders-toolbar{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-bottom:20px;
+}
+
+.orders-toolbar input,
+.orders-toolbar select{
+    padding:11px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.orders-toolbar input{
+    flex:1;
+    min-width:200px;
+}
+
+.refresh-btn{
+    padding:11px 16px;
+    border:none;
+    border-radius:8px;
+    background:#ff5722;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.orders-summary{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.order-summary-box{
+    background:#f8f8f8;
+    border:1px solid #eee;
+    border-radius:10px;
+    padding:15px;
+    text-align:center;
+}
+
+.order-summary-box strong{
+    display:block;
+    font-size:22px;
+    margin-bottom:5px;
+}
+
+.order-summary-box span{
+    font-size:13px;
+    color:#777;
+}
+
+.orders-table-wrap{
+    overflow-x:auto;
+    border:1px solid #eee;
+    border-radius:10px;
+}
+
+.orders-table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:950px;
+}
+
+.orders-table th,
+.orders-table td{
+    padding:12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    vertical-align:top;
+    font-size:13px;
+}
+
+.orders-table th{
+    background:#f7f7f7;
+}
+
+.orders-table tr:last-child td{
+    border-bottom:none;
+}
+
+.order-items{
+    line-height:1.6;
+}
+
+.order-id{
+    font-weight:bold;
+    color:#555;
+}
+
+.customer-mobile{
+    font-weight:bold;
+    color:#1565c0;
+}
+
+.amount{
+    font-weight:bold;
+    color:#222;
+}
+
+.status-badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.status-pending{
+    background:#fff3cd;
+    color:#856404;
+}
+
+.status-paid{
+    background:#d4edda;
+    color:#155724;
+}
+
+.status-cancelled{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+.status-processing{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.action-btn{
+    padding:7px 10px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    margin:2px;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.confirm-btn{
+    background:#2e7d32;
+    color:white;
+}
+
+.cancel-btn{
+    background:#c62828;
+    color:white;
+}
+
+.view-btn{
+    background:#1565c0;
+    color:white;
+}
+
+.action-btn:disabled{
+    background:#aaa;
+    cursor:not-allowed;
+}
+
+.orders-empty{
+    text-align:center;
+    padding:30px;
+    color:#777;
+}
+
+/* =========================
+   ORDER DETAIL
+========================= */
+
+.order-detail-box{
+    background:#f8f8f8;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+.order-detail-box h3{
+    margin-bottom:10px;
+}
+
+.detail-row{
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    padding:7px 0;
+    border-bottom:1px solid #e5e5e5;
+}
+
+.detail-row:last-child{
+    border-bottom:none;
+}
+
+.detail-label{
+    color:#777;
+}
+
+.detail-value{
+    font-weight:bold;
+    text-align:right;
+}
+
+.detail-items{
+    margin-top:15px;
+}
+
+.detail-item{
+    display:flex;
+    justify-content:space-between;
+    padding:8px 0;
+    border-bottom:1px solid #ddd;
+}
+
+/* =========================
+   SALES REPORT
+========================= */
+
+.report-filter{
+    display:grid;
+    grid-template-columns:1fr 1fr auto;
+    gap:12px;
+    align-items:end;
+    margin-bottom:20px;
+}
+
+.report-filter-group label{
+    display:block;
+    margin-bottom:7px;
+    font-weight:bold;
+}
+
+.report-filter-group input{
+    width:100%;
+    padding:11px;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+.report-filter-btn{
+    padding:11px 18px;
+    border:none;
+    border-radius:8px;
+    background:#ff5722;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.report-summary{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+    margin-bottom:22px;
+}
+
+.summary-box{
+    background:#f8f8f8;
+    border-radius:10px;
+    padding:16px;
+    text-align:center;
+    border:1px solid #eee;
+}
+
+.summary-box strong{
+    display:block;
+    font-size:23px;
+    margin-bottom:5px;
+}
+
+.summary-box span{
+    color:#777;
+    font-size:13px;
+}
+
+.report-section{
+    margin-top:20px;
+}
+
+.report-section h3{
+    margin-bottom:10px;
+}
+
+.report-table-wrap{
+    overflow-x:auto;
+    border:1px solid #eee;
+    border-radius:10px;
+}
+
+.report-table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    min-width:500px;
+}
+
+.report-table th,
+.report-table td{
+    padding:11px 12px;
+    border-bottom:1px solid #eee;
+    text-align:left;
+    font-size:14px;
+}
+
+.report-table th{
+    background:#f7f7f7;
+}
+
+.report-empty,
+.report-loading{
+    background:#f8f8f8;
+    padding:20px;
+    border-radius:10px;
+    text-align:center;
+    color:#777;
+}
+
+.report-note{
+    margin-top:15px;
+    font-size:12px;
+    color:#777;
+    line-height:1.5;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:700px){
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .sales-card{
+        grid-column:auto;
+    }
+
+    .dashboard{
+        padding:15px;
+    }
+
+    .modal{
+        padding:10px;
+    }
+
+    .modal-content{
+        margin:10px auto;
+        padding:18px;
+    }
+
+    .orders-summary{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .report-filter{
+        grid-template-columns:1fr;
+    }
+
+    .report-summary{
+        grid-template-columns:1fr 1fr;
+    }
+
+}
+
+@media(max-width:450px){
+
+    .orders-summary{
+        grid-template-columns:1fr;
+    }
+
+    .report-summary{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
 
 </head>
 
@@ -684,1276 +701,1876 @@
 <body>
 
 
-    <!-- ================================
-         HEADER
-    ================================= -->
+<!-- =========================
+     HEADER
+========================= -->
 
-    <div class="header">
+<div class="header">
 
-        <h2>
-            🍽️ Restaurant Dashboard
-        </h2>
+    <h2>🍽️ Restaurant Dashboard</h2>
+
+    <p>QR Ordering System</p>
+
+</div>
+
+
+<!-- =========================
+     DASHBOARD
+========================= -->
+
+<div class="dashboard">
+
+    <div class="welcome">
+
+        <h3>
+            Welcome, Restaurant Owner 👋
+        </h3>
 
         <p>
-            QR Ordering System
+            Manage your restaurant from here.
         </p>
 
     </div>
 
 
-    <!-- ================================
-         DASHBOARD
-    ================================= -->
-
-    <div class="dashboard">
+    <div class="cards">
 
 
-        <!-- Welcome -->
+        <!-- ADD MENU -->
 
-        <div class="welcome">
+        <div
+            class="card"
+            onclick="addMenu()"
+        >
 
-            <h3>
-                Welcome, Restaurant Owner 👋
-            </h3>
+            <div class="icon">➕</div>
+
+            <h3>Add Menu Item</h3>
+
+            <p>Add food items to your menu</p>
+
+        </div>
+
+
+        <!-- MANAGE MENU -->
+
+        <div
+            class="card"
+            onclick="viewMenu()"
+        >
+
+            <div class="icon">🍽️</div>
+
+            <h3>Manage Menu</h3>
+
+            <p>Edit or delete menu items</p>
+
+        </div>
+
+
+        <!-- ORDERS -->
+
+        <div
+            class="card"
+            onclick="openOrders()"
+        >
+
+            <div class="icon">🛒</div>
+
+            <h3>All Orders</h3>
+
+            <p>View orders and confirm payments</p>
+
+        </div>
+
+
+        <!-- QR -->
+
+        <div
+            class="card"
+            onclick="openQR()"
+        >
+
+            <div class="icon">📱</div>
+
+            <h3>QR Code</h3>
+
+            <p>View your restaurant QR code</p>
+
+        </div>
+
+
+        <!-- SETTINGS -->
+
+        <div
+            class="card"
+            onclick="openSettings()"
+        >
+
+            <div class="icon">⚙️</div>
+
+            <h3>Settings</h3>
+
+            <p>UPI & discount settings</p>
+
+        </div>
+
+
+        <!-- PROFILE -->
+
+        <a
+            class="card"
+            href="profile.html"
+            style="text-decoration:none;color:inherit;display:block;"
+        >
+
+            <div class="icon">👤</div>
+
+            <h3>Restaurant Profile</h3>
+
+            <p>Manage restaurant information</p>
+
+        </a>
+
+
+        <!-- SALES -->
+
+        <div
+            class="card sales-card"
+            onclick="openSalesReport()"
+        >
+
+            <div class="icon">📊</div>
+
+            <h3>Sales Report</h3>
 
             <p>
-                Manage your restaurant from here.
+                Today's sales, orders, items sold and detailed reports
             </p>
 
         </div>
 
-
-        <!-- Dashboard Cards -->
-
-        <div class="cards">
+    </div>
 
 
-            <!-- Add Menu -->
+    <button
+        class="logout"
+        onclick="logout()"
+    >
+        🚪 Logout
+    </button>
 
-            <div
-                class="card"
-                onclick="addMenu()"
+</div>
+
+
+<!-- =====================================================
+     SETTINGS MODAL
+===================================================== -->
+
+<div
+    id="settingsModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>⚙️ Restaurant Settings</h2>
+
+            <button
+                class="close-btn"
+                onclick="closeSettings()"
+                type="button"
             >
-
-                <div class="icon">
-                    ➕
-                </div>
-
-                <h3>
-                    Add Menu Item
-                </h3>
-
-                <p>
-                    Add food items to your menu
-                </p>
-
-            </div>
-
-
-            <!-- Manage Menu -->
-
-            <div
-                class="card"
-                onclick="viewMenu()"
-            >
-
-                <div class="icon">
-                    🍽️
-                </div>
-
-                <h3>
-                    Manage Menu
-                </h3>
-
-                <p>
-                    Edit or delete menu items
-                </p>
-
-            </div>
-
-
-            <!-- Orders -->
-
-            <div
-                class="card"
-                onclick="viewOrders()"
-            >
-
-                <div class="icon">
-                    🛒
-                </div>
-
-                <h3>
-                    Orders
-                </h3>
-
-                <p>
-                    View customer orders
-                </p>
-
-            </div>
-
-
-            <!-- QR CODE -->
-
-            <div
-                class="card"
-                onclick="openQR()"
-            >
-
-                <div class="icon">
-                    📱
-                </div>
-
-                <h3>
-                    QR Code
-                </h3>
-
-                <p>
-                    View your restaurant QR code
-                </p>
-
-            </div>
-
-
-            <!-- SETTINGS -->
-
-            <div
-                class="card"
-                onclick="openSettings()"
-            >
-
-                <div class="icon">
-                    ⚙️
-                </div>
-
-                <h3>
-                    Settings
-                </h3>
-
-                <p>
-                    UPI & discount settings
-                </p>
-
-            </div>
-
-
-            <!-- Restaurant Profile -->
-
-            <a
-                class="card"
-                href="profile.html"
-                style="text-decoration:none;color:inherit;display:block;"
-            >
-
-                <div class="icon">
-                    👤
-                </div>
-
-                <h3>
-                    Restaurant Profile
-                </h3>
-
-                <p>
-                    Manage restaurant information
-                </p>
-
-            </a>
-
-
-            <!-- SALES REPORT -->
-
-            <div
-                class="card sales-card"
-                onclick="openSalesReport()"
-            >
-
-                <div class="icon">
-                    📊
-                </div>
-
-                <h3>
-                    Sales Report
-                </h3>
-
-                <p>
-                    Today's sales, orders, items sold and detailed reports
-                </p>
-
-            </div>
-
+                ×
+            </button>
 
         </div>
 
 
-        <!-- Logout -->
+        <div class="form-group">
+
+            <label for="upiId">
+                Restaurant UPI ID
+            </label>
+
+            <input
+                id="upiId"
+                type="text"
+                placeholder="example@upi"
+                autocomplete="off"
+            >
+
+            <div class="help-text">
+                This UPI ID is saved in the restaurant settings
+                and can be used by the customer payment page.
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <div class="toggle-row">
+
+                <div class="toggle-text">
+
+                    <strong>Enable Discount</strong>
+
+                    <span>
+                        Apply a percentage discount to customer orders.
+                    </span>
+
+                </div>
+
+                <label class="switch">
+
+                    <input
+                        id="discountEnabled"
+                        type="checkbox"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="discountPercent">
+                Discount Percentage
+            </label>
+
+            <input
+                id="discountPercent"
+                type="number"
+                min="0"
+                max="100"
+                step="0.01"
+                placeholder="10"
+            >
+
+        </div>
+
 
         <button
-            class="logout"
-            onclick="logout()"
+            id="saveSettingsBtn"
+            class="save-btn"
+            type="button"
+            onclick="saveSettings()"
         >
-
-            🚪 Logout
-
+            💾 Save Settings
         </button>
 
 
+        <div
+            id="settingsStatus"
+            class="settings-status"
+        ></div>
+
     </div>
 
-
-    <!-- ================================
-         SETTINGS MODAL
-    ================================= -->
-
-    <div
-        id="settingsModal"
-        class="modal"
-    >
-
-        <div class="modal-content">
+</div>
 
 
-            <div class="modal-header">
+<!-- =====================================================
+     ALL ORDERS MODAL
+===================================================== -->
 
-                <h2>
-                    ⚙️ Restaurant Settings
-                </h2>
+<div
+    id="ordersModal"
+    class="modal"
+>
 
-                <button
-                    class="close-btn"
-                    onclick="closeSettings()"
-                    type="button"
-                >
-                    ×
-                </button>
+    <div class="modal-content">
 
-            </div>
+        <div class="modal-header">
 
-
-            <!-- UPI ID -->
-
-            <div class="form-group">
-
-                <label for="upiId">
-                    Restaurant UPI ID
-                </label>
-
-                <input
-                    id="upiId"
-                    type="text"
-                    placeholder="example@upi"
-                    autocomplete="off"
-                >
-
-                <div class="help-text">
-                    Customers will use this UPI ID when paying
-                    for their order.
-                </div>
-
-            </div>
-
-
-            <!-- DISCOUNT -->
-
-            <div class="form-group">
-
-                <div class="toggle-row">
-
-                    <div class="toggle-text">
-
-                        <strong>
-                            Enable Discount
-                        </strong>
-
-                        <span>
-                            Apply a percentage discount to customer orders.
-                        </span>
-
-                    </div>
-
-
-                    <label class="switch">
-
-                        <input
-                            id="discountEnabled"
-                            type="checkbox"
-                        >
-
-                        <span class="slider"></span>
-
-                    </label>
-
-                </div>
-
-            </div>
-
-
-            <!-- DISCOUNT PERCENT -->
-
-            <div class="form-group">
-
-                <label for="discountPercent">
-                    Discount Percentage
-                </label>
-
-                <input
-                    id="discountPercent"
-                    type="number"
-                    min="0"
-                    max="100"
-                    step="0.01"
-                    placeholder="10"
-                >
-
-                <div class="help-text">
-                    Example: enter 10 for a 10% discount.
-                </div>
-
-            </div>
-
-
-            <!-- SAVE -->
+            <h2>🛒 All Orders</h2>
 
             <button
-                id="saveSettingsBtn"
-                class="save-btn"
+                class="close-btn"
+                onclick="closeOrders()"
                 type="button"
-                onclick="saveSettings()"
             >
-
-                💾 Save Settings
-
+                ×
             </button>
 
+        </div>
 
-            <div
-                id="settingsStatus"
-                class="settings-status"
+
+        <!-- TOOLBAR -->
+
+        <div class="orders-toolbar">
+
+            <input
+                id="orderSearch"
+                type="text"
+                placeholder="Search mobile / order ID..."
+                oninput="filterOrders()"
             >
-            </div>
 
+
+            <select
+                id="orderStatusFilter"
+                onchange="filterOrders()"
+            >
+
+                <option value="all">
+                    All Payment Status
+                </option>
+
+                <option value="pending">
+                    Pending
+                </option>
+
+                <option value="paid">
+                    Paid
+                </option>
+
+                <option value="cancelled">
+                    Cancelled
+                </option>
+
+            </select>
+
+
+            <button
+                class="refresh-btn"
+                onclick="loadOrders()"
+                type="button"
+            >
+                🔄 Refresh
+            </button>
+
+        </div>
+
+
+        <!-- SUMMARY -->
+
+        <div
+            id="ordersSummary"
+            class="orders-summary"
+        ></div>
+
+
+        <!-- TABLE -->
+
+        <div
+            id="ordersBody"
+        >
+
+            <div class="orders-empty">
+                Loading orders...
+            </div>
 
         </div>
 
     </div>
 
-
-    <!-- ================================
-         SALES REPORT MODAL
-    ================================= -->
-
-    <div
-        id="salesReportModal"
-        class="modal"
-    >
-
-        <div class="modal-content sales-report-content">
+</div>
 
 
-            <div class="modal-header">
+<!-- =====================================================
+     ORDER DETAIL MODAL
+===================================================== -->
 
-                <h2>
-                    📊 Sales Report
-                </h2>
+<div
+    id="orderDetailModal"
+    class="modal"
+>
 
-                <button
-                    class="close-btn"
-                    onclick="closeSalesReport()"
-                    type="button"
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>📦 Order Details</h2>
+
+            <button
+                class="close-btn"
+                onclick="closeOrderDetail()"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div id="orderDetailBody"></div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SALES REPORT MODAL
+===================================================== -->
+
+<div
+    id="salesReportModal"
+    class="modal"
+>
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>📊 Sales Report</h2>
+
+            <button
+                class="close-btn"
+                onclick="closeSalesReport()"
+                type="button"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="report-filter">
+
+            <div class="report-filter-group">
+
+                <label for="reportStartDate">
+                    From
+                </label>
+
+                <input
+                    id="reportStartDate"
+                    type="date"
                 >
-                    ×
-                </button>
 
             </div>
 
 
-            <!-- DATE FILTER -->
+            <div class="report-filter-group">
 
-            <div class="report-filter">
+                <label for="reportEndDate">
+                    To
+                </label>
 
-                <div class="report-filter-group">
-
-                    <label for="reportStartDate">
-                        From
-                    </label>
-
-                    <input
-                        id="reportStartDate"
-                        type="date"
-                    >
-
-                </div>
-
-
-                <div class="report-filter-group">
-
-                    <label for="reportEndDate">
-                        To
-                    </label>
-
-                    <input
-                        id="reportEndDate"
-                        type="date"
-                    >
-
-                </div>
-
-
-                <button
-                    class="report-filter-btn"
-                    type="button"
-                    onclick="loadSalesReport()"
+                <input
+                    id="reportEndDate"
+                    type="date"
                 >
-                    🔍 Apply
-                </button>
 
             </div>
 
 
-            <div id="salesReportBody">
+            <button
+                class="report-filter-btn"
+                type="button"
+                onclick="loadSalesReport()"
+            >
+                🔍 Apply
+            </button>
 
-                <div class="report-loading">
-                    Loading sales report...
-                </div>
+        </div>
 
+
+        <div id="salesReportBody">
+
+            <div class="report-loading">
+                Loading sales report...
             </div>
 
+        </div>
 
-            <div class="report-note">
-                Paid sales are calculated from orders whose payment status is
-                <strong>paid</strong>. Cancelled orders are excluded from sales
-                and item totals. The report reads the restaurant's orders
-                collection for the selected date range.
-            </div>
 
+        <div class="report-note">
+
+            Paid sales are calculated from orders where
+            payment status is <strong>paid</strong>.
+            Cancelled orders are excluded.
 
         </div>
 
     </div>
 
-
-    <!-- ================================
-         JAVASCRIPT
-    ================================= -->
-
-    <script type="module">
+</div>
 
 
-        /* =====================================
-           FIREBASE IMPORTS
-        ===================================== */
+<!-- =====================================================
+     FIREBASE
+===================================================== -->
 
-        import {
-            initializeApp
+<script type="module">
+
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    updateDoc,
+    collection,
+    getDocs,
+    serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
+
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let currentRestaurantId = null;
+
+let allOrders = [];
+
+let selectedOrder = null;
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const settingsModal =
+    document.getElementById("settingsModal");
+
+const ordersModal =
+    document.getElementById("ordersModal");
+
+const orderDetailModal =
+    document.getElementById("orderDetailModal");
+
+const salesReportModal =
+    document.getElementById("salesReportModal");
+
+const upiIdInput =
+    document.getElementById("upiId");
+
+const discountEnabledInput =
+    document.getElementById("discountEnabled");
+
+const discountPercentInput =
+    document.getElementById("discountPercent");
+
+const saveSettingsBtn =
+    document.getElementById("saveSettingsBtn");
+
+const settingsStatus =
+    document.getElementById("settingsStatus");
+
+const ordersBody =
+    document.getElementById("ordersBody");
+
+const ordersSummary =
+    document.getElementById("ordersSummary");
+
+const orderDetailBody =
+    document.getElementById("orderDetailBody");
+
+const salesReportBody =
+    document.getElementById("salesReportBody");
+
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+onAuthStateChanged(
+    auth,
+    async (user) => {
+
+        if (!user) {
+
+            currentRestaurantId = null;
+
+            return;
+
         }
-        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+        currentRestaurantId =
+            user.uid;
+
+        console.log(
+            "Restaurant logged in:",
+            currentRestaurantId
+        );
+
+    }
+);
 
 
-        import {
-            getAuth,
-            onAuthStateChanged,
-            signOut
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+window.addMenu =
+function(){
+
+    window.location.href =
+        "add-menu.html";
+
+};
+
+
+window.viewMenu =
+function(){
+
+    window.location.href =
+        "manage-menu.html";
+
+};
+
+
+window.openQR =
+function(){
+
+    window.location.href =
+        "qr.html";
+
+};
+
+
+/* =====================================================
+   SETTINGS
+===================================================== */
+
+window.openSettings =
+async function(){
+
+    if(!currentRestaurantId){
+
+        alert("Please login first.");
+
+        return;
+
+    }
+
+    settingsModal.style.display =
+        "block";
+
+    clearSettingsStatus();
+
+    await loadSettings();
+
+};
+
+
+window.closeSettings =
+function(){
+
+    settingsModal.style.display =
+        "none";
+
+    clearSettingsStatus();
+
+};
+
+
+async function loadSettings(){
+
+    try{
+
+        saveSettingsBtn.disabled =
+            true;
+
+        saveSettingsBtn.textContent =
+            "Loading...";
+
+
+        const restaurantRef =
+            doc(
+                db,
+                "restaurants",
+                currentRestaurantId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                restaurantRef
+            );
+
+
+        upiIdInput.value = "";
+
+        discountEnabledInput.checked =
+            false;
+
+        discountPercentInput.value =
+            "0";
+
+
+        if(snapshot.exists()){
+
+            const data =
+                snapshot.data();
+
+
+            upiIdInput.value =
+                data.upiId || "";
+
+
+            discountEnabledInput.checked =
+                data.discountEnabled === true;
+
+
+            discountPercentInput.value =
+                data.discountPercent ?? 0;
+
         }
-        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showSettingsStatus(
+            "Could not load settings: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally{
+
+        saveSettingsBtn.disabled =
+            false;
+
+        saveSettingsBtn.textContent =
+            "💾 Save Settings";
+
+    }
+
+}
 
 
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            setDoc,
-            collection,
-            getDocs
+window.saveSettings =
+async function(){
+
+    if(!currentRestaurantId){
+
+        showSettingsStatus(
+            "Restaurant login not found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const upiId =
+        upiIdInput.value.trim();
+
+
+    const discountEnabled =
+        discountEnabledInput.checked;
+
+
+    let discountPercent =
+        Number(
+            discountPercentInput.value
+        );
+
+
+    if(upiId){
+
+        const upiPattern =
+            /^[A-Za-z0-9._-]{2,}@[A-Za-z]{2,}$/;
+
+
+        if(!upiPattern.test(upiId)){
+
+            showSettingsStatus(
+                "Enter a valid UPI ID.",
+                "error"
+            );
+
+            return;
+
         }
-        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+    }
 
 
-        /* =====================================
-           FIREBASE CONFIG
-        ===================================== */
+    if(!Number.isFinite(discountPercent)){
 
-        const firebaseConfig = {
+        discountPercent = 0;
 
-            apiKey:
-                "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-
-            authDomain:
-                "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-
-            projectId:
-                "restaurant-qr-ordering-fdf9b",
-
-            storageBucket:
-                "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-
-            messagingSenderId:
-                "907571024375",
-
-            appId:
-                "1:907571024375:web:796894f82f2cae4d7b9ef2",
-
-            measurementId:
-                "G-G3Q89BDFF9"
-
-        };
+    }
 
 
-        /* =====================================
-           INITIALIZE FIREBASE
-        ===================================== */
+    if(
+        discountPercent < 0 ||
+        discountPercent > 100
+    ){
 
-        const app =
-            initializeApp(
-                firebaseConfig
+        showSettingsStatus(
+            "Discount must be between 0% and 100%.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    if(!discountEnabled){
+
+        discountPercent = 0;
+
+    }
+
+
+    try{
+
+        saveSettingsBtn.disabled =
+            true;
+
+        saveSettingsBtn.textContent =
+            "Saving...";
+
+
+        await setDoc(
+
+            doc(
+                db,
+                "restaurants",
+                currentRestaurantId
+            ),
+
+            {
+
+                upiId: upiId,
+
+                discountEnabled:
+                    discountEnabled,
+
+                discountPercent:
+                    discountPercent
+
+            },
+
+            {
+                merge:true
+            }
+
+        );
+
+
+        showSettingsStatus(
+            "✅ Settings saved successfully.",
+            "success"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        showSettingsStatus(
+            "Could not save settings: " +
+            error.message,
+            "error"
+        );
+
+    }
+
+    finally{
+
+        saveSettingsBtn.disabled =
+            false;
+
+        saveSettingsBtn.textContent =
+            "💾 Save Settings";
+
+    }
+
+};
+
+
+function showSettingsStatus(
+    message,
+    type
+){
+
+    settingsStatus.textContent =
+        message;
+
+    settingsStatus.className =
+        "settings-status " +
+        type;
+
+}
+
+
+function clearSettingsStatus(){
+
+    settingsStatus.textContent =
+        "";
+
+    settingsStatus.className =
+        "settings-status";
+
+}
+
+
+/* =====================================================
+   ORDERS
+===================================================== */
+
+window.openOrders =
+async function(){
+
+    if(!currentRestaurantId){
+
+        alert("Please login first.");
+
+        return;
+
+    }
+
+
+    ordersModal.style.display =
+        "block";
+
+
+    ordersBody.innerHTML = `
+        <div class="orders-empty">
+            Loading orders...
+        </div>
+    `;
+
+
+    await loadOrders();
+
+};
+
+
+window.closeOrders =
+function(){
+
+    ordersModal.style.display =
+        "none";
+
+};
+
+
+window.loadOrders =
+async function(){
+
+    if(!currentRestaurantId){
+
+        return;
+
+    }
+
+
+    try{
+
+        ordersBody.innerHTML = `
+            <div class="orders-empty">
+                Loading orders...
+            </div>
+        `;
+
+
+        const ordersRef =
+            collection(
+                db,
+                "restaurants",
+                currentRestaurantId,
+                "orders"
             );
 
 
-        const auth =
-            getAuth(app);
-
-
-        const db =
-            getFirestore(app);
-
-
-        /* =====================================
-           CURRENT RESTAURANT
-        ===================================== */
-
-        let currentRestaurantId =
-            null;
-
-
-        /* =====================================
-           ELEMENTS
-        ===================================== */
-
-        const settingsModal =
-            document.getElementById(
-                "settingsModal"
+        const snapshot =
+            await getDocs(
+                ordersRef
             );
 
 
-        const upiIdInput =
-            document.getElementById(
-                "upiId"
-            );
+        allOrders = [];
 
 
-        const discountEnabledInput =
-            document.getElementById(
-                "discountEnabled"
-            );
+        snapshot.forEach(
+            orderDoc => {
+
+                allOrders.push({
+
+                    id:
+                        orderDoc.id,
+
+                    ...orderDoc.data()
+
+                });
+
+            }
+        );
 
 
-        const discountPercentInput =
-            document.getElementById(
-                "discountPercent"
-            );
+        /*
+         * Newest orders first.
+         */
+
+        allOrders.sort(
+            (a,b) => {
+
+                const dateA =
+                    getOrderDate(a);
+
+                const dateB =
+                    getOrderDate(b);
 
 
-        const saveSettingsBtn =
-            document.getElementById(
-                "saveSettingsBtn"
-            );
+                if(!dateA && !dateB)
+                    return 0;
+
+                if(!dateA)
+                    return 1;
+
+                if(!dateB)
+                    return -1;
 
 
-        const settingsStatus =
-            document.getElementById(
-                "settingsStatus"
-            );
-
-
-        const salesReportModal =
-            document.getElementById(
-                "salesReportModal"
-            );
-
-
-        const salesReportBody =
-            document.getElementById(
-                "salesReportBody"
-            );
-
-
-        /* =====================================
-           AUTH STATE
-        ===================================== */
-
-        onAuthStateChanged(
-            auth,
-            async (user) => {
-
-                if (!user) {
-
-                    currentRestaurantId =
-                        null;
-
-                    return;
-
-                }
-
-
-                currentRestaurantId =
-                    user.uid;
-
-
-                console.log(
-                    "Restaurant logged in:",
-                    currentRestaurantId
+                return (
+                    dateB.getTime() -
+                    dateA.getTime()
                 );
 
             }
         );
 
 
-        /* =====================================
-           ADD MENU
-        ===================================== */
+        renderOrders(
+            allOrders
+        );
 
-        window.addMenu =
-            function() {
+    }
 
-                window.location.href =
-                    "add-menu.html";
+    catch(error){
 
-            };
-
-
-        /* =====================================
-           RESTAURANT PROFILE
-        ===================================== */
-
-        window.profile =
-            function() {
-
-                window.location.assign(
-                    "profile.html"
-                );
-
-            };
+        console.error(
+            "Orders error:",
+            error
+        );
 
 
-        /* =====================================
-           MANAGE MENU
-        ===================================== */
+        ordersBody.innerHTML = `
 
-        window.viewMenu =
-            function() {
+            <div class="orders-empty">
 
-                window.location.href =
-                    "manage-menu.html";
+                ⚠️ Could not load orders.
 
-            };
+                <br><br>
 
+                ${escapeHTML(error.message)}
 
-        /* =====================================
-           VIEW ORDERS
-        ===================================== */
+            </div>
 
-        window.viewOrders =
-            function() {
+        `;
 
-                window.location.href =
-                    "view-orders.html";
+    }
 
-            };
+};
 
 
-        /* =====================================
-           QR CODE
-        ===================================== */
+/* =====================================================
+   FILTER ORDERS
+===================================================== */
 
-        window.openQR =
-            function() {
+window.filterOrders =
+function(){
 
-                window.location.href =
-                    "qr.html";
-
-            };
-
-
-        /* =====================================
-           OPEN SETTINGS
-        ===================================== */
-
-        window.openSettings =
-            async function() {
-
-                if (!currentRestaurantId) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-                    return;
-
-                }
+    const search =
+        document.getElementById(
+            "orderSearch"
+        ).value
+        .trim()
+        .toLowerCase();
 
 
-                settingsModal.style.display =
-                    "block";
+    const status =
+        document.getElementById(
+            "orderStatusFilter"
+        ).value;
 
 
-                clearSettingsStatus();
+    const filtered =
+        allOrders.filter(
+            order => {
+
+                const mobile =
+                    getCustomerMobile(
+                        order
+                    ).toLowerCase();
 
 
-                await loadSettings();
-
-            };
-
-
-        /* =====================================
-           CLOSE SETTINGS
-        ===================================== */
-
-        window.closeSettings =
-            function() {
-
-                settingsModal.style.display =
-                    "none";
-
-                clearSettingsStatus();
-
-            };
+                const id =
+                    String(
+                        order.id || ""
+                    ).toLowerCase();
 
 
-        /* =====================================
-           LOAD SETTINGS
-        ===================================== */
-
-        async function loadSettings() {
-
-            try {
-
-                saveSettingsBtn.disabled =
-                    true;
-
-
-                saveSettingsBtn.textContent =
-                    "Loading...";
-
-
-                const restaurantRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        currentRestaurantId
+                const paymentStatus =
+                    getPaymentStatus(
+                        order
                     );
 
 
-                const restaurantSnap =
-                    await getDoc(
-                        restaurantRef
-                    );
+                const matchesSearch =
+                    !search ||
+                    mobile.includes(search) ||
+                    id.includes(search);
 
 
-                /*
-                 * Default values
-                 */
-
-                upiIdInput.value =
-                    "";
-
-                discountEnabledInput.checked =
-                    false;
-
-                discountPercentInput.value =
-                    "0";
+                const matchesStatus =
+                    status === "all" ||
+                    paymentStatus === status;
 
 
-                if (
-                    restaurantSnap.exists()
-                ) {
-
-                    const data =
-                        restaurantSnap.data();
-
-
-                    upiIdInput.value =
-                        data.upiId ||
-                        "";
-
-
-                    discountEnabledInput.checked =
-                        data.discountEnabled === true;
-
-
-                    discountPercentInput.value =
-                        data.discountPercent ??
-                        0;
-
-                }
-
-            }
-
-            catch (error) {
-
-                console.error(
-                    "Settings loading error:",
-                    error
-                );
-
-
-                showSettingsStatus(
-                    "Could not load settings: " +
-                    error.message,
-                    "error"
+                return (
+                    matchesSearch &&
+                    matchesStatus
                 );
 
             }
-
-            finally {
-
-                saveSettingsBtn.disabled =
-                    false;
-
-                saveSettingsBtn.textContent =
-                    "💾 Save Settings";
-
-            }
-
-        }
+        );
 
 
-        /* =====================================
-           SAVE SETTINGS
-        ===================================== */
+    renderOrders(
+        filtered
+    );
 
-        window.saveSettings =
-            async function() {
-
-                if (!currentRestaurantId) {
-
-                    showSettingsStatus(
-                        "Restaurant login not found.",
-                        "error"
-                    );
-
-                    return;
-
-                }
+};
 
 
-                let upiId =
-                    upiIdInput.value.trim();
+/* =====================================================
+   RENDER ORDERS
+===================================================== */
+
+function renderOrders(
+    orders
+){
+
+    const pending =
+        allOrders.filter(
+            o =>
+                getPaymentStatus(o) ===
+                "pending"
+        ).length;
 
 
-                const discountEnabled =
-                    discountEnabledInput.checked;
+    const paid =
+        allOrders.filter(
+            o =>
+                getPaymentStatus(o) ===
+                "paid"
+        ).length;
 
 
-                let discountPercent =
-                    Number(
-                        discountPercentInput.value
-                    );
+    const cancelled =
+        allOrders.filter(
+            o =>
+                getPaymentStatus(o) ===
+                "cancelled"
+        ).length;
 
 
-                /* ============================
-                   UPI VALIDATION
-                ============================ */
+    ordersSummary.innerHTML = `
 
-                if (upiId) {
+        <div class="order-summary-box">
 
-                    const upiPattern =
-                        /^[A-Za-z0-9._-]{2,}@[A-Za-z]{2,}$/;
+            <strong>
+                ${allOrders.length}
+            </strong>
 
+            <span>
+                Total Orders
+            </span>
 
-                    if (
-                        !upiPattern.test(
-                            upiId
-                        )
-                    ) {
-
-                        showSettingsStatus(
-                            "Enter a valid UPI ID, for example restaurant@upi.",
-                            "error"
-                        );
-
-                        upiIdInput.focus();
-
-                        return;
-
-                    }
-
-                }
+        </div>
 
 
-                /* ============================
-                   DISCOUNT VALIDATION
-                ============================ */
+        <div class="order-summary-box">
 
-                if (
-                    Number.isNaN(
-                        discountPercent
-                    )
-                ) {
+            <strong style="color:#856404;">
+                ${pending}
+            </strong>
 
-                    discountPercent =
-                        0;
+            <span>
+                Pending Payment
+            </span>
 
-                }
+        </div>
 
 
-                if (
-                    discountPercent < 0 ||
-                    discountPercent > 100
-                ) {
+        <div class="order-summary-box">
 
-                    showSettingsStatus(
-                        "Discount must be between 0% and 100%.",
-                        "error"
-                    );
+            <strong style="color:#155724;">
+                ${paid}
+            </strong>
 
-                    discountPercentInput.focus();
+            <span>
+                Paid
+            </span>
 
-                    return;
-
-                }
+        </div>
 
 
-                if (
-                    !discountEnabled
-                ) {
+        <div class="order-summary-box">
 
-                    discountPercent =
-                        0;
+            <strong style="color:#721c24;">
+                ${cancelled}
+            </strong>
 
-                }
+            <span>
+                Cancelled
+            </span>
 
+        </div>
 
-                try {
-
-                    saveSettingsBtn.disabled =
-                        true;
-
-
-                    saveSettingsBtn.textContent =
-                        "Saving...";
+    `;
 
 
-                    const restaurantRef =
-                        doc(
-                            db,
-                            "restaurants",
-                            currentRestaurantId
-                        );
+    if(!orders.length){
+
+        ordersBody.innerHTML = `
+
+            <div class="orders-empty">
+
+                📦 No orders found.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
 
 
-                    await setDoc(
-                        restaurantRef,
-                        {
+    const rows =
+        orders.map(
+            order => {
 
-                            upiId:
-                                upiId,
-
-                            discountEnabled:
-                                discountEnabled,
-
-                            discountPercent:
-                                discountPercent
-
-                        },
-                        {
-                            merge: true
-                        }
+                const paymentStatus =
+                    getPaymentStatus(
+                        order
                     );
 
 
-                    showSettingsStatus(
-                        "✅ Settings saved successfully.",
-                        "success"
-                    );
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Settings save error:",
-                        error
+                const orderDate =
+                    getOrderDate(
+                        order
                     );
 
 
-                    showSettingsStatus(
-                        "Could not save settings: " +
-                        error.message,
-                        "error"
+                const dateText =
+                    orderDate
+                        ? orderDate.toLocaleString()
+                        : "—";
+
+
+                const mobile =
+                    getCustomerMobile(
+                        order
                     );
 
+
+                const amount =
+                    getPaidAmount(
+                        order
+                    );
+
+
+                const items =
+                    getItemsHTML(
+                        order
+                    );
+
+
+                let statusClass =
+                    "status-pending";
+
+
+                if(
+                    paymentStatus ===
+                    "paid"
+                ){
+
+                    statusClass =
+                        "status-paid";
+
                 }
 
-                finally {
 
-                    saveSettingsBtn.disabled =
-                        false;
+                if(
+                    paymentStatus ===
+                    "cancelled"
+                ){
 
-                    saveSettingsBtn.textContent =
-                        "💾 Save Settings";
+                    statusClass =
+                        "status-cancelled";
 
                 }
 
-            };
+
+                let actions = `
+
+                    <button
+                        class="action-btn view-btn"
+                        onclick="viewOrder('${escapeJS(order.id)}')"
+                    >
+                        View
+                    </button>
+
+                `;
 
 
-        /* =====================================
-           SETTINGS STATUS
-        ===================================== */
+                if(
+                    paymentStatus ===
+                    "pending"
+                ){
 
-        function showSettingsStatus(
-            message,
-            type
-        ) {
+                    actions += `
 
-            settingsStatus.textContent =
-                message;
-
-            settingsStatus.className =
-                "settings-status " +
-                type;
-
-        }
+                        <button
+                            class="action-btn confirm-btn"
+                            onclick="confirmPayment('${escapeJS(order.id)}')"
+                        >
+                            ✅ Confirm Payment
+                        </button>
 
 
-        function clearSettingsStatus() {
+                        <button
+                            class="action-btn cancel-btn"
+                            onclick="cancelOrder('${escapeJS(order.id)}')"
+                        >
+                            ❌ Cancel
+                        </button>
 
-            settingsStatus.textContent =
-                "";
+                    `;
 
-            settingsStatus.className =
-                "settings-status";
-
-        }
-
-
-        /* =====================================
-           SALES REPORT
-        ===================================== */
-
-        function getLocalDateString(date = new Date()) {
-
-            const year =
-                date.getFullYear();
-
-            const month =
-                String(
-                    date.getMonth() + 1
-                ).padStart(
-                    2,
-                    "0"
-                );
-
-            const day =
-                String(
-                    date.getDate()
-                ).padStart(
-                    2,
-                    "0"
-                );
-
-            return `${year}-${month}-${day}`;
-
-        }
+                }
 
 
-        function formatCurrency(amount) {
+                return `
 
-            return "₹" +
-                Number(
-                    amount || 0
-                ).toFixed(2);
+                    <tr>
 
-        }
+                        <td>
+
+                            <div class="order-id">
+                                #${escapeHTML(order.id)}
+                            </div>
+
+                            <div style="
+                                margin-top:5px;
+                                color:#777;
+                            ">
+                                ${escapeHTML(dateText)}
+                            </div>
+
+                        </td>
 
 
-        function getOrderDate(order) {
+                        <td>
 
-            /*
-             * Firestore serverTimestamp()
-             * normally becomes a Timestamp.
-             *
-             * A few older/test orders may have
-             * a JavaScript Date, milliseconds,
-             * or an ISO string. Support all of
-             * those formats.
-             */
+                            <div class="customer-mobile">
+                                📱 ${escapeHTML(mobile)}
+                            </div>
 
-            const value =
-                order.createdAt;
+                            <div style="
+                                margin-top:5px;
+                                color:#777;
+                            ">
+                                ${escapeHTML(
+                                    getCustomerName(order)
+                                )}
+                            </div>
 
-            if (!value) {
-                return null;
+                        </td>
+
+
+                        <td>
+
+                            <div class="order-items">
+                                ${items}
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="amount">
+                                ${formatCurrency(amount)}
+                            </div>
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="
+                                status-badge
+                                ${statusClass}
+                            ">
+
+                                ${escapeHTML(
+                                    paymentStatus.toUpperCase()
+                                )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            ${actions}
+
+                        </td>
+
+                    </tr>
+
+                `;
+
             }
+        )
+        .join("");
 
 
-            if (
-                typeof value.toDate ===
-                "function"
-            ) {
-                return value.toDate();
-            }
+    ordersBody.innerHTML = `
+
+        <div class="orders-table-wrap">
+
+            <table class="orders-table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Order
+                        </th>
+
+                        <th>
+                            Customer
+                        </th>
+
+                        <th>
+                            Items
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                        <th>
+                            Payment
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                </thead>
 
 
-            if (
-                value instanceof Date
-            ) {
-                return value;
-            }
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    `;
+
+}
 
 
-            if (
-                typeof value ===
-                "number"
-            ) {
-                const date =
-                    new Date(value);
+/* =====================================================
+   CONFIRM PAYMENT
+===================================================== */
 
-                return Number.isNaN(
-                    date.getTime()
-                )
-                    ? null
-                    : date;
-            }
+window.confirmPayment =
+async function(orderId){
 
+    if(!currentRestaurantId){
 
-            if (
-                typeof value ===
-                "string"
-            ) {
-                const date =
-                    new Date(value);
+        alert("Restaurant login not found.");
 
-                return Number.isNaN(
-                    date.getTime()
-                )
-                    ? null
-                    : date;
-            }
+        return;
+
+    }
 
 
-            /*
-             * Firestore Timestamp-like object
-             * from some SDK representations.
-             */
-
-            if (
-                typeof value.seconds ===
-                "number"
-            ) {
-                return new Date(
-                    value.seconds * 1000
-                );
-            }
+    const order =
+        allOrders.find(
+            item =>
+                item.id === orderId
+        );
 
 
-            return null;
+    if(!order){
 
-        }
+        alert("Order not found.");
 
+        return;
 
-        function getOrderDateKey(order) {
-
-            const date =
-                getOrderDate(
-                    order
-                );
-
-            if (!date) {
-                return null;
-            }
+    }
 
 
-            return getLocalDateString(
-                date
+    const status =
+        getPaymentStatus(
+            order
+        );
+
+
+    if(status === "paid"){
+
+        alert("This order is already marked as paid.");
+
+        return;
+
+    }
+
+
+    if(status === "cancelled"){
+
+        alert("Cancelled orders cannot be marked as paid.");
+
+        return;
+
+    }
+
+
+    const confirmResult =
+        confirm(
+            "Have you verified the UPI payment for this order?\n\n" +
+            "Order: #" +
+            orderId +
+            "\n" +
+            "Customer: " +
+            getCustomerMobile(order) +
+            "\n" +
+            "Amount: " +
+            formatCurrency(
+                getPaidAmount(order)
+            ) +
+            "\n\n" +
+            "Click OK to confirm payment."
+        );
+
+
+    if(!confirmResult){
+
+        return;
+
+    }
+
+
+    try{
+
+        const orderRef =
+            doc(
+                db,
+                "restaurants",
+                currentRestaurantId,
+                "orders",
+                orderId
             );
 
-        }
 
+        await updateDoc(
+            orderRef,
+            {
 
-        function isPaidOrder(order) {
+                paymentStatus:
+                    "paid",
 
-            return String(
-                order.paymentStatus ||
-                ""
-            ).trim().toLowerCase() ===
-                "paid";
+                paymentConfirmedAt:
+                    serverTimestamp(),
 
-        }
+                paymentConfirmedBy:
+                    auth.currentUser
+                        ? auth.currentUser.uid
+                        : null,
 
-
-        function isCancelledOrder(order) {
-
-            return String(
-                order.status ||
-                ""
-            ).trim().toLowerCase() ===
-                "cancelled";
-
-        }
-
-
-        function getPaidAmount(order) {
-
-            /*
-             * Prefer the final/bill amount when
-             * available, because a discount may
-             * have changed the amount payable.
-             */
-
-            const candidates = [
-
-                order.billTotal,
-
-                order.finalTotal,
-
-                order.total
-
-            ];
-
-
-            for (
-                const candidate of
-                candidates
-            ) {
-
-                const number =
-                    Number(
-                        candidate
-                    );
-
-
-                if (
-                    Number.isFinite(
-                        number
-                    )
-                ) {
-                    return number;
-                }
+                status:
+                    order.status ===
+                    "pending"
+                        ? "confirmed"
+                        : (
+                            order.status ||
+                            "confirmed"
+                        )
 
             }
+        );
 
 
-            return 0;
+        alert(
+            "✅ Payment confirmed successfully."
+        );
 
-        }
+
+        await loadOrders();
+
+    }
+
+    catch(error){
+
+        console.error(
+            "Payment confirmation error:",
+            error
+        );
 
 
-        function getItemQuantity(order) {
+        alert(
+            "Could not confirm payment.\n\n" +
+            error.message
+        );
 
-            if (
-                !Array.isArray(
-                    order.items
-                )
-            ) {
-                return 0;
+    }
+
+};
+
+
+/* =====================================================
+   CANCEL ORDER
+===================================================== */
+
+window.cancelOrder =
+async function(orderId){
+
+    if(!currentRestaurantId){
+
+        return;
+
+    }
+
+
+    const order =
+        allOrders.find(
+            item =>
+                item.id === orderId
+        );
+
+
+    if(!order){
+
+        alert("Order not found.");
+
+        return;
+
+    }
+
+
+    if(
+        getPaymentStatus(order) ===
+        "paid"
+    ){
+
+        alert(
+            "This order is already paid. " +
+            "Do not cancel it from this button."
+        );
+
+        return;
+
+    }
+
+
+    const result =
+        confirm(
+            "Are you sure you want to cancel this order?"
+        );
+
+
+    if(!result){
+
+        return;
+
+    }
+
+
+    try{
+
+        const orderRef =
+            doc(
+                db,
+                "restaurants",
+                currentRestaurantId,
+                "orders",
+                orderId
+            );
+
+
+        await updateDoc(
+            orderRef,
+            {
+
+                paymentStatus:
+                    "cancelled",
+
+                status:
+                    "cancelled",
+
+                cancelledAt:
+                    serverTimestamp(),
+
+                cancelledBy:
+                    auth.currentUser
+                        ? auth.currentUser.uid
+                        : null
+
             }
+        );
 
 
-            return order.items.reduce(
-                (
-                    total,
-                    item
-                ) => {
+        alert(
+            "Order cancelled successfully."
+        );
+
+
+        await loadOrders();
+
+    }
+
+    catch(error){
+
+        console.error(
+            error
+        );
+
+
+        alert(
+            "Could not cancel order.\n\n" +
+            error.message
+        );
+
+    }
+
+};
+
+
+/* =====================================================
+   VIEW ORDER
+===================================================== */
+
+window.viewOrder =
+function(orderId){
+
+    const order =
+        allOrders.find(
+            item =>
+                item.id === orderId
+        );
+
+
+    if(!order){
+
+        alert("Order not found.");
+
+        return;
+
+    }
+
+
+    selectedOrder =
+        order;
+
+
+    const date =
+        getOrderDate(order);
+
+
+    const items =
+        Array.isArray(order.items)
+            ? order.items
+            : [];
+
+
+    const itemsHTML =
+        items.length
+
+            ? items.map(
+                item => {
+
+                    const name =
+                        item.name ||
+                        item.foodName ||
+                        "Item";
+
 
                     const quantity =
                         Number(
@@ -1962,380 +2579,813 @@
                         );
 
 
-                    return total +
-                        (
-                            Number.isFinite(
-                                quantity
-                            )
-                                ? quantity
-                                : 0
+                    const price =
+                        Number(
+                            item.price ||
+                            0
                         );
 
-                },
-                0
+
+                    return `
+
+                        <div class="detail-item">
+
+                            <span>
+
+                                ${escapeHTML(name)}
+
+                                × ${quantity}
+
+                            </span>
+
+                            <strong>
+                                ${formatCurrency(
+                                    price * quantity
+                                )}
+                            </strong>
+
+                        </div>
+
+                    `;
+
+                }
+            ).join("")
+
+            : "<p>No item details available.</p>";
+
+
+    orderDetailBody.innerHTML = `
+
+        <div class="order-detail-box">
+
+            <h3>
+                Order #${escapeHTML(order.id)}
+            </h3>
+
+
+            <div class="detail-row">
+
+                <span class="detail-label">
+                    Date / Time
+                </span>
+
+                <span class="detail-value">
+                    ${
+                        date
+                            ? escapeHTML(
+                                date.toLocaleString()
+                            )
+                            : "—"
+                    }
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span class="detail-label">
+                    Customer
+                </span>
+
+                <span class="detail-value">
+                    ${escapeHTML(
+                        getCustomerName(order)
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span class="detail-label">
+                    Mobile
+                </span>
+
+                <span class="detail-value">
+                    📱 ${escapeHTML(
+                        getCustomerMobile(order)
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span class="detail-label">
+                    Payment Status
+                </span>
+
+                <span class="detail-value">
+
+                    ${escapeHTML(
+                        getPaymentStatus(order)
+                            .toUpperCase()
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span class="detail-label">
+                    Order Status
+                </span>
+
+                <span class="detail-value">
+                    ${escapeHTML(
+                        order.status || "—"
+                    )}
+                </span>
+
+            </div>
+
+
+            <div class="detail-row">
+
+                <span class="detail-label">
+                    Total
+                </span>
+
+                <span class="detail-value">
+                    ${formatCurrency(
+                        getPaidAmount(order)
+                    )}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="order-detail-box">
+
+            <h3>
+                🍽️ Items
+            </h3>
+
+            <div class="detail-items">
+
+                ${itemsHTML}
+
+            </div>
+
+        </div>
+
+
+        ${
+            getPaymentStatus(order) ===
+            "pending"
+
+            ? `
+
+                <button
+                    class="action-btn confirm-btn"
+                    style="
+                        width:100%;
+                        padding:13px;
+                        font-size:15px;
+                        margin-top:5px;
+                    "
+                    onclick="confirmPaymentFromDetail()"
+                >
+                    ✅ Confirm Payment
+                </button>
+
+            `
+
+            : ""
+        }
+
+    `;
+
+
+    orderDetailModal.style.display =
+        "block";
+
+};
+
+
+window.confirmPaymentFromDetail =
+async function(){
+
+    if(!selectedOrder){
+
+        return;
+
+    }
+
+
+    await confirmPayment(
+        selectedOrder.id
+    );
+
+
+    closeOrderDetail();
+
+};
+
+
+window.closeOrderDetail =
+function(){
+
+    orderDetailModal.style.display =
+        "none";
+
+    selectedOrder = null;
+
+};
+
+
+/* =====================================================
+   ORDER HELPERS
+===================================================== */
+
+function getCustomerMobile(order){
+
+    return String(
+
+        order.customerMobile ||
+
+        order.mobile ||
+
+        order.phone ||
+
+        order.customerPhone ||
+
+        order.userMobile ||
+
+        order.userPhone ||
+
+        "Not available"
+
+    );
+
+}
+
+
+function getCustomerName(order){
+
+    return String(
+
+        order.customerName ||
+
+        order.customer ||
+
+        order.userName ||
+
+        order.name ||
+
+        "Customer"
+
+    );
+
+}
+
+
+function getPaymentStatus(order){
+
+    const value =
+        String(
+            order.paymentStatus ||
+            ""
+        )
+        .trim()
+        .toLowerCase();
+
+
+    if(
+        value === "paid" ||
+        value === "success" ||
+        value === "successful"
+    ){
+
+        return "paid";
+
+    }
+
+
+    if(
+        value === "cancelled" ||
+        value === "canceled"
+    ){
+
+        return "cancelled";
+
+    }
+
+
+    return "pending";
+
+}
+
+
+function getItemsHTML(order){
+
+    if(
+        !Array.isArray(
+            order.items
+        )
+    ){
+
+        return "No item details";
+
+    }
+
+
+    return order.items.map(
+        item => {
+
+            const name =
+                item.name ||
+                item.foodName ||
+                "Item";
+
+
+            const quantity =
+                Number(
+                    item.quantity ||
+                    0
+                );
+
+
+            return `
+                ${escapeHTML(name)}
+                × ${quantity}
+                <br>
+            `;
+
+        }
+    ).join("");
+
+}
+
+
+function getPaidAmount(order){
+
+    const candidates = [
+
+        order.billTotal,
+
+        order.finalTotal,
+
+        order.total,
+
+        order.grandTotal,
+
+        order.amount,
+
+        order.totalAmount
+
+    ];
+
+
+    for(
+        const candidate of
+        candidates
+    ){
+
+        const value =
+            Number(candidate);
+
+
+        if(
+            Number.isFinite(value)
+        ){
+
+            return value;
+
+        }
+
+    }
+
+
+    return 0;
+
+}
+
+
+function getOrderDate(order){
+
+    const value =
+        order.createdAt ||
+        order.orderDate ||
+        order.timestamp;
+
+
+    if(!value){
+
+        return null;
+
+    }
+
+
+    if(
+        typeof value.toDate ===
+        "function"
+    ){
+
+        return value.toDate();
+
+    }
+
+
+    if(
+        value instanceof Date
+    ){
+
+        return value;
+
+    }
+
+
+    if(
+        typeof value ===
+        "number"
+    ){
+
+        const date =
+            new Date(value);
+
+
+        return Number.isNaN(
+            date.getTime()
+        )
+            ? null
+            : date;
+
+    }
+
+
+    if(
+        typeof value ===
+        "string"
+    ){
+
+        const date =
+            new Date(value);
+
+
+        return Number.isNaN(
+            date.getTime()
+        )
+            ? null
+            : date;
+
+    }
+
+
+    if(
+        typeof value.seconds ===
+        "number"
+    ){
+
+        return new Date(
+            value.seconds * 1000
+        );
+
+    }
+
+
+    return null;
+
+}
+
+
+function getLocalDateString(
+    date = new Date()
+){
+
+    const year =
+        date.getFullYear();
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    return `${year}-${month}-${day}`;
+
+}
+
+
+function formatCurrency(
+    amount
+){
+
+    return "₹" +
+        Number(
+            amount || 0
+        ).toFixed(2);
+
+}
+
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+
+    .replace(
+        /</g,
+        "&lt;"
+    )
+
+    .replace(
+        />/g,
+        "&gt;"
+    )
+
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+function escapeJS(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
+    .replace(
+        /'/g,
+        "\\'"
+    );
+
+}
+
+
+/* =====================================================
+   SALES REPORT
+===================================================== */
+
+function isPaidOrder(order){
+
+    return getPaymentStatus(order) ===
+        "paid";
+
+}
+
+
+function isCancelledOrder(order){
+
+    return (
+        String(
+            order.status ||
+            ""
+        )
+        .trim()
+        .toLowerCase() ===
+        "cancelled"
+    )
+    ||
+    getPaymentStatus(order) ===
+        "cancelled";
+
+}
+
+
+function getOrderDateKey(order){
+
+    const date =
+        getOrderDate(order);
+
+
+    if(!date){
+
+        return null;
+
+    }
+
+
+    return getLocalDateString(
+        date
+    );
+
+}
+
+
+function getItemQuantity(order){
+
+    if(
+        !Array.isArray(
+            order.items
+        )
+    ){
+
+        return 0;
+
+    }
+
+
+    return order.items.reduce(
+        (
+            total,
+            item
+        ) => {
+
+            const quantity =
+                Number(
+                    item.quantity ||
+                    0
+                );
+
+
+            return total +
+                (
+                    Number.isFinite(
+                        quantity
+                    )
+                        ? quantity
+                        : 0
+                );
+
+        },
+        0
+    );
+
+}
+
+
+window.openSalesReport =
+async function(){
+
+    if(!currentRestaurantId){
+
+        alert("Please login first.");
+
+        return;
+
+    }
+
+
+    const today =
+        getLocalDateString();
+
+
+    document.getElementById(
+        "reportStartDate"
+    ).value =
+        today;
+
+
+    document.getElementById(
+        "reportEndDate"
+    ).value =
+        today;
+
+
+    salesReportModal.style.display =
+        "block";
+
+
+    await loadSalesReport();
+
+};
+
+
+window.closeSalesReport =
+function(){
+
+    salesReportModal.style.display =
+        "none";
+
+};
+
+
+window.loadSalesReport =
+async function(){
+
+    if(!currentRestaurantId){
+
+        return;
+
+    }
+
+
+    const startDate =
+        document.getElementById(
+            "reportStartDate"
+        ).value;
+
+
+    const endDate =
+        document.getElementById(
+            "reportEndDate"
+        ).value;
+
+
+    if(
+        !startDate ||
+        !endDate
+    ){
+
+        return;
+
+    }
+
+
+    if(startDate > endDate){
+
+        salesReportBody.innerHTML = `
+
+            <div class="report-empty">
+
+                Start date cannot be after end date.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    salesReportBody.innerHTML = `
+
+        <div class="report-loading">
+
+            Loading orders...
+
+        </div>
+
+    `;
+
+
+    try{
+
+        const ordersRef =
+            collection(
+                db,
+                "restaurants",
+                currentRestaurantId,
+                "orders"
             );
 
-        }
 
+        const snapshot =
+            await getDocs(
+                ordersRef
+            );
 
-        function escapeHTML(value) {
 
-            return String(
-                value ?? ""
-            )
+        const orders = [];
 
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
 
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
+        snapshot.forEach(
+            orderDoc => {
 
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
+                orders.push({
 
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
+                    id:
+                        orderDoc.id,
 
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
+                    ...orderDoc.data()
 
-        }
+                });
 
+            }
+        );
 
-        window.openSalesReport =
-            async function() {
 
-                if (!currentRestaurantId) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-                    return;
-
-                }
-
-
-                const today =
-                    getLocalDateString();
-
-
-                document.getElementById(
-                    "reportStartDate"
-                ).value =
-                    today;
-
-
-                document.getElementById(
-                    "reportEndDate"
-                ).value =
-                    today;
-
-
-                salesReportModal.style.display =
-                    "block";
-
-
-                salesReportBody.innerHTML =
-                    `
-                    <div class="report-loading">
-                        Loading sales report...
-                    </div>
-                    `;
-
-
-                await loadSalesReport();
-
-            };
-
-
-        window.closeSalesReport =
-            function() {
-
-                salesReportModal.style.display =
-                    "none";
-
-            };
-
-
-        window.loadSalesReport =
-            async function() {
-
-                if (!currentRestaurantId) {
-
-                    salesReportBody.innerHTML =
-                        `
-                        <div class="report-empty">
-                            Please login first.
-                        </div>
-                        `;
-
-                    return;
-
-                }
-
-
-                const startDate =
-                    document.getElementById(
-                        "reportStartDate"
-                    ).value;
-
-
-                const endDate =
-                    document.getElementById(
-                        "reportEndDate"
-                    ).value;
-
-
-                if (
-                    !startDate ||
-                    !endDate
-                ) {
-
-                    salesReportBody.innerHTML =
-                        `
-                        <div class="report-empty">
-                            Please select both start and end dates.
-                        </div>
-                        `;
-
-                    return;
-
-                }
-
-
-                if (
-                    startDate >
-                    endDate
-                ) {
-
-                    salesReportBody.innerHTML =
-                        `
-                        <div class="report-empty">
-                            Start date cannot be after the end date.
-                        </div>
-                        `;
-
-                    return;
-
-                }
-
-
-                salesReportBody.innerHTML =
-                    `
-                    <div class="report-loading">
-                        Loading orders...
-                    </div>
-                    `;
-
-
-                try {
-
-                    const ordersRef =
-                        collection(
-                            db,
-                            "restaurants",
-                            currentRestaurantId,
-                            "orders"
-                        );
-
-
-                    /*
-                     * We intentionally read the restaurant's
-                     * orders and filter by date in the browser.
-                     *
-                     * This avoids requiring a new Firestore
-                     * composite index just for this report.
-                     */
-
-                    const snapshot =
-                        await getDocs(
-                            ordersRef
-                        );
-
-
-                    const orders = [];
-
-
-                    snapshot.forEach(
-                        orderDoc => {
-
-                            orders.push({
-                                id:
-                                    orderDoc.id,
-                                ...orderDoc.data()
-                            });
-
-                        }
-                    );
-
-
-                    const filteredOrders =
-                        orders.filter(
-                            order => {
-
-                                const dateKey =
-                                    getOrderDateKey(
-                                        order
-                                    );
-
-
-                                if (!dateKey) {
-                                    return false;
-                                }
-
-
-                                return (
-                                    dateKey >=
-                                    startDate &&
-                                    dateKey <=
-                                    endDate
-                                );
-
-                            }
-                        );
-
-
-                    renderSalesReport(
-                        filteredOrders,
-                        startDate,
-                        endDate
-                    );
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Sales report error:",
-                        error
-                    );
-
-
-                    salesReportBody.innerHTML =
-                        `
-                        <div class="report-empty">
-                            ⚠️ Could not load sales report.<br><br>
-                            ${escapeHTML(error.message)}
-                        </div>
-                        `;
-
-                }
-
-            };
-
-
-        function renderSalesReport(
-            orders,
-            startDate,
-            endDate
-        ) {
-
-            /*
-             * Basic counts
-             */
-
-            const totalOrders =
-                orders.length;
-
-
-            const paidOrders =
-                orders.filter(
-                    order =>
-                        isPaidOrder(
-                            order
-                        ) &&
-                        !isCancelledOrder(
-                            order
-                        )
-                );
-
-
-            const cancelledOrders =
-                orders.filter(
-                    order =>
-                        isCancelledOrder(
-                            order
-                        )
-                );
-
-
-            const pendingOrders =
-                orders.filter(
-                    order =>
-                        !isPaidOrder(
-                            order
-                        ) &&
-                        !isCancelledOrder(
-                            order
-                        )
-                );
-
-
-            /*
-             * Sales
-             */
-
-            const totalSales =
-                paidOrders.reduce(
-                    (
-                        total,
-                        order
-                    ) => {
-
-                        return total +
-                            getPaidAmount(
-                                order
-                            );
-
-                    },
-                    0
-                );
-
-
-            /*
-             * Items sold.
-             *
-             * Only paid, non-cancelled
-             * orders are included.
-             */
-
-            const totalItemsSold =
-                paidOrders.reduce(
-                    (
-                        total,
-                        order
-                    ) => {
-
-                        return total +
-                            getItemQuantity(
-                                order
-                            );
-
-                    },
-                    0
-                );
-
-
-            /*
-             * Sales by day
-             */
-
-            const salesByDay =
-                new Map();
-
-
-            paidOrders.forEach(
+        const filteredOrders =
+            orders.filter(
                 order => {
 
                     const dateKey =
@@ -2344,624 +3394,700 @@
                         );
 
 
-                    if (!dateKey) {
-                        return;
+                    if(!dateKey){
+
+                        return false;
+
                     }
 
 
+                    return (
+                        dateKey >=
+                        startDate &&
+                        dateKey <=
+                        endDate
+                    );
+
+                }
+            );
+
+
+        renderSalesReport(
+            filteredOrders,
+            startDate,
+            endDate
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+
+        salesReportBody.innerHTML = `
+
+            <div class="report-empty">
+
+                ⚠️ Could not load sales report.
+
+                <br><br>
+
+                ${escapeHTML(error.message)}
+
+            </div>
+
+        `;
+
+    }
+
+};
+
+
+function renderSalesReport(
+    orders,
+    startDate,
+    endDate
+){
+
+    const totalOrders =
+        orders.length;
+
+
+    const paidOrders =
+        orders.filter(
+            order =>
+                isPaidOrder(order) &&
+                !isCancelledOrder(order)
+        );
+
+
+    const cancelledOrders =
+        orders.filter(
+            order =>
+                isCancelledOrder(order)
+        );
+
+
+    const pendingOrders =
+        orders.filter(
+            order =>
+                !isPaidOrder(order) &&
+                !isCancelledOrder(order)
+        );
+
+
+    const totalSales =
+        paidOrders.reduce(
+            (
+                total,
+                order
+            ) => {
+
+                return total +
+                    getPaidAmount(order);
+
+            },
+            0
+        );
+
+
+    const totalItemsSold =
+        paidOrders.reduce(
+            (
+                total,
+                order
+            ) => {
+
+                return total +
+                    getItemQuantity(order);
+
+            },
+            0
+        );
+
+
+    const itemSales =
+        new Map();
+
+
+    paidOrders.forEach(
+        order => {
+
+            if(
+                !Array.isArray(
+                    order.items
+                )
+            ){
+
+                return;
+
+            }
+
+
+            order.items.forEach(
+                item => {
+
+                    const name =
+                        String(
+                            item.name ||
+                            item.foodName ||
+                            "Unknown Item"
+                        );
+
+
+                    const quantity =
+                        Number(
+                            item.quantity ||
+                            0
+                        );
+
+
+                    const price =
+                        Number(
+                            item.price ||
+                            0
+                        );
+
+
                     const existing =
-                        salesByDay.get(
-                            dateKey
+                        itemSales.get(
+                            name
                         ) || {
-                            sales: 0,
-                            orders: 0,
-                            items: 0
+
+                            quantity:0,
+
+                            sales:0
+
                         };
 
 
+                    existing.quantity +=
+                        quantity;
+
+
                     existing.sales +=
-                        getPaidAmount(
-                            order
-                        );
+                        price *
+                        quantity;
 
 
-                    existing.orders +=
-                        1;
-
-
-                    existing.items +=
-                        getItemQuantity(
-                            order
-                        );
-
-
-                    salesByDay.set(
-                        dateKey,
+                    itemSales.set(
+                        name,
                         existing
                     );
 
                 }
             );
 
-
-            const salesByDayRows =
-                [...salesByDay.entries()]
-                    .sort(
-                        (
-                            a,
-                            b
-                        ) =>
-                            a[0].localeCompare(
-                                b[0]
-                            )
-                    );
+        }
+    );
 
 
-            /*
-             * Top-selling food items
-             */
-
-            const itemSales =
-                new Map();
-
-
-            paidOrders.forEach(
-                order => {
-
-                    if (
-                        !Array.isArray(
-                            order.items
-                        )
-                    ) {
-                        return;
-                    }
+    const topItems =
+        [...itemSales.entries()]
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                b[1].quantity -
+                a[1].quantity
+        )
+        .slice(
+            0,
+            10
+        );
 
 
-                    order.items.forEach(
-                        item => {
-
-                            const name =
-                                String(
-                                    item.name ||
-                                    item.foodName ||
-                                    "Unknown Item"
-                                ).trim();
+    const salesByDay =
+        new Map();
 
 
-                            const quantity =
-                                Number(
-                                    item.quantity ||
-                                    0
-                                );
+    paidOrders.forEach(
+        order => {
+
+            const dateKey =
+                getOrderDateKey(order);
 
 
-                            const price =
-                                Number(
-                                    item.price ||
-                                    0
-                                );
+            if(!dateKey){
+
+                return;
+
+            }
 
 
-                            if (
-                                !Number.isFinite(
-                                    quantity
-                                )
-                            ) {
-                                return;
-                            }
+            const existing =
+                salesByDay.get(
+                    dateKey
+                ) || {
+
+                    sales:0,
+
+                    orders:0,
+
+                    items:0
+
+                };
 
 
-                            const existing =
-                                itemSales.get(
-                                    name
-                                ) || {
-                                    quantity: 0,
-                                    sales: 0
-                                };
+            existing.sales +=
+                getPaidAmount(order);
 
 
-                            existing.quantity +=
-                                quantity;
+            existing.orders++;
 
 
-                            existing.sales +=
-                                (
-                                    Number.isFinite(
-                                        price
-                                    )
-                                        ? price *
-                                          quantity
-                                        : 0
-                                );
+            existing.items +=
+                getItemQuantity(order);
 
 
-                            itemSales.set(
-                                name,
-                                existing
-                            );
-
-                        }
-                    );
-
-                }
+            salesByDay.set(
+                dateKey,
+                existing
             );
 
-
-            const topItems =
-                [...itemSales.entries()]
-                    .sort(
-                        (
-                            a,
-                            b
-                        ) =>
-                            b[1].quantity -
-                            a[1].quantity
-                    )
-                    .slice(
-                        0,
-                        10
-                    );
+        }
+    );
 
 
-            const rangeText =
-                startDate === endDate
-                    ? startDate
-                    : `${startDate} to ${endDate}`;
+    const dailyRows =
+        [...salesByDay.entries()]
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                a[0].localeCompare(
+                    b[0]
+                )
+        )
+        .map(
+            (
+                [
+                    date,
+                    data
+                ]
+            ) => `
+
+                <tr>
+
+                    <td>
+                        ${escapeHTML(date)}
+                    </td>
+
+                    <td>
+                        ${data.orders}
+                    </td>
+
+                    <td>
+                        ${data.items}
+                    </td>
+
+                    <td>
+                        ${formatCurrency(
+                            data.sales
+                        )}
+                    </td>
+
+                </tr>
+
+            `
+        )
+        .join("");
 
 
-            const dailyRowsHTML =
-                salesByDayRows.length
-                    ? salesByDayRows.map(
-                        ([date, data]) => `
-                            <tr>
-                                <td>
-                                    ${escapeHTML(date)}
-                                </td>
+    const topItemsHTML =
+        topItems.length
 
-                                <td>
-                                    ${data.orders}
-                                </td>
+            ? topItems.map(
+                (
+                    [
+                        name,
+                        data
+                    ],
+                    index
+                ) => `
 
-                                <td>
-                                    ${data.items}
-                                </td>
+                    <tr>
 
-                                <td>
-                                    ${formatCurrency(data.sales)}
-                                </td>
-                            </tr>
-                        `
-                    ).join("")
-                    : `
-                        <tr>
-                            <td colspan="4">
-                                No paid sales in this period.
-                            </td>
-                        </tr>
-                    `;
+                        <td>
+                            ${index + 1}
+                        </td>
 
+                        <td>
+                            ${escapeHTML(name)}
+                        </td>
 
-            const topItemsHTML =
-                topItems.length
-                    ? topItems.map(
-                        ([name, data], index) => `
-                            <tr>
-                                <td>
-                                    ${index + 1}
-                                </td>
+                        <td>
+                            ${data.quantity}
+                        </td>
 
-                                <td>
-                                    ${escapeHTML(name)}
-                                </td>
+                        <td>
+                            ${formatCurrency(
+                                data.sales
+                            )}
+                        </td>
 
-                                <td>
-                                    ${data.quantity}
-                                </td>
+                    </tr>
 
-                                <td>
-                                    ${formatCurrency(data.sales)}
-                                </td>
-                            </tr>
-                        `
-                    ).join("")
-                    : `
-                        <tr>
-                            <td colspan="4">
-                                No sold items in this period.
-                            </td>
-                        </tr>
-                    `;
-
-
-            salesReportBody.innerHTML =
                 `
+            ).join("")
 
-                <div style="
-                    margin-bottom:15px;
-                    color:#666;
-                    font-size:14px;
-                ">
-                    📅 Report period:
-                    <strong>
-                        ${escapeHTML(rangeText)}
-                    </strong>
-                </div>
+            : `
 
+                <tr>
 
-                <!-- SUMMARY -->
+                    <td colspan="4">
+                        No sold items.
+                    </td>
 
-                <div class="report-summary">
+                </tr>
 
-                    <div class="summary-box">
+            `;
 
-                        <strong>
-                            ${formatCurrency(totalSales)}
-                        </strong>
 
-                        <span>
-                            Today's / Period Sales
-                        </span>
+    salesReportBody.innerHTML = `
 
-                    </div>
+        <div style="
+            margin-bottom:15px;
+            color:#666;
+        ">
 
+            📅 Report:
 
-                    <div class="summary-box">
+            <strong>
+                ${escapeHTML(startDate)}
+                to
+                ${escapeHTML(endDate)}
+            </strong>
 
-                        <strong>
-                            ${totalOrders}
-                        </strong>
+        </div>
 
-                        <span>
-                            Total Orders
-                        </span>
 
-                    </div>
+        <div class="report-summary">
 
 
-                    <div class="summary-box">
+            <div class="summary-box">
 
-                        <strong>
-                            ${paidOrders.length}
-                        </strong>
+                <strong>
+                    ${formatCurrency(
+                        totalSales
+                    )}
+                </strong>
 
-                        <span>
-                            Paid Orders
-                        </span>
+                <span>
+                    Total Sales
+                </span>
 
-                    </div>
+            </div>
 
 
-                    <div class="summary-box">
+            <div class="summary-box">
 
-                        <strong>
-                            ${pendingOrders.length}
-                        </strong>
+                <strong>
+                    ${totalOrders}
+                </strong>
 
-                        <span>
-                            Pending / Unpaid
-                        </span>
+                <span>
+                    Total Orders
+                </span>
 
-                    </div>
+            </div>
 
 
-                    <div class="summary-box">
+            <div class="summary-box">
 
-                        <strong>
-                            ${cancelledOrders.length}
-                        </strong>
+                <strong>
+                    ${paidOrders.length}
+                </strong>
 
-                        <span>
-                            Cancelled Orders
-                        </span>
+                <span>
+                    Paid Orders
+                </span>
 
-                    </div>
+            </div>
 
 
-                    <div class="summary-box">
+            <div class="summary-box">
 
-                        <strong>
-                            ${totalItemsSold}
-                        </strong>
+                <strong>
+                    ${pendingOrders.length}
+                </strong>
 
-                        <span>
-                            Total Items Sold
-                        </span>
+                <span>
+                    Pending Orders
+                </span>
 
-                    </div>
+            </div>
 
-                </div>
 
+            <div class="summary-box">
 
-                <!-- SALES BY DAY -->
+                <strong>
+                    ${cancelledOrders.length}
+                </strong>
 
-                <div class="report-section">
+                <span>
+                    Cancelled Orders
+                </span>
 
-                    <h3>
-                        📅 Sales by Day
-                    </h3>
+            </div>
 
 
-                    <div class="report-table-wrap">
+            <div class="summary-box">
 
-                        <table class="report-table">
+                <strong>
+                    ${totalItemsSold}
+                </strong>
 
-                            <thead>
+                <span>
+                    Items Sold
+                </span>
 
-                                <tr>
+            </div>
 
-                                    <th>
-                                        Date
-                                    </th>
+        </div>
 
-                                    <th>
-                                        Paid Orders
-                                    </th>
 
-                                    <th>
-                                        Items Sold
-                                    </th>
+        <div class="report-section">
 
-                                    <th>
-                                        Sales
-                                    </th>
+            <h3>
+                📅 Sales by Day
+            </h3>
 
-                                </tr>
 
-                            </thead>
+            <div class="report-table-wrap">
 
+                <table class="report-table">
 
-                            <tbody>
+                    <thead>
 
-                                ${dailyRowsHTML}
+                        <tr>
 
-                            </tbody>
+                            <th>
+                                Date
+                            </th>
 
-                        </table>
+                            <th>
+                                Paid Orders
+                            </th>
 
-                    </div>
+                            <th>
+                                Items
+                            </th>
 
-                </div>
+                            <th>
+                                Sales
+                            </th>
 
+                        </tr>
 
-                <!-- TOP ITEMS -->
+                    </thead>
 
-                <div class="report-section">
 
-                    <h3>
-                        🏆 Top-Selling Food Items
-                    </h3>
+                    <tbody>
 
+                        ${
+                            dailyRows ||
+                            `
+                            <tr>
+                                <td colspan="4">
+                                    No paid sales.
+                                </td>
+                            </tr>
+                            `
+                        }
 
-                    <div class="report-table-wrap">
+                    </tbody>
 
-                        <table class="report-table">
+                </table>
 
-                            <thead>
+            </div>
 
-                                <tr>
+        </div>
 
-                                    <th>
-                                        #
-                                    </th>
 
-                                    <th>
-                                        Food Item
-                                    </th>
+        <div class="report-section">
 
-                                    <th>
-                                        Quantity Sold
-                                    </th>
+            <h3>
+                🏆 Top-Selling Food Items
+            </h3>
 
-                                    <th>
-                                        Sales
-                                    </th>
 
-                                </tr>
+            <div class="report-table-wrap">
 
-                            </thead>
+                <table class="report-table">
 
+                    <thead>
 
-                            <tbody>
+                        <tr>
 
-                                ${topItemsHTML}
+                            <th>#</th>
 
-                            </tbody>
+                            <th>Food Item</th>
 
-                        </table>
+                            <th>Quantity</th>
 
-                    </div>
+                            <th>Sales</th>
 
-                </div>
+                        </tr>
 
+                    </thead>
 
-                <!-- ORDER COUNTS -->
 
-                <div class="report-section">
+                    <tbody>
 
-                    <h3>
-                        📦 Order Summary
-                    </h3>
+                        ${topItemsHTML}
 
+                    </tbody>
 
-                    <div class="report-table-wrap">
+                </table>
 
-                        <table class="report-table">
+            </div>
 
-                            <thead>
+        </div>
 
-                                <tr>
+    `;
 
-                                    <th>
-                                        Category
-                                    </th>
+}
 
-                                    <th>
-                                        Orders
-                                    </th>
 
-                                </tr>
+/* =====================================================
+   CLOSE MODALS ON OUTSIDE CLICK
+===================================================== */
 
-                            </thead>
+settingsModal.addEventListener(
+    "click",
+    event => {
 
+        if(
+            event.target ===
+            settingsModal
+        ){
 
-                            <tbody>
+            closeSettings();
 
-                                <tr>
-                                    <td>
-                                        Total Orders
-                                    </td>
-                                    <td>
-                                        ${totalOrders}
-                                    </td>
-                                </tr>
+        }
 
-                                <tr>
-                                    <td>
-                                        Paid Orders
-                                    </td>
-                                    <td>
-                                        ${paidOrders.length}
-                                    </td>
-                                </tr>
+    }
+);
 
-                                <tr>
-                                    <td>
-                                        Pending / Unpaid Orders
-                                    </td>
-                                    <td>
-                                        ${pendingOrders.length}
-                                    </td>
-                                </tr>
 
-                                <tr>
-                                    <td>
-                                        Cancelled Orders
-                                    </td>
-                                    <td>
-                                        ${cancelledOrders.length}
-                                    </td>
-                                </tr>
+ordersModal.addEventListener(
+    "click",
+    event => {
 
-                            </tbody>
+        if(
+            event.target ===
+            ordersModal
+        ){
 
-                        </table>
+            closeOrders();
 
-                    </div>
+        }
 
-                </div>
+    }
+);
 
-                `;
+
+orderDetailModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            orderDetailModal
+        ){
+
+            closeOrderDetail();
+
+        }
+
+    }
+);
+
+
+salesReportModal.addEventListener(
+    "click",
+    event => {
+
+        if(
+            event.target ===
+            salesReportModal
+        ){
+
+            closeSalesReport();
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   ESC
+===================================================== */
+
+document.addEventListener(
+    "keydown",
+    event => {
+
+        if(
+            event.key !==
+            "Escape"
+        ){
+
+            return;
 
         }
 
 
-        /* =====================================
-           CLOSE MODALS WHEN CLICKING OUTSIDE
-        ===================================== */
+        closeSettings();
 
-        settingsModal.addEventListener(
-            "click",
-            (event) => {
+        closeOrders();
 
-                if (
-                    event.target ===
-                    settingsModal
-                ) {
+        closeOrderDetail();
 
-                    closeSettings();
+        closeSalesReport();
 
-                }
+    }
+);
 
-            }
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+window.logout =
+async function(){
+
+    try{
+
+        await signOut(
+            auth
         );
 
 
-        salesReportModal.addEventListener(
-            "click",
-            (event) => {
+        window.location.href =
+            "index.html";
 
-                if (
-                    event.target ===
-                    salesReportModal
-                ) {
+    }
 
-                    closeSalesReport();
+    catch(error){
 
-                }
+        console.error(error);
 
-            }
+        alert(
+            "Could not logout:\n\n" +
+            error.message
         );
 
+    }
 
-        /* =====================================
-           ESC KEY
-        ===================================== */
+};
 
-        document.addEventListener(
-            "keydown",
-            (event) => {
-
-                if (
-                    event.key ===
-                    "Escape"
-                ) {
-
-                    if (
-                        settingsModal.style.display ===
-                        "block"
-                    ) {
-                        closeSettings();
-                    }
-
-
-                    if (
-                        salesReportModal.style.display ===
-                        "block"
-                    ) {
-                        closeSalesReport();
-                    }
-
-                }
-
-            }
-        );
-
-
-        /* =====================================
-           LOGOUT
-        ===================================== */
-
-        window.logout =
-            async function() {
-
-                try {
-
-                    await signOut(auth);
-
-
-                    window.location.href =
-                        "index.html";
-
-                }
-
-                catch (error) {
-
-                    console.error(
-                        "Logout error:",
-                        error
-                    );
-
-
-                    alert(
-                        "Could not logout:\n\n" +
-                        error.message
-                    );
-
-                }
-
-            };
-
-    </script>
+</script>
 
 
 </body>
