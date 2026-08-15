@@ -325,24 +325,9 @@ header p {
     margin-top: 10px;
 }
 
-.payment-action-btn:disabled {
-    background: #aaa;
-    cursor: not-allowed;
-}
-
 .payment-selected {
     margin-top: 15px;
     padding: 14px;
-    border-radius: 9px;
-    background: #fff3cd;
-    color: #856404;
-    text-align: center;
-    font-weight: bold;
-}
-
-.payment-claimed {
-    margin-top: 15px;
-    padding: 16px;
     border-radius: 9px;
     background: #fff3cd;
     color: #856404;
@@ -385,8 +370,8 @@ header p {
 }
 
 .upi-qr {
-    width: 230px;
-    height: 230px;
+    width: 250px;
+    height: 250px;
     margin: 18px auto;
     padding: 10px;
     background: white;
@@ -404,12 +389,46 @@ header p {
 
 .upi-details {
     text-align: center;
-    padding: 10px;
+    padding: 12px;
     background: white;
     border-radius: 8px;
     color: #555;
     font-size: 14px;
     line-height: 1.6;
+}
+
+.upi-id-box {
+    margin-top: 10px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #f1f8ff;
+    color: #1565c0;
+    font-weight: bold;
+    word-break: break-all;
+}
+
+.copy-upi-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    background: #1976d2;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.upi-instructions {
+    margin-top: 15px;
+    padding: 13px;
+    border-radius: 9px;
+    background: #fff;
+    border: 1px solid #eee;
+    text-align: left;
+    color: #555;
+    font-size: 13px;
+    line-height: 1.7;
 }
 
 .upi-note {
@@ -419,14 +438,15 @@ header p {
     line-height: 1.5;
 }
 
-.upi-warning {
-    margin-top: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    background: #fff3cd;
-    color: #856404;
+.upi-verification {
+    margin-top: 15px;
+    padding: 14px;
+    border-radius: 9px;
+    background: #fff8e1;
+    border: 1px solid #ffe082;
+    color: #795548;
     font-size: 13px;
-    line-height: 1.5;
+    line-height: 1.6;
 }
 
 /* GENERAL */
@@ -589,8 +609,8 @@ header p {
     }
 
     .upi-qr {
-        width: 220px;
-        height: 220px;
+        width: 230px;
+        height: 230px;
     }
 }
 
@@ -755,15 +775,9 @@ const statusContainer =
     );
 
 
-/* =====================================================
-   GLOBAL VARIABLES
-===================================================== */
-
 let currentUser = null;
 
 let orderData = null;
-
-let currentUPILink = "";
 
 
 /* =====================================================
@@ -791,9 +805,7 @@ if (
                 class="back-btn"
                 onclick="goBackToMenu()"
             >
-
                 ← Back to Menu
-
             </button>
 
         </div>
@@ -861,7 +873,7 @@ async function loadRestaurant() {
 
 
 /* =====================================================
-   WAIT FOR LOGIN
+   LOGIN
 ===================================================== */
 
 function waitForLogin() {
@@ -1005,9 +1017,7 @@ function renderOrder() {
         "received";
 
     const statusInfo =
-        getStatusInfo(
-            status
-        );
+        getStatusInfo(status);
 
     const waiterCalled =
         orderData.waiterCalled === true;
@@ -1025,30 +1035,23 @@ function renderOrder() {
         <div class="order-card">
 
             <div class="order-title">
-
                 📋 Order Status
-
             </div>
 
             <div class="order-id">
-
                 Order ID:
                 ${escapeHTML(orderId)}
-
             </div>
 
             <div class="status-box">
 
                 ${statusInfo.icon}
-
                 ${statusInfo.text}
 
             </div>
 
             <div class="status-message">
-
                 ${statusInfo.message}
-
             </div>
 
         </div>
@@ -1072,11 +1075,8 @@ function renderOrder() {
 
             <button
                 id="waiterBtn"
-                class="
-                    action-btn
-                    waiter-btn
-                    ${waiterCalled ? "requested" : ""}
-                "
+                class="action-btn waiter-btn
+                ${waiterCalled ? "requested" : ""}"
                 ${waiterCalled ? "disabled" : ""}
                 onclick="callWaiter()"
             >
@@ -1112,11 +1112,8 @@ function renderOrder() {
 
             <button
                 id="billBtn"
-                class="
-                    action-btn
-                    bill-btn
-                    ${billRequested ? "requested" : ""}
-                "
+                class="action-btn bill-btn
+                ${billRequested ? "requested" : ""}"
                 ${billRequested ? "disabled" : ""}
                 onclick="requestBill()"
             >
@@ -1198,12 +1195,14 @@ function renderGeneratedBill() {
             0
         );
 
+
     const discount =
         Number(
             orderData.billDiscountAmount ??
             orderData.discountAmount ??
             0
         );
+
 
     const total =
         Number(
@@ -1241,7 +1240,7 @@ function renderGeneratedBill() {
 
 
     /* =================================================
-       PAYMENT COMPLETED
+       PAID
     ================================================= */
 
     if (
@@ -1273,44 +1272,6 @@ function renderGeneratedBill() {
                         :
                         "Payment"
                     }
-
-                </small>
-
-            </div>
-
-        `;
-
-    }
-
-
-    /* =================================================
-       UPI PAYMENT CLAIMED
-    ================================================= */
-
-    else if (
-        paymentStatus === "payment_claimed" &&
-        paymentMethod === "upi"
-    ) {
-
-        paymentSection = `
-
-            <div class="payment-claimed">
-
-                🟡 UPI Payment Submitted
-
-                <br>
-
-                <small style="
-                    font-weight:normal;
-                ">
-
-                    Your payment claim has been
-                    sent to the restaurant.
-
-                    <br><br>
-
-                    The restaurant will verify the
-                    payment before marking it as paid.
 
                 </small>
 
@@ -1355,8 +1316,46 @@ function renderGeneratedBill() {
 
 
     /* =================================================
-       OLD UPI PAYMENT SELECTED
-       Compatibility with old orders
+       UPI WAITING VERIFICATION
+    ================================================= */
+
+    else if (
+        paymentStatus ===
+        "upi_pending_verification"
+    ) {
+
+        paymentSection = `
+
+            <div class="payment-selected">
+
+                ⏳ UPI Payment Waiting for Verification
+
+                <br>
+
+                <small style="
+                    font-weight:normal;
+                ">
+
+                    You have reported that the payment
+                    was completed.
+
+                    <br>
+
+                    The restaurant must verify the
+                    transaction before the order is
+                    marked as paid.
+
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* =================================================
+       UPI SELECTED - OLD STATUS SUPPORT
     ================================================= */
 
     else if (
@@ -1366,9 +1365,9 @@ function renderGeneratedBill() {
 
         paymentSection = `
 
-            <div class="payment-claimed">
+            <div class="payment-selected">
 
-                🟡 UPI Payment Pending Verification
+                📱 UPI Payment Selected
 
                 <br>
 
@@ -1376,8 +1375,8 @@ function renderGeneratedBill() {
                     font-weight:normal;
                 ">
 
-                    Please contact the restaurant
-                    if you have already paid.
+                    Please complete the payment
+                    using the QR code below.
 
                 </small>
 
@@ -1437,7 +1436,7 @@ function renderGeneratedBill() {
                 </div>
 
 
-                <!-- CASH PANEL -->
+                <!-- CASH -->
 
                 <div
                     id="cashPanel"
@@ -1445,9 +1444,7 @@ function renderGeneratedBill() {
                 >
 
                     <strong>
-
                         💵 Pay by Cash
-
                     </strong>
 
                     <p style="
@@ -1473,7 +1470,7 @@ function renderGeneratedBill() {
                 </div>
 
 
-                <!-- UPI PANEL -->
+                <!-- UPI -->
 
                 <div
                     id="upiPanel"
@@ -1482,9 +1479,7 @@ function renderGeneratedBill() {
                 >
 
                     <strong>
-
                         📱 Pay by UPI
-
                     </strong>
 
 
@@ -1495,7 +1490,7 @@ function renderGeneratedBill() {
                     ">
 
                         Scan the QR code using
-                        any UPI app.
+                        any supported UPI app.
 
                     </p>
 
@@ -1505,9 +1500,7 @@ function renderGeneratedBill() {
                         Amount to Pay
 
                         <strong>
-
                             ₹${total.toFixed(2)}
-
                         </strong>
 
                     </div>
@@ -1533,21 +1526,54 @@ function renderGeneratedBill() {
                     </div>
 
 
+                    <div class="upi-instructions">
+
+                        <strong>
+                            How to pay
+                        </strong>
+
+                        <br>
+
+                        1. Open Google Pay, PhonePe,
+                        Paytm or another UPI app.
+
+                        <br>
+
+                        2. Select
+                        <strong>Scan QR</strong>.
+
+                        <br>
+
+                        3. Scan the QR code above.
+
+                        <br>
+
+                        4. Confirm the amount and
+                        complete the payment.
+
+                        <br>
+
+                        5. Return here and tap
+                        <strong>I Have Paid</strong>.
+
+                    </div>
+
+
                     <button
-                        class="payment-action-btn"
-                        onclick="openUPIApp()"
+                        id="copyUpiBtn"
+                        class="copy-upi-btn"
+                        onclick="copyUPIId()"
                     >
 
-                        📱 Open UPI App
+                        📋 Copy UPI ID
 
                     </button>
 
 
                     <button
-                        id="upiPaidBtn"
                         class="payment-action-btn"
                         style="background:#2e7d32;"
-                        onclick="selectPayment('upi')"
+                        onclick="reportUPIPayment()"
                     >
 
                         ✅ I Have Paid
@@ -1555,26 +1581,28 @@ function renderGeneratedBill() {
                     </button>
 
 
-                    <div class="upi-warning">
+                    <div class="upi-verification">
 
-                        ⚠️ Only tap "I Have Paid" after
-                        you have actually completed the
-                        UPI payment.
+                        ⚠️ <strong>Important:</strong>
+
+                        Tapping "I Have Paid" does not
+                        automatically confirm the payment.
 
                         <br><br>
 
-                        Your payment will remain pending
-                        until the restaurant verifies the
-                        payment in its UPI/bank account.
+                        The restaurant will verify the
+                        transaction in its UPI/bank
+                        account before marking the bill
+                        as paid.
 
                     </div>
 
 
                     <p class="upi-note">
 
-                        Direct UPI payment does not provide
-                        automatic payment confirmation to
-                        this website.
+                        Never mark a payment as completed
+                        unless the payment was actually
+                        successful.
 
                     </p>
 
@@ -1594,7 +1622,9 @@ function renderGeneratedBill() {
     let itemsHTML = "";
 
 
-    if (items.length) {
+    if (
+        items.length
+    ) {
 
         items.forEach(
             function(item) {
@@ -1641,7 +1671,6 @@ function renderGeneratedBill() {
                             </div>
 
                         </div>
-
 
                         <div class="bill-item-price">
 
@@ -1713,11 +1742,12 @@ function renderGeneratedBill() {
 
     }
     else if (
-        paymentStatus === "payment_claimed"
+        paymentStatus ===
+        "upi_pending_verification"
     ) {
 
         paymentText =
-            "UPI Payment Submitted - Verification Pending";
+            "UPI - Verification Pending";
 
     }
     else if (
@@ -1729,7 +1759,7 @@ function renderGeneratedBill() {
             ?
             "Cash Selected"
             :
-            "Payment Selected";
+            "UPI Selected";
 
     }
 
@@ -1763,12 +1793,10 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
-
                         ${escapeHTML(
                             restaurantName.textContent ||
                             "Restaurant"
                         )}
-
                     </span>
 
                 </div>
@@ -1781,11 +1809,9 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
-
                         🪑 ${escapeHTML(
                             String(table)
                         )}
-
                     </span>
 
                 </div>
@@ -1798,9 +1824,7 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
-
                         ${escapeHTML(orderId)}
-
                     </span>
 
                 </div>
@@ -1813,9 +1837,7 @@ function renderGeneratedBill() {
                     </strong>
 
                     <span>
-
                         ${escapeHTML(billDate)}
-
                     </span>
 
                 </div>
@@ -1839,9 +1861,7 @@ function renderGeneratedBill() {
                     </span>
 
                     <span>
-
                         ₹${subtotal.toFixed(2)}
-
                     </span>
 
                 </div>
@@ -1852,19 +1872,14 @@ function renderGeneratedBill() {
                     ?
                     `
 
-                    <div class="
-                        bill-row
-                        discount
-                    ">
+                    <div class="bill-row discount">
 
                         <span>
                             Discount
                         </span>
 
                         <span>
-
                             -₹${discount.toFixed(2)}
-
                         </span>
 
                     </div>
@@ -1941,9 +1956,9 @@ function renderGeneratedBill() {
     `;
 
 
-    /* =================================================
-       GENERATE UPI QR
-    ================================================= */
+    /*
+       Generate QR after DOM insertion.
+    */
 
     setTimeout(
         function() {
@@ -1961,7 +1976,7 @@ function renderGeneratedBill() {
 
 
 /* =====================================================
-   LOAD DIRECT UPI PAYMENT
+   LOAD UPI QR
 ===================================================== */
 
 async function loadUPIPayment(total) {
@@ -1970,6 +1985,7 @@ async function loadUPIPayment(total) {
         document.getElementById(
             "upiQRCode"
         );
+
 
     const detailsContainer =
         document.getElementById(
@@ -2027,18 +2043,20 @@ async function loadUPIPayment(total) {
 
 
         /*
-         * Merchant UPI ID
+         * Merchant UPI ID.
+         *
+         * Your restaurant document should contain:
+         *
+         * upiId: "merchant@upi"
+         *
          */
+
 
         const upiId =
             restaurant.upiId ||
             restaurant.upi ||
             "";
 
-
-        /*
-         * Merchant display name
-         */
 
         const upiName =
             restaurant.upiName ||
@@ -2068,10 +2086,17 @@ async function loadUPIPayment(total) {
 
 
         /*
-         * Standard UPI payment URI
+         * IMPORTANT:
+         *
+         * We generate the QR only.
+         *
+         * We DO NOT redirect the browser
+         * using window.location.href = upi://pay
+         *
          */
 
-        currentUPILink =
+
+        const upiLink =
             "upi://pay" +
             "?pa=" +
             encodeURIComponent(
@@ -2116,13 +2141,13 @@ async function loadUPIPayment(total) {
             {
 
                 text:
-                    currentUPILink,
+                    upiLink,
 
                 width:
-                    210,
+                    220,
 
                 height:
-                    210,
+                    220,
 
                 colorDark:
                     "#000000",
@@ -2140,27 +2165,47 @@ async function loadUPIPayment(total) {
         detailsContainer.innerHTML = `
 
             <strong>
-
                 ${escapeHTML(upiName)}
-
             </strong>
 
             <br>
 
             <span>
-
                 UPI ID:
-                ${escapeHTML(upiId)}
-
             </span>
 
+            <div class="upi-id-box">
+
+                ${escapeHTML(upiId)}
+
+            </div>
+
+            <div style="
+                margin-top:8px;
+                color:#777;
+                font-size:12px;
+            ">
+
+                Amount:
+                ₹${Number(total).toFixed(2)}
+
+            </div>
+
         `;
+
+
+        /*
+         * Save UPI ID globally for copy button.
+         */
+
+        window.restaurantUPIId =
+            upiId;
 
     }
     catch(error) {
 
         console.error(
-            "UPI loading error:",
+            "UPI QR loading error:",
             error
         );
 
@@ -2177,18 +2222,20 @@ async function loadUPIPayment(total) {
 
 
 /* =====================================================
-   OPEN UPI APP
+   COPY UPI ID
 ===================================================== */
 
-window.openUPIApp =
-    function() {
+window.copyUPIId =
+    async function() {
 
-        if (
-            !currentUPILink
-        ) {
+        const upiId =
+            window.restaurantUPIId;
+
+
+        if (!upiId) {
 
             alert(
-                "UPI payment information is not available."
+                "UPI ID is not available."
             );
 
             return;
@@ -2196,15 +2243,170 @@ window.openUPIApp =
         }
 
 
-        /*
-         * Open the UPI URI.
-         *
-         * On Android/iOS this normally launches
-         * an installed UPI application.
-         */
+        try {
 
-        window.location.href =
-            currentUPILink;
+            await navigator.clipboard.writeText(
+                upiId
+            );
+
+
+            alert(
+                "✅ UPI ID copied."
+            );
+
+        }
+        catch(error) {
+
+            alert(
+                "UPI ID: " +
+                upiId
+            );
+
+        }
+
+    };
+
+
+/* =====================================================
+   REPORT UPI PAYMENT
+===================================================== */
+
+window.reportUPIPayment =
+    async function() {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (!orderData) {
+
+            return;
+
+        }
+
+
+        const billGenerated =
+            orderData.billGenerated === true ||
+            orderData.billStatus === "generated";
+
+
+        if (!billGenerated) {
+
+            alert(
+                "The bill has not been generated yet."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            orderData.paymentStatus ===
+            "paid"
+        ) {
+
+            alert(
+                "This payment has already been confirmed."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            orderData.paymentStatus ===
+            "upi_pending_verification"
+        ) {
+
+            alert(
+                "Your payment has already been reported. Please wait for restaurant verification."
+            );
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "Have you successfully completed the UPI payment of the exact bill amount?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    paymentMethod:
+                        "upi",
+
+                    paymentStatus:
+                        "upi_pending_verification",
+
+                    upiPaymentRequested:
+                        true,
+
+                    upiPaymentReported:
+                        true,
+
+                    upiPaymentReportedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            alert(
+                "✅ Payment reported successfully.\n\n" +
+                "The restaurant will verify the transaction before marking it as paid."
+            );
+
+        }
+        catch(error) {
+
+            console.error(
+                "UPI payment report error:",
+                error
+            );
+
+
+            alert(
+                "❌ Unable to report payment.\n\n" +
+                error.message
+            );
+
+        }
 
     };
 
@@ -2293,7 +2495,7 @@ window.showPaymentPanel =
 
 
 /* =====================================================
-   SELECT / CLAIM PAYMENT
+   SELECT PAYMENT
 ===================================================== */
 
 window.selectPayment =
@@ -2344,64 +2546,37 @@ window.selectPayment =
 
 
         /*
-         * Do not allow duplicate UPI claims.
+         * UPI is handled separately.
+         *
+         * We don't use payment_selected
+         * for the actual UPI payment anymore.
          */
 
+
         if (
-            method === "upi" &&
-            orderData.paymentStatus ===
-            "payment_claimed"
+            method === "upi"
         ) {
+
+            showPaymentPanel("upi");
 
             return;
 
         }
 
 
-        const methodName =
-            method === "upi"
-            ?
-            "UPI"
-            :
-            "Cash";
-
-
         /*
-         * For UPI, the customer must confirm
-         * that they actually paid.
+         * CASH
          */
 
-        if (
-            method === "upi"
-        ) {
-
-            const confirmed =
-                confirm(
-                    "Have you completed the UPI payment?\n\n" +
-                    "Only continue if the payment was actually made."
-                );
+        const confirmed =
+            confirm(
+                "Select Cash as your payment method?"
+            );
 
 
-            if (!confirmed) {
+        if (!confirmed) {
 
-                return;
-
-            }
-
-        }
-        else {
-
-            const confirmed =
-                confirm(
-                    "Select Cash as your payment method?"
-                );
-
-
-            if (!confirmed) {
-
-                return;
-
-            }
+            return;
 
         }
 
@@ -2418,49 +2593,9 @@ window.selectPayment =
                 );
 
 
-            let updateData;
-
-
-            /* =========================================
-               UPI
-            ========================================= */
-
-            if (
-                method === "upi"
-            ) {
-
-                updateData = {
-
-                    paymentMethod:
-                        "upi",
-
-                    paymentStatus:
-                        "payment_claimed",
-
-                    upiPaymentClaimed:
-                        true,
-
-                    upiPaymentClaimedAt:
-                        serverTimestamp(),
-
-                    paymentSelectedAt:
-                        serverTimestamp(),
-
-                    updatedAt:
-                        serverTimestamp()
-
-                };
-
-            }
-
-
-            /* =========================================
-               CASH
-            ========================================= */
-
-            else {
-
-                updateData = {
+            await updateDoc(
+                orderRef,
+                {
 
                     paymentMethod:
                         "cash",
@@ -2468,74 +2603,39 @@ window.selectPayment =
                     paymentStatus:
                         "payment_selected",
 
+                    paymentSelectedAt:
+                        serverTimestamp(),
+
                     cashPaymentRequested:
                         true,
 
                     cashPaymentRequestedAt:
                         serverTimestamp(),
 
-                    paymentSelectedAt:
-                        serverTimestamp(),
-
                     updatedAt:
                         serverTimestamp()
 
-                };
-
-            }
-
-
-            await updateDoc(
-                orderRef,
-                updateData
+                }
             );
 
 
-            /*
-             * Real-time listener will update the UI.
-             */
-
-            if (
-                method === "upi"
-            ) {
-
-                alert(
-
-                    "🟡 UPI payment submitted.\n\n" +
-
-                    "The restaurant will verify your payment " +
-                    "and mark the order as paid."
-
-                );
-
-            }
-            else {
-
-                alert(
-
-                    "💵 Cash payment selected.\n\n" +
-
-                    "Please wait for the waiter " +
-                    "to collect your payment."
-
-                );
-
-            }
+            alert(
+                "✅ Cash selected.\n\n" +
+                "Please wait for the waiter to collect your payment."
+            );
 
         }
         catch(error) {
 
             console.error(
-                "Payment selection error:",
+                "Cash payment selection error:",
                 error
             );
 
 
             alert(
-
-                "❌ Unable to update payment.\n\n" +
+                "❌ Unable to select cash payment.\n\n" +
                 error.message
-
             );
 
         }
@@ -2637,10 +2737,8 @@ window.callWaiter =
 
 
             alert(
-
                 "❌ Unable to call waiter.\n\n" +
                 error.message
-
             );
 
 
@@ -2740,10 +2838,7 @@ window.requestBill =
 
 
             alert(
-
-                "🧾 Bill requested. " +
-                "The restaurant will generate it shortly."
-
+                "🧾 Bill requested. The restaurant will generate it shortly."
             );
 
         }
@@ -2756,10 +2851,8 @@ window.requestBill =
 
 
             alert(
-
                 "❌ Unable to request bill.\n\n" +
                 error.message
-
             );
 
 
@@ -2779,7 +2872,7 @@ window.requestBill =
 
 
 /* =====================================================
-   CREATE PRINT BILL
+   PRINT BILL
 ===================================================== */
 
 function createPrintBill() {
@@ -2895,15 +2988,17 @@ function createPrintBill() {
 
     }
     else if (
-        paymentStatus === "payment_claimed"
+        paymentStatus ===
+        "upi_pending_verification"
     ) {
 
         paymentText =
-            "UPI Payment Submitted - Verification Pending";
+            "UPI - Verification Pending";
 
     }
     else if (
-        paymentStatus === "payment_selected"
+        paymentStatus ===
+        "payment_selected"
     ) {
 
         paymentText =
@@ -2911,7 +3006,7 @@ function createPrintBill() {
             ?
             "Cash Selected"
             :
-            "Payment Selected";
+            "UPI Selected";
 
     }
 
@@ -2951,27 +3046,19 @@ function createPrintBill() {
                     <tr>
 
                         <td>
-
                             ${escapeHTML(name)}
-
                         </td>
 
                         <td>
-
                             ${quantity}
-
                         </td>
 
                         <td>
-
                             ₹${price.toFixed(2)}
-
                         </td>
 
                         <td>
-
                             ₹${lineTotal.toFixed(2)}
-
                         </td>
 
                     </tr>
@@ -2989,9 +3076,7 @@ function createPrintBill() {
             <tr>
 
                 <td colspan="4">
-
                     No item details available.
-
                 </td>
 
             </tr>
@@ -3008,15 +3093,11 @@ function createPrintBill() {
             <div class="print-header">
 
                 <h1>
-
                     ${escapeHTML(restaurant)}
-
                 </h1>
 
                 <p>
-
                     Restaurant Bill
-
                 </p>
 
             </div>
@@ -3031,9 +3112,7 @@ function createPrintBill() {
                     </strong>
 
                     <span>
-
                         ${escapeHTML(orderId)}
-
                     </span>
 
                 </div>
@@ -3046,11 +3125,9 @@ function createPrintBill() {
                     </strong>
 
                     <span>
-
                         ${escapeHTML(
                             String(table)
                         )}
-
                     </span>
 
                 </div>
@@ -3063,9 +3140,7 @@ function createPrintBill() {
                     </strong>
 
                     <span>
-
                         ${escapeHTML(billDate)}
-
                     </span>
 
                 </div>
@@ -3118,9 +3193,7 @@ function createPrintBill() {
                     </span>
 
                     <span>
-
                         ₹${subtotal.toFixed(2)}
-
                     </span>
 
                 </div>
@@ -3138,9 +3211,7 @@ function createPrintBill() {
                         </span>
 
                         <span>
-
                             -₹${discount.toFixed(2)}
-
                         </span>
 
                     </div>
@@ -3161,9 +3232,7 @@ function createPrintBill() {
                     </span>
 
                     <span>
-
                         ₹${total.toFixed(2)}
-
                     </span>
 
                 </div>
@@ -3174,9 +3243,7 @@ function createPrintBill() {
             <div class="print-payment">
 
                 <strong>
-
                     Payment Status
-
                 </strong>
 
                 <br>
@@ -3202,10 +3269,6 @@ function createPrintBill() {
 
 }
 
-
-/* =====================================================
-   PRINT BILL
-===================================================== */
 
 window.printBill =
     function() {
@@ -3251,10 +3314,6 @@ window.printBill =
 
     };
 
-
-/* =====================================================
-   SAVE BILL AS PDF
-===================================================== */
 
 window.downloadBillPDF =
     function() {
@@ -3465,7 +3524,7 @@ function getStatusInfo(status) {
 
 
 /* =====================================================
-   FIREBASE TIMESTAMP HELPER
+   FIREBASE TIMESTAMP
 ===================================================== */
 
 function getTimestampMillis(value) {
