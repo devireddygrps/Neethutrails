@@ -50,6 +50,34 @@
             font-weight: bold;
         }
 
+        .waiter-alert {
+            background: #ffebee;
+            color: #b71c1c;
+            border: 2px solid #ef5350;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 18px;
+            font-weight: bold;
+        }
+
+        .waiter-alert small {
+            display: block;
+            margin-top: 7px;
+            color: #7f1d1d;
+            font-weight: normal;
+        }
+
+        .waiter-clear-btn {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 7px;
+            background: #c62828;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
         .cash-payment-alert small {
             display: block;
             margin-top: 6px;
@@ -374,6 +402,8 @@
             Loading orders...
         </div>
 
+        <div id="waiterAlerts"></div>
+
         <div id="cashPaymentAlerts" style="margin-bottom:18px;"></div>
 
         <div id="ordersList" class="orders-list"></div>
@@ -426,13 +456,112 @@
             if (user) {
                 currentUser = user;
                 await loadOrders();
+                checkWaiterRequests();
                 checkCashPaymentRequests();
+                setInterval(checkWaiterRequests, 3000);
                 setInterval(checkCashPaymentRequests, 3000);
             } else {
                 alert("Please login first.");
                 window.location.href = "index.html";
             }
         });
+
+        async function checkWaiterRequests() {
+
+            if (!currentUser) return;
+
+            try {
+                const ordersCollection = collection(
+                    db,
+                    "restaurants",
+                    currentUser.uid,
+                    "orders"
+                );
+
+                const snapshot = await getDocs(ordersCollection);
+                const requests = [];
+
+                snapshot.forEach((orderDoc) => {
+                    const order = orderDoc.data();
+
+                    if (order.waiterCalled === true) {
+                        requests.push({
+                            id: orderDoc.id,
+                            table: order.table || order.tableNumber || "N/A",
+                            order: order.orderNumber || orderDoc.id.substring(0, 6)
+                        });
+                    }
+                });
+
+                const alertBox = document.getElementById("waiterAlerts");
+                if (!alertBox) return;
+
+                if (!requests.length) {
+                    alertBox.innerHTML = "";
+                    return;
+                }
+
+                alertBox.innerHTML = `
+                    <div class="waiter-alert">
+                        🔔 ${requests.length} Waiter Request${requests.length > 1 ? "s" : ""}
+                        ${requests.map((request) => `
+                            <small>
+                                🪑 Table ${escapeHTML(String(request.table))} —
+                                Order #${escapeHTML(String(request.order))}
+                                <button
+                                    class="waiter-clear-btn"
+                                    onclick="clearWaiterRequest('${request.id}')"
+                                >
+                                    ✅ Acknowledge / Clear
+                                </button>
+                            </small>
+                        `).join("")}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error("Waiter request check error:", error);
+            }
+        }
+
+        window.clearWaiterRequest = async function(orderId) {
+
+            if (!currentUser) return;
+
+            const confirmed = confirm(
+                "Confirm that the waiter has attended this table?"
+            );
+
+            if (!confirmed) return;
+
+            try {
+                const orderRef = doc(
+                    db,
+                    "restaurants",
+                    currentUser.uid,
+                    "orders",
+                    orderId
+                );
+
+                await updateDoc(orderRef, {
+                    waiterCalled: false,
+                    waiterAcknowledgedAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                });
+
+                await checkWaiterRequests();
+                await loadOrders();
+
+            } catch (error) {
+                console.error("Clear waiter request error:", error);
+                alert(
+                    "Could not clear waiter request:
+
+" +
+                    error.message
+                );
+            }
+        };
 
         async function checkCashPaymentRequests() {
 
