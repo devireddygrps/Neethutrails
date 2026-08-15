@@ -1,90 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Customer Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login - OTP</title>
 
     <style>
-
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
 
         body {
-            background: #f5f5f5;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 20px;
+            background: linear-gradient(135deg, #fff7f2, #ffe5d8);
         }
 
         .login-card {
             width: 100%;
             max-width: 420px;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+            background: #ffffff;
+            padding: 30px 25px;
+            border-radius: 18px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
-        h2 {
+        .logo {
             text-align: center;
+            font-size: 46px;
             margin-bottom: 8px;
-            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #222;
+            font-size: 25px;
+            margin-bottom: 8px;
         }
 
         .subtitle {
             text-align: center;
-            color: #777;
-            margin-bottom: 25px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 22px;
+        }
+
+        .table-info {
+            text-align: center;
+            background: #fff3ec;
+            color: #d84315;
+            padding: 10px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
         }
 
         label {
             display: block;
             margin-bottom: 7px;
-            font-weight: bold;
             color: #333;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .phone-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .country-code {
+            width: 82px;
+            flex-shrink: 0;
+            padding: 13px 8px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background: #f7f7f7;
+            color: #333;
+            font-size: 16px;
+            text-align: center;
         }
 
         input {
             width: 100%;
             padding: 13px;
             border: 1px solid #ccc;
-            border-radius: 8px;
+            border-radius: 10px;
+            outline: none;
             font-size: 16px;
-            margin-bottom: 15px;
         }
 
         input:focus {
-            outline: none;
             border-color: #ff5722;
+            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.10);
         }
 
         button {
             width: 100%;
-            padding: 13px;
             border: none;
-            border-radius: 8px;
-            background: #ff5722;
-            color: white;
+            border-radius: 10px;
+            padding: 13px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        button:hover {
+        .primary-btn {
+            background: #ff5722;
+            color: white;
+        }
+
+        .primary-btn:hover {
             background: #e64a19;
+        }
+
+        .secondary-btn {
+            margin-top: 10px;
+            background: #eeeeee;
+            color: #333;
         }
 
         button:disabled {
@@ -92,223 +136,220 @@
             cursor: not-allowed;
         }
 
-        .otp-section {
+        #otpSection {
             display: none;
         }
 
+        .otp-input {
+            text-align: center;
+            letter-spacing: 8px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
         .status {
+            min-height: 22px;
+            margin: 14px 0 0;
             text-align: center;
-            margin-top: 15px;
-            color: #666;
             font-size: 14px;
-            line-height: 1.5;
-            word-break: break-word;
+            line-height: 1.4;
         }
 
-        .restaurant-info {
+        .status.error {
+            color: #c62828;
+        }
+
+        .status.success {
+            color: #2e7d32;
+        }
+
+        .status.info {
+            color: #666;
+        }
+
+        .small-note {
+            margin-top: 16px;
             text-align: center;
-            margin-bottom: 20px;
-            background: #fff3e0;
-            padding: 12px;
-            border-radius: 8px;
-            color: #e65100;
+            color: #777;
+            font-size: 12px;
+            line-height: 1.5;
         }
 
-        .recaptcha-container {
-            margin: 15px 0;
+        #recaptcha-container {
+            margin-top: 12px;
             display: flex;
             justify-content: center;
         }
 
-        .error {
-            color: #d32f2f;
-        }
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 25px 18px;
+            }
 
-        .success {
-            color: #2e7d32;
+            h1 {
+                font-size: 23px;
+            }
         }
-
     </style>
-
 </head>
-
 
 <body>
 
-    <div class="login-card">
+    <main class="login-card">
+        <div class="logo">🍽️</div>
 
-        <h2>
-            📱 Customer Login
-        </h2>
+        <h1>Customer Login</h1>
 
         <p class="subtitle">
-            Verify your mobile number to continue
+            Enter your mobile number to receive a one-time password.
         </p>
 
-        <div
-            id="restaurantInfo"
-            class="restaurant-info"
-        >
-            Loading...
+        <div id="tableInfo" class="table-info">
+            Checking table...
         </div>
 
+        <!-- MOBILE NUMBER -->
+        <section id="mobileSection">
+            <div class="form-group">
+                <label for="mobileNumber">Mobile Number</label>
 
-        <!-- PHONE SECTION -->
+                <div class="phone-row">
+                    <div class="country-code">+91</div>
 
-        <div id="phoneSection">
-
-            <label for="phoneNumber">
-                Mobile Number
-            </label>
-
-            <input
-                id="phoneNumber"
-                type="tel"
-                placeholder="9876543210 or +919876543210"
-                autocomplete="tel"
-                inputmode="tel"
-            >
-
-            <div
-                id="recaptcha-container"
-                class="recaptcha-container"
-            ></div>
+                    <input
+                        id="mobileNumber"
+                        type="tel"
+                        inputmode="numeric"
+                        autocomplete="tel"
+                        maxlength="10"
+                        placeholder="Enter 10-digit mobile number"
+                    >
+                </div>
+            </div>
 
             <button
                 id="sendOtpBtn"
+                class="primary-btn"
                 type="button"
             >
-                📲 Send OTP
+                Send OTP
             </button>
 
-        </div>
+            <div id="recaptcha-container"></div>
+        </section>
 
+        <!-- OTP -->
+        <section id="otpSection">
+            <div class="form-group">
+                <label for="otpCode">Enter OTP</label>
 
-        <!-- OTP SECTION -->
-
-        <div
-            id="otpSection"
-            class="otp-section"
-        >
-
-            <label for="otp">
-                Enter OTP
-            </label>
-
-            <input
-                id="otp"
-                type="text"
-                inputmode="numeric"
-                maxlength="6"
-                placeholder="Enter 6-digit OTP"
-                autocomplete="one-time-code"
-            >
+                <input
+                    id="otpCode"
+                    class="otp-input"
+                    type="tel"
+                    inputmode="numeric"
+                    autocomplete="one-time-code"
+                    maxlength="6"
+                    placeholder="••••••"
+                >
+            </div>
 
             <button
                 id="verifyOtpBtn"
+                class="primary-btn"
                 type="button"
             >
-                ✅ Verify OTP
+                Verify OTP
             </button>
 
-        </div>
+            <button
+                id="changeNumberBtn"
+                class="secondary-btn"
+                type="button"
+            >
+                Change Mobile Number
+            </button>
+        </section>
 
+        <div id="status" class="status info"></div>
 
-        <div
-            id="status"
-            class="status"
-        ></div>
-
-    </div>
-
+        <p class="small-note">
+            Your mobile number is used only for customer authentication.
+        </p>
+    </main>
 
     <script type="module">
-
-        /* =====================================
+        /* =========================================
            FIREBASE IMPORTS
-        ===================================== */
+        ========================================= */
 
         import {
             initializeApp
-        }
-        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
+        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
         import {
             getAuth,
             RecaptchaVerifier,
             signInWithPhoneNumber
-        }
-        from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
-        /* =====================================
-           FIREBASE CONFIG
-        ===================================== */
+        /* =========================================
+           FIREBASE CONFIGURATION
+        ========================================= */
 
         const firebaseConfig = {
-
-            apiKey:
-                "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-
-            authDomain:
-                "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-
-            projectId:
-                "restaurant-qr-ordering-fdf9b",
-
-            storageBucket:
-                "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-
-            messagingSenderId:
-                "907571024375",
-
-            appId:
-                "1:907571024375:web:796894f82f2cae4d7b9ef2",
-
-            measurementId:
-                "G-G3Q89BDFF9"
-
+            apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+            authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+            projectId: "restaurant-qr-ordering-fdf9b",
+            storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+            messagingSenderId: "907571024375",
+            appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
+            measurementId: "G-G3Q89BDFF9"
         };
 
 
-        /* =====================================
+        /* =========================================
            INITIALIZE FIREBASE
-        ===================================== */
+        ========================================= */
 
         const app = initializeApp(firebaseConfig);
-
         const auth = getAuth(app);
 
 
-        /* =====================================
+        /* =========================================
            READ QR PARAMETERS
-        ===================================== */
 
-        const urlParams =
-            new URLSearchParams(
-                window.location.search
-            );
+           Expected QR URL:
+           customer-login.html?restaurantId=XXX&table=1
+        ========================================= */
+
+        const params = new URLSearchParams(
+            window.location.search
+        );
 
         const restaurantId =
-            urlParams.get("restaurant");
+            params.get("restaurantId");
 
         const tableNumber =
-            urlParams.get("table");
+            params.get("table");
 
 
-        /* =====================================
+        /* =========================================
            ELEMENTS
-        ===================================== */
+        ========================================= */
 
-        const restaurantInfo =
-            document.getElementById("restaurantInfo");
+        const mobileSection =
+            document.getElementById("mobileSection");
 
-        const phoneInput =
-            document.getElementById("phoneNumber");
+        const otpSection =
+            document.getElementById("otpSection");
 
-        const otpInput =
-            document.getElementById("otp");
+        const mobileNumberInput =
+            document.getElementById("mobileNumber");
+
+        const otpCodeInput =
+            document.getElementById("otpCode");
 
         const sendOtpBtn =
             document.getElementById("sendOtpBtn");
@@ -316,314 +357,128 @@
         const verifyOtpBtn =
             document.getElementById("verifyOtpBtn");
 
+        const changeNumberBtn =
+            document.getElementById("changeNumberBtn");
+
         const status =
             document.getElementById("status");
 
-        const phoneSection =
-            document.getElementById("phoneSection");
-
-        const otpSection =
-            document.getElementById("otpSection");
+        const tableInfo =
+            document.getElementById("tableInfo");
 
 
-        /* =====================================
-           CHECK QR PARAMETERS
-        ===================================== */
+        /* =========================================
+           TABLE VALIDATION
+        ========================================= */
 
-        if (!restaurantId) {
-
-            restaurantInfo.textContent =
-                "Restaurant information is missing.";
-
-            sendOtpBtn.disabled = true;
-
-            status.textContent =
-                "Please scan the restaurant QR code again.";
-
-            status.className =
-                "status error";
-
+        if (tableNumber) {
+            tableInfo.textContent =
+                "🪑 Table " + tableNumber;
         } else {
-
-            restaurantInfo.textContent =
-                tableNumber
-                    ? `🪑 Table ${tableNumber}`
-                    : "🍽️ Restaurant";
-
+            tableInfo.textContent =
+                "🪑 Table not specified";
         }
 
 
-        /* =====================================
-           VARIABLES
-        ===================================== */
+        /* =========================================
+           STATUS HELPER
+        ========================================= */
 
-        let confirmationResult = null;
+        function setStatus(
+            message,
+            type = "info"
+        ) {
+            status.textContent = message;
+            status.className =
+                "status " + type;
+        }
+
+
+        /* =========================================
+           RECAPTCHA
+
+           Invisible reCAPTCHA protects the
+           "Send OTP" action.
+        ========================================= */
 
         let recaptchaVerifier = null;
-
-        let recaptchaWidgetId = null;
-
-
-        /* =====================================
-           SHOW STATUS
-        ===================================== */
-
-        function showStatus(message, type = "") {
-
-            status.textContent = message;
-
-            status.className =
-                "status" +
-                (type ? ` ${type}` : "");
-
-        }
+        let confirmationResult = null;
 
 
-        /* =====================================
-           NORMALIZE INDIAN PHONE NUMBER
-        ===================================== */
-
-        function normalizeIndianPhoneNumber(value) {
-
-            let phone =
-                value.trim();
-
-            /*
-             * Remove spaces, hyphens and brackets.
-             *
-             * Examples:
-             *
-             * 9876543210
-             * +91 9876543210
-             * +91-9876543210
-             * +91 (9876543210)
-             */
-
-            phone =
-                phone.replace(
-                    /[\s\-()]/g,
-                    ""
-                );
-
-
-            /*
-             * 10 digit Indian number
-             *
-             * 9876543210
-             *
-             * becomes
-             *
-             * +919876543210
-             */
-
-            if (/^[6-9]\d{9}$/.test(phone)) {
-
-                return "+91" + phone;
-
+        function setupRecaptcha() {
+            if (recaptchaVerifier) {
+                return;
             }
 
+            recaptchaVerifier =
+                new RecaptchaVerifier(
+                    auth,
+                    "recaptcha-container",
+                    {
+                        size: "invisible",
 
-            /*
-             * +91 followed by 10 digits
-             */
+                        callback: () => {
+                            console.log(
+                                "reCAPTCHA verified."
+                            );
+                        },
 
-            if (/^\+91[6-9]\d{9}$/.test(phone)) {
-
-                return phone;
-
-            }
-
-
-            return null;
-
-        }
-
-
-        /* =====================================
-           RESET RECAPTCHA
-        ===================================== */
-
-        async function resetRecaptcha() {
-
-            try {
-
-                if (recaptchaVerifier) {
-
-                    recaptchaVerifier.clear();
-
-                    recaptchaVerifier = null;
-
-                    recaptchaWidgetId = null;
-
-                }
-
-            } catch (error) {
-
-                console.warn(
-                    "Could not clear reCAPTCHA:",
-                    error
-                );
-
-            }
-
-
-            /*
-             * Re-create reCAPTCHA.
-             */
-
-            try {
-
-                recaptchaVerifier =
-                    new RecaptchaVerifier(
-                        auth,
-                        "recaptcha-container",
-                        {
-
-                            size: "normal",
-
-                            callback: () => {
-
-                                showStatus(
-                                    "reCAPTCHA verified."
-                                );
-
-                            },
-
-                            "expired-callback": () => {
-
-                                showStatus(
-                                    "reCAPTCHA expired. Please verify again.",
-                                    "error"
-                                );
-
-                            },
-
-                            "error-callback": () => {
-
-                                showStatus(
-                                    "reCAPTCHA error. Please try again.",
-                                    "error"
-                                );
-
-                            }
-
+                        "expired-callback": () => {
+                            setStatus(
+                                "reCAPTCHA expired. Please try again.",
+                                "error"
+                            );
                         }
+                    }
+                );
+
+            recaptchaVerifier.render()
+                .catch((error) => {
+                    console.error(
+                        "reCAPTCHA render error:",
+                        error
                     );
-
-
-                recaptchaWidgetId =
-                    await recaptchaVerifier.render();
-
-
-            } catch (error) {
-
-                console.error(
-                    "reCAPTCHA initialization error:",
-                    error
-                );
-
-                showStatus(
-                    "Could not load reCAPTCHA. Please refresh the page.",
-                    "error"
-                );
-
-            }
-
+                });
         }
 
 
-        /* =====================================
-           INITIALIZE RECAPTCHA
-        ===================================== */
-
-        if (restaurantId) {
-
-            await resetRecaptcha();
-
-        }
+        setupRecaptcha();
 
 
-        /* =====================================
+        /* =========================================
            SEND OTP
-        ===================================== */
+        ========================================= */
 
         sendOtpBtn.addEventListener(
             "click",
             async () => {
 
-                if (!restaurantId) {
+                const mobile =
+                    mobileNumberInput.value.trim();
 
-                    showStatus(
-                        "Restaurant information is missing.",
+                if (!/^[6-9]\d{9}$/.test(mobile)) {
+                    setStatus(
+                        "Please enter a valid 10-digit Indian mobile number.",
                         "error"
                     );
 
+                    mobileNumberInput.focus();
                     return;
-
                 }
-
-
-                /*
-                 * Normalize the number.
-                 */
 
                 const phoneNumber =
-                    normalizeIndianPhoneNumber(
-                        phoneInput.value
-                    );
-
-
-                /*
-                 * Validate the number BEFORE
-                 * calling Firebase.
-                 */
-
-                if (!phoneNumber) {
-
-                    showStatus(
-                        "Enter a valid Indian mobile number.\nExample: 9876543210 or +919876543210",
-                        "error"
-                    );
-
-                    phoneInput.focus();
-
-                    return;
-
-                }
-
-
-                /*
-                 * Display the normalized number
-                 * so the user knows what will be used.
-                 */
-
-                phoneInput.value =
-                    phoneNumber;
-
+                    "+91" + mobile;
 
                 sendOtpBtn.disabled = true;
 
-                showStatus(
-                    "Sending OTP..."
+                setStatus(
+                    "Sending OTP...",
+                    "info"
                 );
-
 
                 try {
 
-                    /*
-                     * Make sure reCAPTCHA exists.
-                     */
-
-                    if (!recaptchaVerifier) {
-
-                        await resetRecaptcha();
-
-                    }
-
-
-                    /*
-                     * Send OTP.
-                     */
+                    setupRecaptcha();
 
                     confirmationResult =
                         await signInWithPhoneNumber(
@@ -632,216 +487,119 @@
                             recaptchaVerifier
                         );
 
-
-                    /*
-                     * OTP successfully sent.
-                     */
-
-                    showStatus(
-                        "OTP sent successfully. Please check your phone.",
-                        "success"
-                    );
-
-
-                    phoneSection.style.display =
+                    mobileSection.style.display =
                         "none";
 
                     otpSection.style.display =
                         "block";
 
-                    otpInput.value = "";
+                    otpCodeInput.value = "";
+                    otpCodeInput.focus();
 
-                    otpInput.focus();
-
+                    setStatus(
+                        "OTP sent successfully. Enter the 6-digit OTP.",
+                        "success"
+                    );
 
                 } catch (error) {
 
                     console.error(
-                        "Firebase OTP error:",
+                        "OTP send error:",
                         error
                     );
 
+                    sendOtpBtn.disabled = false;
 
-                    /*
-                     * IMPORTANT:
-                     * Show the actual Firebase error code.
-                     */
-
-                    const errorCode =
-                        error?.code ||
-                        "unknown-error";
-
-                    const errorMessage =
-                        error?.message ||
-                        "Unknown Firebase error.";
-
-
-                    showStatus(
-                        `Firebase error: ${errorCode}`,
+                    setStatus(
+                        getFirebaseErrorMessage(error),
                         "error"
                     );
 
-
-                    alert(
-                        "Could not send OTP.\n\n" +
-                        "Firebase error code:\n" +
-                        errorCode +
-                        "\n\n" +
-                        "Message:\n" +
-                        errorMessage
-                    );
-
-
-                    sendOtpBtn.disabled =
-                        false;
-
-
                     /*
-                     * reCAPTCHA tokens are often
-                     * unusable after a failed request.
-                     *
-                     * Completely reset it.
+                     * A failed attempt may require a
+                     * fresh reCAPTCHA instance.
                      */
+                    if (recaptchaVerifier) {
+                        try {
+                            recaptchaVerifier.clear();
+                        } catch (_) {}
 
-                    await resetRecaptcha();
+                        recaptchaVerifier = null;
+                    }
 
+                    setupRecaptcha();
                 }
-
             }
         );
 
 
-        /* =====================================
+        /* =========================================
            VERIFY OTP
-        ===================================== */
+        ========================================= */
 
         verifyOtpBtn.addEventListener(
             "click",
             async () => {
 
                 const otp =
-                    otpInput.value.trim();
-
-
-                if (!confirmationResult) {
-
-                    showStatus(
-                        "Please request an OTP first.",
-                        "error"
-                    );
-
-                    return;
-
-                }
-
-
-                /*
-                 * OTP must contain exactly
-                 * six digits.
-                 */
+                    otpCodeInput.value.trim();
 
                 if (!/^\d{6}$/.test(otp)) {
-
-                    showStatus(
+                    setStatus(
                         "Please enter the 6-digit OTP.",
                         "error"
                     );
 
-                    otpInput.focus();
-
+                    otpCodeInput.focus();
                     return;
-
                 }
 
+                if (!confirmationResult) {
+                    setStatus(
+                        "Please request a new OTP first.",
+                        "error"
+                    );
 
-                verifyOtpBtn.disabled =
-                    true;
+                    return;
+                }
 
-                showStatus(
-                    "Verifying OTP..."
+                verifyOtpBtn.disabled = true;
+
+                setStatus(
+                    "Verifying OTP...",
+                    "info"
                 );
-
 
                 try {
 
-                    const result =
-                        await confirmationResult.confirm(
-                            otp
-                        );
-
-
-                    const user =
-                        result.user;
-
-
-                    console.log(
-                        "Customer logged in:",
-                        user.uid
+                    await confirmationResult.confirm(
+                        otp
                     );
 
-
-                    /*
-                     * Save customer information.
-                     */
-
-                    sessionStorage.setItem(
-                        "customerUid",
-                        user.uid
-                    );
-
-
-                    sessionStorage.setItem(
-                        "customerPhone",
-                        user.phoneNumber || ""
-                    );
-
-
-                    /*
-                     * Preserve QR information.
-                     */
-
-                    sessionStorage.setItem(
-                        "restaurantId",
-                        restaurantId
-                    );
-
-
-                    sessionStorage.setItem(
-                        "tableNumber",
-                        tableNumber || ""
-                    );
-
-
-                    showStatus(
-                        "Login successful! Opening menu...",
+                    setStatus(
+                        "Login successful. Opening your menu...",
                         "success"
                     );
 
-
                     /*
-                     * IMPORTANT:
-                     *
-                     * customer-menu.html is NOT changed.
-                     *
-                     * We simply redirect to it with
-                     * the original QR parameters.
+                     * Keep the QR information so the
+                     * customer opens the correct
+                     * restaurant and table.
                      */
-
-                    const menuUrl =
-                        "customer-menu.html" +
-                        "?restaurant=" +
+                    const menuURL =
+                        "menu.html" +
+                        "?restaurantId=" +
                         encodeURIComponent(
-                            restaurantId
+                            restaurantId || ""
                         ) +
                         "&table=" +
                         encodeURIComponent(
                             tableNumber || ""
                         );
 
-
-                    window.location.href =
-                        menuUrl;
-
+                    window.location.replace(
+                        menuURL
+                    );
 
                 } catch (error) {
 
@@ -850,88 +608,118 @@
                         error
                     );
 
+                    verifyOtpBtn.disabled = false;
 
-                    /*
-                     * Show actual Firebase error code.
-                     */
-
-                    const errorCode =
-                        error?.code ||
-                        "unknown-error";
-
-                    const errorMessage =
-                        error?.message ||
-                        "Unknown Firebase error.";
-
-
-                    showStatus(
-                        `Firebase error: ${errorCode}`,
+                    setStatus(
+                        getFirebaseErrorMessage(error),
                         "error"
                     );
-
-
-                    alert(
-                        "OTP verification failed.\n\n" +
-                        "Firebase error code:\n" +
-                        errorCode +
-                        "\n\n" +
-                        "Message:\n" +
-                        errorMessage
-                    );
-
-
-                    verifyOtpBtn.disabled =
-                        false;
-
-                    otpInput.focus();
-
                 }
-
             }
         );
 
 
-        /* =====================================
-           ALLOW ENTER TO SEND OTP
-        ===================================== */
+        /* =========================================
+           CHANGE MOBILE NUMBER
+        ========================================= */
 
-        phoneInput.addEventListener(
+        changeNumberBtn.addEventListener(
+            "click",
+            () => {
+
+                confirmationResult = null;
+
+                otpCodeInput.value = "";
+
+                otpSection.style.display =
+                    "none";
+
+                mobileSection.style.display =
+                    "block";
+
+                sendOtpBtn.disabled = false;
+
+                setStatus(
+                    "",
+                    "info"
+                );
+
+                mobileNumberInput.focus();
+            }
+        );
+
+
+        /* =========================================
+           ALLOW ENTER KEY
+        ========================================= */
+
+        mobileNumberInput.addEventListener(
             "keydown",
             (event) => {
-
                 if (event.key === "Enter") {
-
-                    event.preventDefault();
-
                     sendOtpBtn.click();
-
                 }
-
             }
         );
 
 
-        /* =====================================
-           ALLOW ENTER TO VERIFY OTP
-        ===================================== */
-
-        otpInput.addEventListener(
+        otpCodeInput.addEventListener(
             "keydown",
             (event) => {
-
                 if (event.key === "Enter") {
-
-                    event.preventDefault();
-
                     verifyOtpBtn.click();
-
                 }
-
             }
         );
 
+
+        /* =========================================
+           FIREBASE ERROR MESSAGES
+        ========================================= */
+
+        function getFirebaseErrorMessage(error) {
+
+            const code =
+                error?.code || "";
+
+            switch (code) {
+
+                case "auth/invalid-phone-number":
+                    return "The mobile number is invalid.";
+
+                case "auth/too-many-requests":
+                    return "Too many attempts. Please wait and try again later.";
+
+                case "auth/quota-exceeded":
+                    return "SMS quota exceeded. Please try again later.";
+
+                case "auth/billing-not-enabled":
+                    return "Firebase billing is not enabled. Enable billing for Phone Authentication SMS to work.";
+
+                case "auth/invalid-verification-code":
+                    return "Incorrect OTP. Please check the OTP and try again.";
+
+                case "auth/code-expired":
+                    return "This OTP has expired. Please request a new OTP.";
+
+                case "auth/captcha-check-failed":
+                    return "reCAPTCHA verification failed. Please refresh the page and try again.";
+
+                case "auth/operation-not-allowed":
+                    return "Phone Authentication is not enabled in Firebase Authentication.";
+
+                case "auth/missing-phone-number":
+                    return "Please enter your mobile number.";
+
+                default:
+                    return (
+                        "Unable to continue: " +
+                        (error?.message ||
+                            "Unknown Firebase error.")
+                    );
+            }
+        }
     </script>
 
 </body>
-
 </html>
