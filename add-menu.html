@@ -321,12 +321,10 @@
             initializeApp
         } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-
         import {
             getAuth,
             onAuthStateChanged
         } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
 
         import {
             getFirestore,
@@ -336,7 +334,9 @@
         } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-        // Firebase configuration
+        // =====================================
+        // FIREBASE CONFIGURATION
+        // =====================================
 
         const firebaseConfig = {
 
@@ -363,7 +363,9 @@
         };
 
 
-        // Initialize Firebase
+        // =====================================
+        // INITIALIZE FIREBASE
+        // =====================================
 
         const app =
             initializeApp(firebaseConfig);
@@ -379,240 +381,7 @@
 
 
         // =====================================
-        // SUBCATEGORY DATA
-        // =====================================
-
-        const subcategories = {
-
-            "Biryanis": [
-                "Chicken Biryani",
-                "Mutton Biryani",
-                "Veg Biryani",
-                "Egg Biryani",
-                "Fish Biryani",
-                "Prawn Biryani",
-                "Special Biryani"
-            ],
-
-            "Main Course": [
-                "Chicken",
-                "Mutton",
-                "Seafood",
-                "Vegetarian",
-                "Rice & Noodles",
-                "Breads",
-                "Gravies"
-            ],
-
-            "Starters": [
-                "Chicken Starters",
-                "Mutton Starters",
-                "Seafood Starters",
-                "Veg Starters",
-                "Tandoori",
-                "Kebabs"
-            ],
-
-            "Signature Items": [
-                "Chef Special",
-                "Restaurant Special",
-                "Signature Biryani",
-                "Signature Starter",
-                "Signature Main Course",
-                "House Special"
-            ],
-
-            "Chinese": [
-                "Noodles",
-                "Fried Rice",
-                "Manchurian",
-                "Chinese Starters",
-                "Chinese Main Course"
-            ],
-
-            "Fast Food": [
-                "Burgers",
-                "Sandwiches",
-                "Pizza",
-                "Rolls",
-                "Fries",
-                "Wraps"
-            ],
-
-            "Desserts": [
-                "Ice Cream",
-                "Cakes",
-                "Indian Sweets",
-                "Puddings",
-                "Special Desserts"
-            ],
-
-            "Beverages": [
-                "Hot Beverages",
-                "Cold Beverages",
-                "Juices",
-                "Milkshakes",
-                "Mocktails",
-                "Soft Drinks"
-            ],
-
-            "Others": [
-                "Special Items",
-                "Combos",
-                "Extras",
-                "Sides"
-            ]
-
-        };
-
-
-        // =====================================
-        // LOAD SUBCATEGORIES
-        // =====================================
-
-        document
-            .getElementById("category")
-            .addEventListener(
-                "change",
-                function () {
-
-                    const category =
-                        this.value;
-
-                    const subcategorySelect =
-                        document.getElementById(
-                            "subcategory"
-                        );
-
-                    const customGroup =
-                        document.getElementById(
-                            "customSubcategoryGroup"
-                        );
-
-                    const customInput =
-                        document.getElementById(
-                            "customSubcategory"
-                        );
-
-
-                    subcategorySelect.innerHTML = `
-
-                        <option value="">
-                            Select subcategory
-                        </option>
-
-                    `;
-
-
-                    customGroup.style.display =
-                        "none";
-
-                    customInput.value = "";
-
-
-                    if (
-                        !category ||
-                        !subcategories[category]
-                    ) {
-
-                        return;
-
-                    }
-
-
-                    subcategories[category]
-                        .forEach(
-                            function (subcategory) {
-
-                                const option =
-                                    document.createElement(
-                                        "option"
-                                    );
-
-                                option.value =
-                                    subcategory;
-
-                                option.textContent =
-                                    subcategory;
-
-                                subcategorySelect
-                                    .appendChild(
-                                        option
-                                    );
-
-                            }
-                        );
-
-
-                    const customOption =
-                        document.createElement(
-                            "option"
-                        );
-
-                    customOption.value =
-                        "__custom__";
-
-                    customOption.textContent =
-                        "➕ Add Custom Subcategory";
-
-                    subcategorySelect
-                        .appendChild(
-                            customOption
-                        );
-
-                }
-            );
-
-
-        // =====================================
-        // CUSTOM SUBCATEGORY
-        // =====================================
-
-        document
-            .getElementById("subcategory")
-            .addEventListener(
-                "change",
-                function () {
-
-                    const customGroup =
-                        document.getElementById(
-                            "customSubcategoryGroup"
-                        );
-
-                    const customInput =
-                        document.getElementById(
-                            "customSubcategory"
-                        );
-
-
-                    if (
-                        this.value ===
-                        "__custom__"
-                    ) {
-
-                        customGroup.style.display =
-                            "block";
-
-                        customInput.focus();
-
-                    }
-
-                    else {
-
-                        customGroup.style.display =
-                            "none";
-
-                        customInput.value =
-                            "";
-
-                    }
-
-                }
-            );
-
-
-        // =====================================
-        // CHECK LOGIN
+        // CHECK RESTAURANT LOGIN
         // =====================================
 
         onAuthStateChanged(
@@ -621,8 +390,7 @@
 
                 if (user) {
 
-                    currentUser =
-                        user;
+                    currentUser = user;
 
                     document.getElementById(
                         "loginStatus"
@@ -631,8 +399,7 @@
 
                     document.getElementById(
                         "saveBtn"
-                    ).disabled =
-                        false;
+                    ).disabled = false;
 
                     console.log(
                         "Restaurant UID:",
@@ -643,8 +410,7 @@
 
                 else {
 
-                    currentUser =
-                        null;
+                    currentUser = null;
 
                     document.getElementById(
                         "loginStatus"
@@ -653,8 +419,7 @@
 
                     document.getElementById(
                         "saveBtn"
-                    ).disabled =
-                        true;
+                    ).disabled = true;
 
                     alert(
                         "Please login using the restaurant login page."
@@ -689,70 +454,41 @@
 
                 const foodName =
                     document
-                    .getElementById(
-                        "foodName"
-                    )
-                    .value
-                    .trim();
+                        .getElementById("foodName")
+                        .value
+                        .trim();
 
 
                 const category =
                     document
-                    .getElementById(
-                        "category"
-                    )
-                    .value;
-
-
-                const selectedSubcategory =
-                    document
-                    .getElementById(
-                        "subcategory"
-                    )
-                    .value;
-
-
-                const customSubcategory =
-                    document
-                    .getElementById(
-                        "customSubcategory"
-                    )
-                    .value
-                    .trim();
+                        .getElementById("category")
+                        .value;
 
 
                 const description =
                     document
-                    .getElementById(
-                        "description"
-                    )
-                    .value
-                    .trim();
+                        .getElementById("description")
+                        .value
+                        .trim();
 
 
                 const price =
                     document
-                    .getElementById(
-                        "price"
-                    )
-                    .value;
+                        .getElementById("price")
+                        .value;
 
 
                 const availability =
                     document
-                    .getElementById(
-                        "availability"
-                    )
-                    .value;
+                        .getElementById("availability")
+                        .value;
 
 
                 // =====================================
                 // VALIDATION
                 // =====================================
 
-                if (
-                    foodName === ""
-                ) {
+                if (foodName === "") {
 
                     alert(
                         "Please enter food name."
@@ -763,9 +499,7 @@
                 }
 
 
-                if (
-                    category === ""
-                ) {
+                if (category === "") {
 
                     alert(
                         "Please select a main category."
@@ -773,9 +507,13 @@
 
                     return;
 
-                }if (
+                }
+
+
+                if (
                     price === "" ||
-                    Number(price) < 0
+                    Number(price) < 0 ||
+                    !Number.isFinite(Number(price))
                 ) {
 
                     alert(
@@ -791,6 +529,10 @@
                     currentUser.uid;
 
 
+                // =====================================
+                // MENU ITEM DATA
+                // =====================================
+
                 const menuItem = {
 
                     restaurantId:
@@ -799,27 +541,8 @@
                     foodName:
                         foodName,
 
-                    /*
-                     * Main category used by
-                     * customer-menu.html
-                     */
                     category:
                         category,
-
-                    /*
-                     * Subcategory used by
-                     * customer-menu.html
-                     */
-                    subcategory:
-                        finalSubcategory,
-
-                    /*
-                     * Also save subCategory for
-                     * compatibility with any
-                     * existing code.
-                     */
-                    subCategory:
-                        finalSubcategory,
 
                     description:
                         description,
@@ -880,15 +603,6 @@
 
 
                     document.getElementById(
-                        "subcategory"
-                    ).innerHTML = `
-
-                        <option value="">
-                            Select subcategory
-                        </option>
-
-                    `;
-document.getElementById(
                         "description"
                     ).value = "";
 
