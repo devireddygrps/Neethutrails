@@ -135,6 +135,20 @@
 
 
         /* ================================
+           SALES REPORT CARD
+        ================================= */
+
+        .sales-card {
+            grid-column: 1 / -1;
+        }
+
+
+        .sales-card .icon {
+            color: #00897b;
+        }
+
+
+        /* ================================
            LOGOUT
         ================================= */
 
@@ -461,13 +475,172 @@
 
 
         /* ================================
+           SALES REPORT
+        ================================= */
+
+        .sales-report-content {
+            max-width: 950px;
+        }
+
+
+        .report-filter {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+            margin-bottom: 20px;
+        }
+
+
+        .report-filter-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: bold;
+            color: #333;
+        }
+
+
+        .report-filter-group input {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+
+
+        .report-filter-btn {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #ff5722;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+
+        .report-filter-btn:hover {
+            background: #e64a19;
+        }
+
+
+        .report-summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+
+        .summary-box {
+            background: #f8f8f8;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid #eee;
+        }
+
+
+        .summary-box strong {
+            display: block;
+            font-size: 23px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+
+        .summary-box span {
+            color: #777;
+            font-size: 13px;
+        }
+
+
+        .report-section {
+            margin-top: 20px;
+        }
+
+
+        .report-section h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+
+        .report-table-wrap {
+            overflow-x: auto;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            min-width: 500px;
+        }
+
+
+        .report-table th,
+        .report-table td {
+            padding: 11px 12px;
+            border-bottom: 1px solid #eee;
+            text-align: left;
+            font-size: 14px;
+        }
+
+
+        .report-table th {
+            background: #f7f7f7;
+            font-weight: bold;
+            color: #333;
+        }
+
+
+        .report-table tr:last-child td {
+            border-bottom: none;
+        }
+
+
+        .report-empty {
+            background: #f8f8f8;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+            color: #777;
+        }
+
+
+        .report-note {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #777;
+            line-height: 1.5;
+        }
+
+
+        .report-loading {
+            text-align: center;
+            color: #777;
+            padding: 20px;
+        }
+
+
+        /* ================================
            MOBILE
         ================================= */
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
 
             .cards {
                 grid-template-columns: 1fr;
+            }
+
+
+            .sales-card {
+                grid-column: auto;
             }
 
 
@@ -480,6 +653,25 @@
                 margin: 15px auto;
 
                 padding: 20px;
+            }
+
+
+            .report-filter {
+                grid-template-columns: 1fr;
+            }
+
+
+            .report-summary {
+                grid-template-columns: 1fr 1fr;
+            }
+
+        }
+
+
+        @media (max-width: 450px) {
+
+            .report-summary {
+                grid-template-columns: 1fr;
             }
 
         }
@@ -669,6 +861,28 @@
             </a>
 
 
+            <!-- SALES REPORT -->
+
+            <div
+                class="card sales-card"
+                onclick="openSalesReport()"
+            >
+
+                <div class="icon">
+                    📊
+                </div>
+
+                <h3>
+                    Sales Report
+                </h3>
+
+                <p>
+                    Today's sales, orders, items sold and detailed reports
+                </p>
+
+            </div>
+
+
         </div>
 
 
@@ -825,6 +1039,100 @@
 
 
     <!-- ================================
+         SALES REPORT MODAL
+    ================================= -->
+
+    <div
+        id="salesReportModal"
+        class="modal"
+    >
+
+        <div class="modal-content sales-report-content">
+
+
+            <div class="modal-header">
+
+                <h2>
+                    📊 Sales Report
+                </h2>
+
+                <button
+                    class="close-btn"
+                    onclick="closeSalesReport()"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <!-- DATE FILTER -->
+
+            <div class="report-filter">
+
+                <div class="report-filter-group">
+
+                    <label for="reportStartDate">
+                        From
+                    </label>
+
+                    <input
+                        id="reportStartDate"
+                        type="date"
+                    >
+
+                </div>
+
+
+                <div class="report-filter-group">
+
+                    <label for="reportEndDate">
+                        To
+                    </label>
+
+                    <input
+                        id="reportEndDate"
+                        type="date"
+                    >
+
+                </div>
+
+
+                <button
+                    class="report-filter-btn"
+                    type="button"
+                    onclick="loadSalesReport()"
+                >
+                    🔍 Apply
+                </button>
+
+            </div>
+
+
+            <div id="salesReportBody">
+
+                <div class="report-loading">
+                    Loading sales report...
+                </div>
+
+            </div>
+
+
+            <div class="report-note">
+                Paid sales are calculated from orders whose payment status is
+                <strong>paid</strong>. Cancelled orders are excluded from sales
+                and item totals. The report reads the restaurant's orders
+                collection for the selected date range.
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- ================================
          JAVASCRIPT
     ================================= -->
 
@@ -853,7 +1161,9 @@
             getFirestore,
             doc,
             getDoc,
-            setDoc
+            setDoc,
+            collection,
+            getDocs
         }
         from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
@@ -954,6 +1264,18 @@
             );
 
 
+        const salesReportModal =
+            document.getElementById(
+                "salesReportModal"
+            );
+
+
+        const salesReportBody =
+            document.getElementById(
+                "salesReportBody"
+            );
+
+
         /* =====================================
            AUTH STATE
         ===================================== */
@@ -1004,7 +1326,11 @@
 
         window.profile =
             function() {
-                window.location.assign("profile.html");
+
+                window.location.assign(
+                    "profile.html"
+                );
+
             };
 
 
@@ -1229,16 +1555,6 @@
 
                 if (upiId) {
 
-                    /*
-                     * Basic UPI ID validation.
-                     *
-                     * Examples:
-                     *
-                     * restaurant@upi
-                     * 9876543210@ybl
-                     * name@okaxis
-                     */
-
                     const upiPattern =
                         /^[A-Za-z0-9._-]{2,}@[A-Za-z]{2,}$/;
 
@@ -1296,12 +1612,6 @@
                 }
 
 
-                /*
-                 * If discount is disabled,
-                 * store 0 so there is no
-                 * accidental discount.
-                 */
-
                 if (
                     !discountEnabled
                 ) {
@@ -1329,15 +1639,6 @@
                             currentRestaurantId
                         );
 
-
-                    /*
-                     * merge:true is IMPORTANT.
-                     *
-                     * It updates only these
-                     * settings and does not
-                     * overwrite existing
-                     * restaurant profile data.
-                     */
 
                     await setDoc(
                         restaurantRef,
@@ -1426,7 +1727,1136 @@
 
 
         /* =====================================
-           CLOSE MODAL WHEN CLICKING OUTSIDE
+           SALES REPORT
+        ===================================== */
+
+        function getLocalDateString(date = new Date()) {
+
+            const year =
+                date.getFullYear();
+
+            const month =
+                String(
+                    date.getMonth() + 1
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+            const day =
+                String(
+                    date.getDate()
+                ).padStart(
+                    2,
+                    "0"
+                );
+
+            return `${year}-${month}-${day}`;
+
+        }
+
+
+        function formatCurrency(amount) {
+
+            return "₹" +
+                Number(
+                    amount || 0
+                ).toFixed(2);
+
+        }
+
+
+        function getOrderDate(order) {
+
+            /*
+             * Firestore serverTimestamp()
+             * normally becomes a Timestamp.
+             *
+             * A few older/test orders may have
+             * a JavaScript Date, milliseconds,
+             * or an ISO string. Support all of
+             * those formats.
+             */
+
+            const value =
+                order.createdAt;
+
+            if (!value) {
+                return null;
+            }
+
+
+            if (
+                typeof value.toDate ===
+                "function"
+            ) {
+                return value.toDate();
+            }
+
+
+            if (
+                value instanceof Date
+            ) {
+                return value;
+            }
+
+
+            if (
+                typeof value ===
+                "number"
+            ) {
+                const date =
+                    new Date(value);
+
+                return Number.isNaN(
+                    date.getTime()
+                )
+                    ? null
+                    : date;
+            }
+
+
+            if (
+                typeof value ===
+                "string"
+            ) {
+                const date =
+                    new Date(value);
+
+                return Number.isNaN(
+                    date.getTime()
+                )
+                    ? null
+                    : date;
+            }
+
+
+            /*
+             * Firestore Timestamp-like object
+             * from some SDK representations.
+             */
+
+            if (
+                typeof value.seconds ===
+                "number"
+            ) {
+                return new Date(
+                    value.seconds * 1000
+                );
+            }
+
+
+            return null;
+
+        }
+
+
+        function getOrderDateKey(order) {
+
+            const date =
+                getOrderDate(
+                    order
+                );
+
+            if (!date) {
+                return null;
+            }
+
+
+            return getLocalDateString(
+                date
+            );
+
+        }
+
+
+        function isPaidOrder(order) {
+
+            return String(
+                order.paymentStatus ||
+                ""
+            ).trim().toLowerCase() ===
+                "paid";
+
+        }
+
+
+        function isCancelledOrder(order) {
+
+            return String(
+                order.status ||
+                ""
+            ).trim().toLowerCase() ===
+                "cancelled";
+
+        }
+
+
+        function getPaidAmount(order) {
+
+            /*
+             * Prefer the final/bill amount when
+             * available, because a discount may
+             * have changed the amount payable.
+             */
+
+            const candidates = [
+
+                order.billTotal,
+
+                order.finalTotal,
+
+                order.total
+
+            ];
+
+
+            for (
+                const candidate of
+                candidates
+            ) {
+
+                const number =
+                    Number(
+                        candidate
+                    );
+
+
+                if (
+                    Number.isFinite(
+                        number
+                    )
+                ) {
+                    return number;
+                }
+
+            }
+
+
+            return 0;
+
+        }
+
+
+        function getItemQuantity(order) {
+
+            if (
+                !Array.isArray(
+                    order.items
+                )
+            ) {
+                return 0;
+            }
+
+
+            return order.items.reduce(
+                (
+                    total,
+                    item
+                ) => {
+
+                    const quantity =
+                        Number(
+                            item.quantity ||
+                            0
+                        );
+
+
+                    return total +
+                        (
+                            Number.isFinite(
+                                quantity
+                            )
+                                ? quantity
+                                : 0
+                        );
+
+                },
+                0
+            );
+
+        }
+
+
+        function escapeHTML(value) {
+
+            return String(
+                value ?? ""
+            )
+
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        window.openSalesReport =
+            async function() {
+
+                if (!currentRestaurantId) {
+
+                    alert(
+                        "Please login first."
+                    );
+
+                    return;
+
+                }
+
+
+                const today =
+                    getLocalDateString();
+
+
+                document.getElementById(
+                    "reportStartDate"
+                ).value =
+                    today;
+
+
+                document.getElementById(
+                    "reportEndDate"
+                ).value =
+                    today;
+
+
+                salesReportModal.style.display =
+                    "block";
+
+
+                salesReportBody.innerHTML =
+                    `
+                    <div class="report-loading">
+                        Loading sales report...
+                    </div>
+                    `;
+
+
+                await loadSalesReport();
+
+            };
+
+
+        window.closeSalesReport =
+            function() {
+
+                salesReportModal.style.display =
+                    "none";
+
+            };
+
+
+        window.loadSalesReport =
+            async function() {
+
+                if (!currentRestaurantId) {
+
+                    salesReportBody.innerHTML =
+                        `
+                        <div class="report-empty">
+                            Please login first.
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                const startDate =
+                    document.getElementById(
+                        "reportStartDate"
+                    ).value;
+
+
+                const endDate =
+                    document.getElementById(
+                        "reportEndDate"
+                    ).value;
+
+
+                if (
+                    !startDate ||
+                    !endDate
+                ) {
+
+                    salesReportBody.innerHTML =
+                        `
+                        <div class="report-empty">
+                            Please select both start and end dates.
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                if (
+                    startDate >
+                    endDate
+                ) {
+
+                    salesReportBody.innerHTML =
+                        `
+                        <div class="report-empty">
+                            Start date cannot be after the end date.
+                        </div>
+                        `;
+
+                    return;
+
+                }
+
+
+                salesReportBody.innerHTML =
+                    `
+                    <div class="report-loading">
+                        Loading orders...
+                    </div>
+                    `;
+
+
+                try {
+
+                    const ordersRef =
+                        collection(
+                            db,
+                            "restaurants",
+                            currentRestaurantId,
+                            "orders"
+                        );
+
+
+                    /*
+                     * We intentionally read the restaurant's
+                     * orders and filter by date in the browser.
+                     *
+                     * This avoids requiring a new Firestore
+                     * composite index just for this report.
+                     */
+
+                    const snapshot =
+                        await getDocs(
+                            ordersRef
+                        );
+
+
+                    const orders = [];
+
+
+                    snapshot.forEach(
+                        orderDoc => {
+
+                            orders.push({
+                                id:
+                                    orderDoc.id,
+                                ...orderDoc.data()
+                            });
+
+                        }
+                    );
+
+
+                    const filteredOrders =
+                        orders.filter(
+                            order => {
+
+                                const dateKey =
+                                    getOrderDateKey(
+                                        order
+                                    );
+
+
+                                if (!dateKey) {
+                                    return false;
+                                }
+
+
+                                return (
+                                    dateKey >=
+                                    startDate &&
+                                    dateKey <=
+                                    endDate
+                                );
+
+                            }
+                        );
+
+
+                    renderSalesReport(
+                        filteredOrders,
+                        startDate,
+                        endDate
+                    );
+
+                }
+
+                catch (error) {
+
+                    console.error(
+                        "Sales report error:",
+                        error
+                    );
+
+
+                    salesReportBody.innerHTML =
+                        `
+                        <div class="report-empty">
+                            ⚠️ Could not load sales report.<br><br>
+                            ${escapeHTML(error.message)}
+                        </div>
+                        `;
+
+                }
+
+            };
+
+
+        function renderSalesReport(
+            orders,
+            startDate,
+            endDate
+        ) {
+
+            /*
+             * Basic counts
+             */
+
+            const totalOrders =
+                orders.length;
+
+
+            const paidOrders =
+                orders.filter(
+                    order =>
+                        isPaidOrder(
+                            order
+                        ) &&
+                        !isCancelledOrder(
+                            order
+                        )
+                );
+
+
+            const cancelledOrders =
+                orders.filter(
+                    order =>
+                        isCancelledOrder(
+                            order
+                        )
+                );
+
+
+            const pendingOrders =
+                orders.filter(
+                    order =>
+                        !isPaidOrder(
+                            order
+                        ) &&
+                        !isCancelledOrder(
+                            order
+                        )
+                );
+
+
+            /*
+             * Sales
+             */
+
+            const totalSales =
+                paidOrders.reduce(
+                    (
+                        total,
+                        order
+                    ) => {
+
+                        return total +
+                            getPaidAmount(
+                                order
+                            );
+
+                    },
+                    0
+                );
+
+
+            /*
+             * Items sold.
+             *
+             * Only paid, non-cancelled
+             * orders are included.
+             */
+
+            const totalItemsSold =
+                paidOrders.reduce(
+                    (
+                        total,
+                        order
+                    ) => {
+
+                        return total +
+                            getItemQuantity(
+                                order
+                            );
+
+                    },
+                    0
+                );
+
+
+            /*
+             * Sales by day
+             */
+
+            const salesByDay =
+                new Map();
+
+
+            paidOrders.forEach(
+                order => {
+
+                    const dateKey =
+                        getOrderDateKey(
+                            order
+                        );
+
+
+                    if (!dateKey) {
+                        return;
+                    }
+
+
+                    const existing =
+                        salesByDay.get(
+                            dateKey
+                        ) || {
+                            sales: 0,
+                            orders: 0,
+                            items: 0
+                        };
+
+
+                    existing.sales +=
+                        getPaidAmount(
+                            order
+                        );
+
+
+                    existing.orders +=
+                        1;
+
+
+                    existing.items +=
+                        getItemQuantity(
+                            order
+                        );
+
+
+                    salesByDay.set(
+                        dateKey,
+                        existing
+                    );
+
+                }
+            );
+
+
+            const salesByDayRows =
+                [...salesByDay.entries()]
+                    .sort(
+                        (
+                            a,
+                            b
+                        ) =>
+                            a[0].localeCompare(
+                                b[0]
+                            )
+                    );
+
+
+            /*
+             * Top-selling food items
+             */
+
+            const itemSales =
+                new Map();
+
+
+            paidOrders.forEach(
+                order => {
+
+                    if (
+                        !Array.isArray(
+                            order.items
+                        )
+                    ) {
+                        return;
+                    }
+
+
+                    order.items.forEach(
+                        item => {
+
+                            const name =
+                                String(
+                                    item.name ||
+                                    item.foodName ||
+                                    "Unknown Item"
+                                ).trim();
+
+
+                            const quantity =
+                                Number(
+                                    item.quantity ||
+                                    0
+                                );
+
+
+                            const price =
+                                Number(
+                                    item.price ||
+                                    0
+                                );
+
+
+                            if (
+                                !Number.isFinite(
+                                    quantity
+                                )
+                            ) {
+                                return;
+                            }
+
+
+                            const existing =
+                                itemSales.get(
+                                    name
+                                ) || {
+                                    quantity: 0,
+                                    sales: 0
+                                };
+
+
+                            existing.quantity +=
+                                quantity;
+
+
+                            existing.sales +=
+                                (
+                                    Number.isFinite(
+                                        price
+                                    )
+                                        ? price *
+                                          quantity
+                                        : 0
+                                );
+
+
+                            itemSales.set(
+                                name,
+                                existing
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+
+            const topItems =
+                [...itemSales.entries()]
+                    .sort(
+                        (
+                            a,
+                            b
+                        ) =>
+                            b[1].quantity -
+                            a[1].quantity
+                    )
+                    .slice(
+                        0,
+                        10
+                    );
+
+
+            const rangeText =
+                startDate === endDate
+                    ? startDate
+                    : `${startDate} to ${endDate}`;
+
+
+            const dailyRowsHTML =
+                salesByDayRows.length
+                    ? salesByDayRows.map(
+                        ([date, data]) => `
+                            <tr>
+                                <td>
+                                    ${escapeHTML(date)}
+                                </td>
+
+                                <td>
+                                    ${data.orders}
+                                </td>
+
+                                <td>
+                                    ${data.items}
+                                </td>
+
+                                <td>
+                                    ${formatCurrency(data.sales)}
+                                </td>
+                            </tr>
+                        `
+                    ).join("")
+                    : `
+                        <tr>
+                            <td colspan="4">
+                                No paid sales in this period.
+                            </td>
+                        </tr>
+                    `;
+
+
+            const topItemsHTML =
+                topItems.length
+                    ? topItems.map(
+                        ([name, data], index) => `
+                            <tr>
+                                <td>
+                                    ${index + 1}
+                                </td>
+
+                                <td>
+                                    ${escapeHTML(name)}
+                                </td>
+
+                                <td>
+                                    ${data.quantity}
+                                </td>
+
+                                <td>
+                                    ${formatCurrency(data.sales)}
+                                </td>
+                            </tr>
+                        `
+                    ).join("")
+                    : `
+                        <tr>
+                            <td colspan="4">
+                                No sold items in this period.
+                            </td>
+                        </tr>
+                    `;
+
+
+            salesReportBody.innerHTML =
+                `
+
+                <div style="
+                    margin-bottom:15px;
+                    color:#666;
+                    font-size:14px;
+                ">
+                    📅 Report period:
+                    <strong>
+                        ${escapeHTML(rangeText)}
+                    </strong>
+                </div>
+
+
+                <!-- SUMMARY -->
+
+                <div class="report-summary">
+
+                    <div class="summary-box">
+
+                        <strong>
+                            ${formatCurrency(totalSales)}
+                        </strong>
+
+                        <span>
+                            Today's / Period Sales
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-box">
+
+                        <strong>
+                            ${totalOrders}
+                        </strong>
+
+                        <span>
+                            Total Orders
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-box">
+
+                        <strong>
+                            ${paidOrders.length}
+                        </strong>
+
+                        <span>
+                            Paid Orders
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-box">
+
+                        <strong>
+                            ${pendingOrders.length}
+                        </strong>
+
+                        <span>
+                            Pending / Unpaid
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-box">
+
+                        <strong>
+                            ${cancelledOrders.length}
+                        </strong>
+
+                        <span>
+                            Cancelled Orders
+                        </span>
+
+                    </div>
+
+
+                    <div class="summary-box">
+
+                        <strong>
+                            ${totalItemsSold}
+                        </strong>
+
+                        <span>
+                            Total Items Sold
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SALES BY DAY -->
+
+                <div class="report-section">
+
+                    <h3>
+                        📅 Sales by Day
+                    </h3>
+
+
+                    <div class="report-table-wrap">
+
+                        <table class="report-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Date
+                                    </th>
+
+                                    <th>
+                                        Paid Orders
+                                    </th>
+
+                                    <th>
+                                        Items Sold
+                                    </th>
+
+                                    <th>
+                                        Sales
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${dailyRowsHTML}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TOP ITEMS -->
+
+                <div class="report-section">
+
+                    <h3>
+                        🏆 Top-Selling Food Items
+                    </h3>
+
+
+                    <div class="report-table-wrap">
+
+                        <table class="report-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        #
+                                    </th>
+
+                                    <th>
+                                        Food Item
+                                    </th>
+
+                                    <th>
+                                        Quantity Sold
+                                    </th>
+
+                                    <th>
+                                        Sales
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                ${topItemsHTML}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORDER COUNTS -->
+
+                <div class="report-section">
+
+                    <h3>
+                        📦 Order Summary
+                    </h3>
+
+
+                    <div class="report-table-wrap">
+
+                        <table class="report-table">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Category
+                                    </th>
+
+                                    <th>
+                                        Orders
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                <tr>
+                                    <td>
+                                        Total Orders
+                                    </td>
+                                    <td>
+                                        ${totalOrders}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        Paid Orders
+                                    </td>
+                                    <td>
+                                        ${paidOrders.length}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        Pending / Unpaid Orders
+                                    </td>
+                                    <td>
+                                        ${pendingOrders.length}
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        Cancelled Orders
+                                    </td>
+                                    <td>
+                                        ${cancelledOrders.length}
+                                    </td>
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                `;
+
+        }
+
+
+        /* =====================================
+           CLOSE MODALS WHEN CLICKING OUTSIDE
         ===================================== */
 
         settingsModal.addEventListener(
@@ -1439,6 +2869,57 @@
                 ) {
 
                     closeSettings();
+
+                }
+
+            }
+        );
+
+
+        salesReportModal.addEventListener(
+            "click",
+            (event) => {
+
+                if (
+                    event.target ===
+                    salesReportModal
+                ) {
+
+                    closeSalesReport();
+
+                }
+
+            }
+        );
+
+
+        /* =====================================
+           ESC KEY
+        ===================================== */
+
+        document.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (
+                    event.key ===
+                    "Escape"
+                ) {
+
+                    if (
+                        settingsModal.style.display ===
+                        "block"
+                    ) {
+                        closeSettings();
+                    }
+
+
+                    if (
+                        salesReportModal.style.display ===
+                        "block"
+                    ) {
+                        closeSalesReport();
+                    }
 
                 }
 
