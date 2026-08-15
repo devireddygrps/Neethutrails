@@ -5,7 +5,8 @@
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
 <title>Restaurant Admin Dashboard</title>
 
@@ -611,6 +612,113 @@ button:disabled{
 
 
 /* =========================================================
+   UPI MODAL
+========================================================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:9999;
+}
+
+.modal.show{
+    display:flex;
+}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:500px;
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 10px 40px rgba(0,0,0,.25);
+    max-height:90vh;
+    overflow-y:auto;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.modal-header h2{
+    font-size:21px;
+}
+
+.close-btn{
+    width:auto;
+    margin:0;
+    background:#eee;
+    color:#333;
+    padding:8px 13px;
+}
+
+.upi-info{
+    background:#f3eefa;
+    border-left:4px solid #673ab7;
+    padding:12px;
+    border-radius:8px;
+    margin-bottom:15px;
+    font-size:13px;
+    color:#4527a0;
+}
+
+.upi-current{
+    background:#f8f8f8;
+    border:1px solid #eee;
+    border-radius:10px;
+    padding:13px;
+    margin-top:15px;
+}
+
+.upi-current-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+}
+
+.upi-current-label{
+    color:#777;
+}
+
+.upi-current-value{
+    font-weight:bold;
+    text-align:right;
+    word-break:break-all;
+}
+
+.save-message{
+    margin-top:10px;
+    padding:10px;
+    border-radius:8px;
+    display:none;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.save-message.success{
+    display:block;
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.save-message.error{
+    display:block;
+    background:#ffebee;
+    color:#c62828;
+}
+
+
+/* =========================================================
    STATES
 ========================================================= */
 
@@ -680,13 +788,15 @@ button:disabled{
 
     .admin-row,
     .customer-row,
-    .customer-stat{
+    .customer-stat,
+    .upi-current-row{
         flex-direction:column;
         gap:3px;
     }
 
     .admin-value,
-    .customer-row span:last-child{
+    .customer-row span:last-child,
+    .upi-current-value{
         text-align:left;
     }
 
@@ -711,7 +821,7 @@ button:disabled{
 <div>
 
 <h1 id="restaurantName">
-Restaurant Admin
+Loading Restaurant...
 </h1>
 
 <p>
@@ -946,6 +1056,8 @@ Advanced order management
 </a>
 
 
+<!-- MANAGE UPI -->
+
 <div
 class="action-card"
 id="manageUpiCard"
@@ -960,30 +1072,11 @@ Manage UPI
 </div>
 
 <div class="action-description">
-Manage your restaurant UPI settings
+Set or change your restaurant UPI ID
 </div>
 
 </div>
 
-
-<a
-class="action-card"
-href="./customer-menu.html"
->
-
-<div class="action-icon">
-📖
-</div>
-
-<div class="action-title">
-Customer Menu
-</div>
-
-<div class="action-description">
-Preview the customer menu
-</div>
-
-</a>
 
 </div>
 
@@ -1205,6 +1298,144 @@ Customer information will appear here.
 
 
 <!-- =========================================================
+     MANAGE UPI MODAL
+========================================================= -->
+
+<div
+id="upiModal"
+class="modal"
+>
+
+<div class="modal-box">
+
+<div class="modal-header">
+
+<h2>
+💳 Manage UPI
+</h2>
+
+<button
+type="button"
+class="close-btn"
+id="closeUpiButton"
+>
+✕
+</button>
+
+</div>
+
+
+<div class="upi-info">
+
+<b>UPI Payment Settings</b>
+
+<br><br>
+
+Enter the UPI ID that customers should use
+when paying your restaurant.
+
+</div>
+
+
+<label>
+Restaurant UPI ID
+</label>
+
+<input
+id="upiIdInput"
+type="text"
+placeholder="example@upi"
+autocomplete="off"
+>
+
+
+<label
+style="
+display:block;
+margin-top:14px;
+"
+>
+UPI Display Name
+</label>
+
+<input
+id="upiNameInput"
+type="text"
+placeholder="Restaurant Name"
+autocomplete="off"
+>
+
+
+<button
+type="button"
+class="green"
+id="saveUpiButton"
+>
+💾 Save UPI Settings
+</button>
+
+
+<button
+type="button"
+class="secondary"
+id="cancelUpiButton"
+>
+Cancel
+</button>
+
+
+<div
+id="upiSaveMessage"
+class="save-message"
+></div>
+
+
+<div class="upi-current">
+
+<b>
+Current UPI Settings
+</b>
+
+
+<div class="upi-current-row">
+
+<span class="upi-current-label">
+UPI ID
+</span>
+
+<span
+class="upi-current-value"
+id="currentUpiId"
+>
+Not configured
+</span>
+
+</div>
+
+
+<div class="upi-current-row">
+
+<span class="upi-current-label">
+Display Name
+</span>
+
+<span
+class="upi-current-value"
+id="currentUpiName"
+>
+Not configured
+</span>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
      FIREBASE
 ========================================================= -->
 
@@ -1386,6 +1617,61 @@ document.getElementById(
 
 
 /* =========================================================
+   UPI ELEMENTS
+========================================================= */
+
+const manageUpiCard =
+document.getElementById(
+"manageUpiCard"
+);
+
+const upiModal =
+document.getElementById(
+"upiModal"
+);
+
+const closeUpiButton =
+document.getElementById(
+"closeUpiButton"
+);
+
+const cancelUpiButton =
+document.getElementById(
+"cancelUpiButton"
+);
+
+const saveUpiButton =
+document.getElementById(
+"saveUpiButton"
+);
+
+const upiIdInput =
+document.getElementById(
+"upiIdInput"
+);
+
+const upiNameInput =
+document.getElementById(
+"upiNameInput"
+);
+
+const currentUpiId =
+document.getElementById(
+"currentUpiId"
+);
+
+const currentUpiName =
+document.getElementById(
+"currentUpiName"
+);
+
+const upiSaveMessage =
+document.getElementById(
+"upiSaveMessage"
+);
+
+
+/* =========================================================
    VARIABLES
 ========================================================= */
 
@@ -1406,12 +1692,6 @@ new Set();
 ========================================================= */
 
 function showTab(tab){
-
-console.log(
-"Switching tab:",
-tab
-);
-
 
 if(tab === "customers"){
 
@@ -1521,6 +1801,9 @@ Please login again.
 
 `;
 
+restaurantName.textContent =
+"Restaurant Admin";
+
 return;
 
 }
@@ -1558,7 +1841,43 @@ adminRestaurantId.textContent =
 currentRestaurantId;
 
 
+/*
+ IMPORTANT:
+ Only the logged-in restaurant owner
+ can access this dashboard.
+*/
+
+if(
+currentRestaurantId !==
+user.uid
+){
+
+ordersContainer.innerHTML = `
+
+<div class="error">
+
+❌ Access denied.
+
+<br><br>
+
+The restaurant ID does not match
+the logged-in restaurant owner.
+
+</div>
+
+`;
+
+restaurantName.textContent =
+"Access Denied";
+
+return;
+
+}
+
+
 await loadRestaurant();
+
+await loadUpiSettings();
 
 startOrdersListener();
 
@@ -1601,9 +1920,29 @@ const data =
 snapshot.data();
 
 
-restaurantName.textContent =
+const name =
 data.restaurantName ||
 data.name ||
+data.title ||
+"Restaurant Admin";
+
+
+restaurantName.textContent =
+name;
+
+
+/*
+ Keep browser title useful too.
+*/
+
+document.title =
+name +
+" - Admin Dashboard";
+
+}
+else{
+
+restaurantName.textContent =
 "Restaurant Admin";
 
 }
@@ -1615,6 +1954,9 @@ console.error(
 "Restaurant error:",
 error
 );
+
+restaurantName.textContent =
+"Restaurant Admin";
 
 }
 
@@ -1697,6 +2039,8 @@ currentRestaurantId;
 
 await loadRestaurant();
 
+await loadUpiSettings();
+
 startOrdersListener();
 
 }
@@ -1716,6 +2060,10 @@ unsubscribeOrders =
 null;
 
 }
+
+
+initialOrdersLoaded =
+false;
 
 
 ordersContainer.innerHTML = `
@@ -2098,6 +2446,7 @@ card.classList.add(
 "cash-requested"
 );
 
+
 }
 
 
@@ -2251,7 +2600,8 @@ paymentBox = `
 <small>
 
 Method:
-${paymentMethod === "cash"
+${
+paymentMethod === "cash"
 ?
 "💵 Cash"
 :
@@ -2262,7 +2612,8 @@ paymentMethod === "upi"
 escapeHTML(
 paymentMethod ||
 "Payment"
-)}
+)
+}
 
 </small>
 
@@ -2372,6 +2723,7 @@ Name
 ${escapeHTML(
 customerName
 )}
+
 </span>
 
 </div>
@@ -2387,6 +2739,7 @@ Phone
 ${escapeHTML(
 String(customerPhone)
 )}
+
 </span>
 
 </div>
@@ -2402,6 +2755,7 @@ Email
 ${escapeHTML(
 String(customerEmail)
 )}
+
 </span>
 
 </div>
@@ -2417,6 +2771,7 @@ Customer UID
 ${escapeHTML(
 String(customerUid)
 )}
+
 </span>
 
 </div>
@@ -2909,7 +3264,8 @@ if(
 !confirm(
 "Confirm cash received from Table " +
 (order.table || "-") +
-"?")
+"?"
+)
 ){
 
 return;
@@ -3083,6 +3439,17 @@ data.cashPaymentCollected =
 true;
 
 data.cashPaymentCollectedAt =
+serverTimestamp();
+
+}
+
+
+if(method === "upi"){
+
+data.upiPaymentVerified =
+true;
+
+data.upiPaymentVerifiedAt =
 serverTimestamp();
 
 }
@@ -3315,6 +3682,7 @@ order.table || "-"
 </b>
 
 —
+
 ₹${Number(
 order.total || 0
 ).toFixed(2)}
@@ -3740,6 +4108,380 @@ return String(value)
 
 
 /* =========================================================
+   MANAGE UPI
+========================================================= */
+
+manageUpiCard.addEventListener(
+"click",
+async function(){
+
+await openUpiManager();
+
+}
+);
+
+
+/* =========================================================
+   OPEN UPI MANAGER
+========================================================= */
+
+async function openUpiManager(){
+
+if(!auth.currentUser){
+
+alert(
+"Please login first."
+);
+
+return;
+
+}
+
+
+if(
+auth.currentUser.uid !==
+currentRestaurantId
+){
+
+alert(
+"Access denied."
+);
+
+return;
+
+}
+
+
+upiSaveMessage.className =
+"save-message";
+
+upiSaveMessage.textContent =
+"";
+
+
+await loadUpiSettings();
+
+
+upiModal.classList.add(
+"show"
+);
+
+}
+
+
+/* =========================================================
+   CLOSE UPI
+========================================================= */
+
+function closeUpiModal(){
+
+upiModal.classList.remove(
+"show"
+);
+
+}
+
+
+closeUpiButton.addEventListener(
+"click",
+closeUpiModal
+);
+
+
+cancelUpiButton.addEventListener(
+"click",
+closeUpiModal
+);
+
+
+/*
+ Close when clicking outside modal.
+*/
+
+upiModal.addEventListener(
+"click",
+function(event){
+
+if(
+event.target ===
+upiModal
+){
+
+closeUpiModal();
+
+}
+
+}
+);
+
+
+/* =========================================================
+   LOAD UPI SETTINGS
+========================================================= */
+
+async function loadUpiSettings(){
+
+if(!currentRestaurantId){
+
+return;
+
+}
+
+
+try{
+
+const restaurantRef =
+doc(
+db,
+"restaurants",
+currentRestaurantId
+);
+
+
+const snapshot =
+await getDoc(
+restaurantRef
+);
+
+
+if(!snapshot.exists()){
+
+currentUpiId.textContent =
+"Not configured";
+
+currentUpiName.textContent =
+"Not configured";
+
+return;
+
+}
+
+
+const data =
+snapshot.data();
+
+
+const upiId =
+data.upiId ||
+data.upi ||
+data.restaurantUpiId ||
+"";
+
+
+const upiName =
+data.upiName ||
+data.upiDisplayName ||
+data.restaurantUpiName ||
+data.restaurantName ||
+"";
+
+
+upiIdInput.value =
+upiId;
+
+upiNameInput.value =
+upiName;
+
+
+currentUpiId.textContent =
+upiId ||
+"Not configured";
+
+currentUpiName.textContent =
+upiName ||
+"Not configured";
+
+}
+catch(error){
+
+console.error(
+"Load UPI error:",
+error
+);
+
+}
+
+}
+
+
+/* =========================================================
+   SAVE UPI SETTINGS
+========================================================= */
+
+saveUpiButton.addEventListener(
+"click",
+async function(){
+
+const user =
+auth.currentUser;
+
+
+if(!user){
+
+showUpiMessage(
+"❌ Please login first.",
+"error"
+);
+
+return;
+
+}
+
+
+if(
+user.uid !==
+currentRestaurantId
+){
+
+showUpiMessage(
+"❌ Access denied.",
+"error"
+);
+
+return;
+
+}
+
+
+const upiId =
+upiIdInput.value.trim();
+
+const upiName =
+upiNameInput.value.trim();
+
+
+if(!upiId){
+
+showUpiMessage(
+"❌ Please enter a UPI ID.",
+"error"
+);
+
+return;
+
+}
+
+
+/*
+ Basic UPI format check.
+ Examples:
+ name@upi
+ restaurant@oksbi
+ phone@ybl
+*/
+
+if(
+!upiId.includes("@") ||
+upiId.startsWith("@") ||
+upiId.endsWith("@")
+){
+
+showUpiMessage(
+"❌ Please enter a valid UPI ID, for example restaurant@upi.",
+"error"
+);
+
+return;
+
+}
+
+
+saveUpiButton.disabled =
+true;
+
+saveUpiButton.textContent =
+"Saving...";
+
+
+try{
+
+await updateDoc(
+
+doc(
+db,
+"restaurants",
+currentRestaurantId
+),
+
+{
+
+upiId:
+upiId,
+
+upiName:
+upiName,
+
+upiUpdatedAt:
+serverTimestamp()
+
+}
+
+);
+
+
+currentUpiId.textContent =
+upiId;
+
+currentUpiName.textContent =
+upiName ||
+"Not configured";
+
+
+showUpiMessage(
+"✅ UPI settings saved successfully.",
+"success"
+);
+
+}
+catch(error){
+
+console.error(
+"Save UPI error:",
+error
+);
+
+
+showUpiMessage(
+"❌ UPI save failed: " +
+error.message,
+"error"
+);
+
+}
+finally{
+
+saveUpiButton.disabled =
+false;
+
+saveUpiButton.textContent =
+"💾 Save UPI Settings";
+
+}
+
+}
+);
+
+
+/* =========================================================
+   UPI MESSAGE
+========================================================= */
+
+function showUpiMessage(
+message,
+type
+){
+
+upiSaveMessage.textContent =
+message;
+
+upiSaveMessage.className =
+"save-message " +
+type;
+
+}
+
+
+/* =========================================================
    LOGOUT
 ========================================================= */
 
@@ -3783,29 +4525,8 @@ error.message
 
 
 /* =========================================================
-   MANAGE UPI
+   STARTUP
 ========================================================= */
-
-document.getElementById(
-"manageUpiCard"
-).addEventListener(
-"click",
-function(){
-
-/*
- * You don't currently have a manage-upi.html
- * in the files you showed me.
- *
- * For now we display a message instead of
- * sending the user to a missing page.
- */
-
-alert(
-"Manage UPI page will be connected here next."
-);
-
-});
-
 
 console.log(
 "Restaurant Dashboard Loaded Successfully"
