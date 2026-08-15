@@ -240,6 +240,70 @@ header p {
     font-weight: bold;
 }
 
+/* ORDER HISTORY */
+
+.history-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.history-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.history-order {
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.history-order:last-child {
+    margin-bottom: 0;
+}
+
+.history-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 5px 0;
+    font-size: 14px;
+}
+
+.history-label {
+    color: #777;
+}
+
+.history-value {
+    font-weight: bold;
+    text-align: right;
+}
+
+.history-status {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 7px 10px;
+    border-radius: 8px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.history-items {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eee;
+    color: #555;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
 /* CART */
 
 .cart {
@@ -385,6 +449,13 @@ header p {
         Order Status
     </button>
 
+    <button
+        class="tab"
+        data-category="ORDER_HISTORY"
+    >
+        Order History
+    </button>
+
 </div>
 
 
@@ -448,6 +519,13 @@ import {
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
 
 const firebaseConfig = {
 
@@ -481,6 +559,9 @@ const app =
 
 const db =
     getFirestore(app);
+
+const auth =
+    getAuth(app);
 
 
 /* ==========================================
@@ -537,6 +618,8 @@ let items = [];
 
 let selectedCategory = "ALL";
 
+let currentUser = null;
+
 
 /* ==========================================
    CHECK QR
@@ -579,6 +662,26 @@ else {
     loadMenu();
 
 }
+
+
+/* ==========================================
+   CUSTOMER AUTH
+========================================== */
+
+onAuthStateChanged(
+    auth,
+    function(user) {
+
+        currentUser = user;
+
+        if (
+            selectedCategory === "ORDER_HISTORY"
+        ) {
+            showOrderHistory();
+        }
+
+    }
+);
 
 
 /* ==========================================
@@ -803,7 +906,8 @@ function createTabs() {
 
                 if (
                     category === "ALL" ||
-                    category === "ORDER_STATUS"
+                    category === "ORDER_STATUS" ||
+                    category === "ORDER_HISTORY"
                 ) {
 
                     tab.style.display =
@@ -882,6 +986,15 @@ document
                     ) {
 
                         showOrderStatus();
+
+                    }
+
+                    else if (
+                        selectedCategory ===
+                        "ORDER_HISTORY"
+                    ) {
+
+                        showOrderHistory();
 
                     }
 
@@ -1256,6 +1369,353 @@ function showOrderStatus() {
 
     `;
 
+}
+
+
+/* ==========================================
+   ORDER HISTORY
+========================================== */
+
+async function showOrderHistory() {
+
+    menuContainer.innerHTML = `
+        <div class="history-card">
+            <div class="history-title">
+                🧾 Orders History
+            </div>
+            <div class="loading">
+                Loading your orders...
+            </div>
+        </div>
+    `;
+
+    if (!currentUser) {
+
+        menuContainer.innerHTML = `
+            <div class="history-card">
+                <div class="history-title">
+                    🧾 Orders History
+                </div>
+
+                <div class="empty">
+                    🔐 Please login to view your order history.
+                </div>
+            </div>
+        `;
+
+        return;
+    }
+
+    if (!restaurantId) {
+
+        menuContainer.innerHTML = `
+            <div class="error">
+                ❌ Restaurant information is missing.
+            </div>
+        `;
+
+        return;
+    }
+
+    try {
+
+        const historyRef =
+            collection(
+                db,
+                "restaurants",
+                restaurantId,
+                "customers",
+                currentUser.uid,
+                "orderHistory"
+            );
+
+        const snapshot =
+            await getDocs(historyRef);
+
+        const orders = [];
+
+        snapshot.forEach(
+            historyDocument => {
+
+                const data =
+                    historyDocument.data();
+
+                orders.push({
+                    id: historyDocument.id,
+                    ...data
+                });
+
+            }
+        );
+
+        /* Newest orders first.
+           No Firestore composite index is required. */
+        orders.sort(
+            function(a, b) {
+
+                return getTimestampMillis(
+                    b.completedAt ||
+                    b.paidAt ||
+                    b.updatedAt ||
+                    b.createdAt
+                ) -
+                getTimestampMillis(
+                    a.completedAt ||
+                    a.paidAt ||
+                    a.updatedAt ||
+                    a.createdAt
+                );
+
+            }
+        );
+
+        if (!orders.length) {
+
+            menuContainer.innerHTML = `
+                <div class="history-card">
+                    <div class="history-title">
+                        🧾 Orders History
+                    </div>
+
+                    <div class="empty">
+                        📭 No completed orders yet.
+                        <br><br>
+                        Orders will appear here after payment is completed.
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+        let html = `
+            <div class="history-card">
+
+                <div class="history-title">
+                    🧾 Orders History
+                </div>
+        `;
+
+        orders.forEach(
+            function(order) {
+
+                const total =
+                    Number(
+                        order.billTotal ??
+                        order.finalTotal ??
+                        order.total ??
+                        0
+                    );
+
+                const paymentMethod =
+                    String(
+                        order.paymentMethod || ""
+                    );
+
+                const paymentText =
+                    paymentMethod === "cash"
+                    ? "💵 Cash"
+                    : paymentMethod === "upi"
+                    ? "📱 UPI"
+                    : "Paid";
+
+                const timestamp =
+                    getTimestampMillis(
+                        order.completedAt ||
+                        order.paidAt ||
+                        order.updatedAt ||
+                        order.createdAt
+                    );
+
+                const dateText =
+                    timestamp
+                    ? new Date(timestamp).toLocaleString()
+                    : "Date unavailable";
+
+                const items =
+                    Array.isArray(order.items)
+                    ? order.items
+                    : [];
+
+                let itemsText = "";
+
+                if (items.length) {
+
+                    itemsText =
+                        items.map(
+                            function(item) {
+
+                                const name =
+                                    item.name ||
+                                    item.foodName ||
+                                    "Item";
+
+                                const quantity =
+                                    Number(
+                                        item.quantity || 1
+                                    );
+
+                                return (
+                                    escapeHTML(name) +
+                                    " × " +
+                                    quantity
+                                );
+
+                            }
+                        ).join("<br>");
+
+                }
+                else {
+
+                    itemsText =
+                        "Item details unavailable.";
+
+                }
+
+                html += `
+                    <div class="history-order">
+
+                        <div class="history-row">
+                            <span class="history-label">
+                                Order ID
+                            </span>
+
+                            <span class="history-value">
+                                ${escapeHTML(
+                                    order.id
+                                )}
+                            </span>
+                        </div>
+
+                        <div class="history-row">
+                            <span class="history-label">
+                                Date
+                            </span>
+
+                            <span class="history-value">
+                                ${escapeHTML(
+                                    dateText
+                                )}
+                            </span>
+                        </div>
+
+                        <div class="history-row">
+                            <span class="history-label">
+                                Total
+                            </span>
+
+                            <span class="history-value">
+                                ₹${total.toFixed(2)}
+                            </span>
+                        </div>
+
+                        <div class="history-row">
+                            <span class="history-label">
+                                Payment
+                            </span>
+
+                            <span class="history-value">
+                                ${escapeHTML(
+                                    paymentText
+                                )}
+                            </span>
+                        </div>
+
+                        <div class="history-status">
+                            ✅ ${escapeHTML(
+                                order.paymentStatus === "paid"
+                                ? "Payment Completed"
+                                : "Completed"
+                            )}
+                        </div>
+
+                        <div class="history-items">
+                            <strong>Items:</strong><br>
+                            ${itemsText}
+                        </div>
+
+                    </div>
+                `;
+
+            }
+        );
+
+        html += `
+            </div>
+        `;
+
+        menuContainer.innerHTML = html;
+
+    }
+    catch(error) {
+
+        console.error(
+            "Order history error:",
+            error
+        );
+
+        menuContainer.innerHTML = `
+            <div class="history-card">
+                <div class="history-title">
+                    🧾 Orders History
+                </div>
+
+                <div class="error">
+                    ❌ Unable to load order history.
+                    <br><br>
+                    ${escapeHTML(
+                        error.message
+                    )}
+                </div>
+            </div>
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   TIMESTAMP
+========================================== */
+
+function getTimestampMillis(value) {
+
+    if (!value) {
+        return 0;
+    }
+
+    if (
+        typeof value.toMillis === "function"
+    ) {
+        return value.toMillis();
+    }
+
+    if (
+        value.seconds !== undefined
+    ) {
+        return Number(value.seconds) * 1000;
+    }
+
+    if (
+        value instanceof Date
+    ) {
+        return value.getTime();
+    }
+
+    if (
+        typeof value === "string"
+    ) {
+
+        const parsed =
+            Date.parse(value);
+
+        return Number.isNaN(parsed)
+            ? 0
+            : parsed;
+    }
+
+    return 0;
 }
 
 
