@@ -1,140 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Restaurant Menu</title>
-<style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;background:#f5f5f5;color:#333}
-.header{background:#ff5722;color:#fff;padding:22px;text-align:center}
-.header h1{margin:0 0 6px}
-.container{max-width:800px;margin:20px auto;padding:15px}
-.table{background:#fff3e0;color:#e65100;padding:12px;border-radius:10px;text-align:center;font-weight:bold;margin-bottom:18px}
-.status{text-align:center;color:#666;margin:15px}
-.menu{display:grid;gap:15px}
-.item{background:#fff;border-radius:14px;padding:18px;box-shadow:0 3px 12px #0001}
-.item h2{margin:0 0 7px}
-.category{color:#ff5722;font-weight:bold;font-size:14px;margin-bottom:8px}
-.description{color:#666;line-height:1.5;margin-bottom:10px}
-.price{font-size:19px;font-weight:bold;margin-bottom:10px}
-.badge{display:inline-block;padding:5px 10px;border-radius:15px;font-size:13px}
-.available{background:#d4edda;color:#155724}
-.unavailable{background:#f8d7da;color:#721c24}
-.empty,.error{background:#fff;padding:25px;border-radius:12px;text-align:center}
-.error{color:#c62828}
-</style>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Restaurant Menu</title>
+
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+
+        body {
+            background: #f5f5f5;
+            padding-bottom: 90px;
+        }
+
+
+        header {
+            background: #ff5722;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+
+        header h1 {
+            margin-bottom: 5px;
+        }
+
+
+        header p {
+            font-size: 14px;
+        }
+
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 15px;
+        }
+
+
+        .category {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 22px;
+            font-weight: bold;
+        }
+
+
+        .item {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+
+        .item-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .item-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        .price {
+            font-weight: bold;
+            color: #ff5722;
+        }
+
+
+        .description {
+            color: #777;
+            font-size: 14px;
+            margin-top: 6px;
+        }
+
+
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+
+        .controls button {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 50%;
+            background: #ff5722;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+
+        .quantity {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        .instructions {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: none;
+        }
+
+
+        .cart {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+
+        .cart-total {
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+
+        .order-btn {
+            background: #ff5722;
+            color: white;
+            border: none;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+    </style>
+
 </head>
+
+
 <body>
-<div class="header"><h1>🍽️ Restaurant Menu</h1><div id="restaurantName">Loading...</div></div>
+
+
+<header>
+
+    <h1>My Restaurant</h1>
+
+    <p>Digital Menu</p>
+
+</header>
+
+
+
 <div class="container">
-<div id="tableInfo" class="table">Loading table...</div>
-<div id="status" class="status">Checking login...</div>
-<div id="menu" class="menu"></div>
+
+
+    <!-- STARTERS -->
+
+    <div class="category">
+        Starters
+    </div>
+
+
+    <div class="item">
+
+        <div class="item-top">
+
+            <div>
+
+                <div class="item-name">
+                    Chicken 65
+                </div>
+
+                <div class="description">
+                    Crispy spicy chicken
+                </div>
+
+            </div>
+
+            <div class="price">
+                ₹180
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button onclick="changeQuantity(0, -1)">
+                −
+            </button>
+
+            <span
+                class="quantity"
+                id="qty-0"
+            >
+                0
+            </span>
+
+            <button onclick="changeQuantity(0, 1)">
+                +
+            </button>
+
+        </div>
+
+
+        <textarea
+            class="instructions"
+            id="instruction-0"
+            placeholder="Special instructions..."
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- MAIN COURSE -->
+
+    <div class="category">
+        Main Course
+    </div>
+
+
+    <div class="item">
+
+        <div class="item-top">
+
+            <div>
+
+                <div class="item-name">
+                    Chicken Biryani
+                </div>
+
+                <div class="description">
+                    Hyderabadi style chicken biryani
+                </div>
+
+            </div>
+
+            <div class="price">
+                ₹250
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button onclick="changeQuantity(1, -1)">
+                −
+            </button>
+
+            <span
+                class="quantity"
+                id="qty-1"
+            >
+                0
+            </span>
+
+            <button onclick="changeQuantity(1, 1)">
+                +
+            </button>
+
+        </div>
+
+
+        <textarea
+            class="instructions"
+            id="instruction-1"
+            placeholder="Special instructions..."
+        ></textarea>
+
+    </div>
+
+
+
+    <!-- DESSERT -->
+
+    <div class="category">
+        Desserts
+    </div>
+
+
+    <div class="item">
+
+        <div class="item-top">
+
+            <div>
+
+                <div class="item-name">
+                    Chocolate Cake
+                </div>
+
+                <div class="description">
+                    Soft chocolate cake
+                </div>
+
+            </div>
+
+            <div class="price">
+                ₹120
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button onclick="changeQuantity(2, -1)">
+                −
+            </button>
+
+            <span
+                class="quantity"
+                id="qty-2"
+            >
+                0
+            </span>
+
+            <button onclick="changeQuantity(2, 1)">
+                +
+            </button>
+
+        </div>
+
+
+        <textarea
+            class="instructions"
+            id="instruction-2"
+            placeholder="Special instructions..."
+        ></textarea>
+
+    </div>
+
+
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const firebaseConfig = {
-    apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-    authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-    projectId: "restaurant-qr-ordering-fdf9b",
-    storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-    messagingSenderId: "907571024375",
-    appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
-    measurementId: "G-G3Q89BDFF9"
-};
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
-const db=getFirestore(app);
 
-const params=new URLSearchParams(location.search);
-const restaurantId=params.get("restaurantId");
-const table=params.get("table");
+<!-- CART -->
 
-const status=document.getElementById("status");
-const menu=document.getElementById("menu");
+<div class="cart">
 
-if(!restaurantId || !table) {
-    status.textContent="Invalid QR code: restaurant/table information is missing.";
-    status.className="status error";
-} else {
-    document.getElementById("tableInfo").textContent="🪑 Table "+table;
-}
+    <div class="cart-total">
 
-onAuthStateChanged(auth, async user => {
-    if(!restaurantId || !table) return;
-    if(!user) {
-        status.textContent="Please complete customer OTP login first.";
-        const login=new URL("customer-login.html",location.href);
-        login.searchParams.set("restaurantId",restaurantId);
-        login.searchParams.set("table",table);
-        setTimeout(()=>location.replace(login.href),800);
-        return;
-    }
-    await loadRestaurant();
-    await loadMenu();
-});
+        Total:
+        ₹<span id="total">0</span>
 
-async function loadRestaurant() {
-    try {
-        const snap=await getDoc(doc(db,"restaurants",restaurantId));
-        if(snap.exists()) {
-            const d=snap.data();
-            document.getElementById("restaurantName").textContent=d.restaurantName||d.name||"Restaurant";
-        } else {
-            document.getElementById("restaurantName").textContent="Restaurant";
+    </div>
+
+
+    <button
+        class="order-btn"
+        onclick="placeOrder()"
+    >
+        View Cart
+    </button>
+
+</div>
+
+
+
+<script>
+
+    const items = [
+
+        {
+            name: "Chicken 65",
+            price: 180,
+            quantity: 0
+        },
+
+        {
+            name: "Chicken Biryani",
+            price: 250,
+            quantity: 0
+        },
+
+        {
+            name: "Chocolate Cake",
+            price: 120,
+            quantity: 0
         }
-    } catch(e) {
-        console.error("Restaurant load:",e);
-        document.getElementById("restaurantName").textContent="Restaurant";
-    }
-}
 
-async function loadMenu() {
-    status.textContent="Loading menu...";
-    try {
-        const snap=await getDocs(collection(db,"restaurants",restaurantId,"menu"));
-        menu.innerHTML="";
-        if(snap.empty) {
-            status.textContent="No menu items found.";
-            menu.innerHTML='<div class="empty"><h3>🍽️ Menu is empty</h3><p>Please check back later.</p></div>';
-            return;
+    ];
+
+
+    function changeQuantity(index, change) {
+
+        items[index].quantity += change;
+
+
+        if (items[index].quantity < 0) {
+
+            items[index].quantity = 0;
+
         }
-        let count=0;
-        snap.forEach(menuDoc => {
-            const item=menuDoc.data();
-            const available=item.availability==="available";
-            if(!available) return;
-            count++;
-            const card=document.createElement("div");
-            card.className="item";
-            card.innerHTML=`
-                <h2>${escapeHTML(item.foodName||"")}</h2>
-                <div class="category">${escapeHTML(item.category||"")}</div>
-                <div class="description">${escapeHTML(item.description||"No description")}</div>
-                <div class="price">₹${Number(item.price||0).toFixed(2)}</div>
-                <span class="badge available">🟢 Available</span>`;
-            menu.appendChild(card);
+
+
+        document.getElementById(
+            "qty-" + index
+        ).innerText =
+            items[index].quantity;
+
+
+        calculateTotal();
+
+    }
+
+
+
+    function calculateTotal() {
+
+        let total = 0;
+
+
+        items.forEach(function(item) {
+
+            total +=
+                item.price *
+                item.quantity;
+
         });
-        status.textContent=count+" available menu item(s)";
-        if(count===0) {
-            menu.innerHTML='<div class="empty"><h3>🍽️ No items available</h3><p>Please check back later.</p></div>';
-        }
-    } catch(e) {
-        console.error("Menu load:",e);
-        status.textContent="Could not load menu.";
-        menu.innerHTML='<div class="error"><h3>❌ Menu could not be loaded</h3><p>'+escapeHTML(e.message)+'</p></div>';
-    }
-}
 
-function escapeHTML(v) {
-    return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;")
-        .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
-}
+
+        document.getElementById(
+            "total"
+        ).innerText = total;
+
+    }
+
+
+
+    function placeOrder() {
+
+        const selectedItems =
+            items.filter(
+                item => item.quantity > 0
+            );
+
+
+        if (selectedItems.length === 0) {
+
+            alert(
+                "Please add at least one item."
+            );
+
+            return;
+
+        }
+
+
+        let orderMessage =
+            "Your Order:\n\n";
+
+
+        selectedItems.forEach(
+            function(item, index) {
+
+                orderMessage +=
+                    item.name +
+                    " x " +
+                    item.quantity +
+                    "\n";
+
+            }
+        );
+
+
+        orderMessage +=
+            "\nTotal: ₹" +
+            document.getElementById(
+                "total"
+            ).innerText;
+
+
+        alert(orderMessage);
+
+    }
+
 </script>
+
+
 </body>
+
 </html>
