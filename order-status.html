@@ -574,6 +574,7 @@ getFirestore,
 doc,
 getDoc,
 updateDoc,
+setDoc,
 onSnapshot,
 serverTimestamp
 }
@@ -888,6 +889,21 @@ return;
 }
 
 
+/*
+IMPORTANT:
+As soon as the restaurant/payment flow marks
+this order as PAID, save a copy into the
+logged-in customer's order history.
+
+The history document uses the SAME orderId,
+so repeated realtime snapshots will update the
+same history document instead of creating duplicates.
+*/
+if(orderData.paymentStatus === "paid"){
+    savePaidOrderToHistory();
+}
+
+
 renderOrder();
 
 },
@@ -919,6 +935,96 @@ error.message
 }
 
 );
+
+}
+
+
+/* ==========================================
+   SAVE PAID ORDER TO CUSTOMER HISTORY
+========================================== */
+
+let historySaveInProgress=false;
+let historySavedForPaidOrder=false;
+
+async function savePaidOrderToHistory(){
+
+    if(!currentUser || !orderData || !restaurantId || !orderId){
+        return;
+    }
+
+    if(orderData.paymentStatus !== "paid"){
+        return;
+    }
+
+    if(historySaveInProgress || historySavedForPaidOrder){
+        return;
+    }
+
+    historySaveInProgress=true;
+
+    try{
+
+        const customerUid = currentUser.uid;
+
+        const historyRef = doc(
+            db,
+            "restaurants",
+            restaurantId,
+            "customers",
+            customerUid,
+            "orderHistory",
+            orderId
+        );
+
+        /*
+        Save the complete order so the History page can
+        display the same items, totals and payment details.
+        The extra history fields make it clear that this
+        copy is a completed/paid order.
+        */
+        const historyData = {
+            ...orderData,
+            orderId: orderId,
+            restaurantId: restaurantId,
+            customerUid: customerUid,
+            table: table,
+            paymentStatus: "paid",
+            historyType: "completed_order",
+            historySavedAt: serverTimestamp(),
+            updatedAt: serverTimestamp()
+        };
+
+        await setDoc(
+            historyRef,
+            historyData,
+            { merge:true }
+        );
+
+        historySavedForPaidOrder=true;
+
+        console.log(
+            "✅ Paid order saved to customer history:",
+            orderId
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "❌ Unable to save paid order to customer history:",
+            error
+        );
+
+        /*
+        Do not block the customer's Order Status page if
+        the history write fails. The error will be visible
+        in the browser console for Firestore-rule debugging.
+        */
+
+    }
+    finally{
+        historySaveInProgress=false;
+    }
 
 }
 
