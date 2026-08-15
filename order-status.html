@@ -180,6 +180,111 @@ header p {
     color: #2e7d32;
 }
 
+/* =========================================
+   BILL ITEMS
+========================================= */
+
+.bill-items {
+    margin-top: 15px;
+    background: white;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.bill-item-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.bill-item-row:last-child {
+    border-bottom: none;
+}
+
+.bill-item-name {
+    font-weight: bold;
+    color: #333;
+}
+
+.bill-item-quantity {
+    color: #777;
+    font-size: 13px;
+}
+
+.bill-item-price {
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* =========================================
+   PRINT BUTTONS
+========================================= */
+
+.bill-print-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.bill-print-btn,
+.bill-pdf-btn {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    border-radius: 9px;
+    color: white;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.bill-print-btn {
+    background: #1976d2;
+}
+
+.bill-pdf-btn {
+    background: #6a1b9a;
+}
+
+.bill-print-btn:hover {
+    background: #1565c0;
+}
+
+.bill-pdf-btn:hover {
+    background: #4a148c;
+}
+
+/* =========================================
+   BILL META
+========================================= */
+
+.bill-meta {
+    margin-top: 15px;
+    padding: 12px;
+    background: #fafafa;
+    border-radius: 9px;
+    font-size: 14px;
+    color: #555;
+}
+
+.bill-meta-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 5px 0;
+}
+
+.bill-meta-row strong {
+    color: #333;
+}
+
+/* =========================================
+   PAYMENT
+========================================= */
+
 .payment-box {
     margin-top: 18px;
 }
@@ -307,11 +412,151 @@ header p {
     cursor: pointer;
 }
 
+/* =========================================
+   PRINT-ONLY BILL
+========================================= */
+
+.print-bill {
+    display: none;
+}
+
+
+/* =========================================
+   PRINT STYLE
+========================================= */
+
+@media print {
+
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    body > * {
+        display: none !important;
+    }
+
+    #printBillContainer {
+        display: block !important;
+    }
+
+    .print-bill {
+        display: block;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 30px;
+        color: #111;
+        background: white;
+    }
+
+    .print-header {
+        text-align: center;
+        border-bottom: 2px solid #222;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+
+    .print-header h1 {
+        font-size: 28px;
+        margin-bottom: 5px;
+    }
+
+    .print-header p {
+        color: #555;
+        font-size: 14px;
+    }
+
+    .print-info {
+        margin-bottom: 20px;
+    }
+
+    .print-info-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: 14px;
+    }
+
+    .print-items {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    .print-items th,
+    .print-items td {
+        border-bottom: 1px solid #ddd;
+        padding: 9px 5px;
+        text-align: left;
+    }
+
+    .print-items th:last-child,
+    .print-items td:last-child {
+        text-align: right;
+    }
+
+    .print-summary {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .print-summary-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 6px 0;
+    }
+
+    .print-summary-total {
+        border-top: 2px solid #222;
+        margin-top: 8px;
+        padding-top: 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .print-payment {
+        margin-top: 25px;
+        padding: 12px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    .print-footer {
+        margin-top: 35px;
+        text-align: center;
+        color: #555;
+        font-size: 13px;
+        border-top: 1px solid #ddd;
+        padding-top: 15px;
+    }
+
+}
+
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 500px) {
+
+    .bill-print-actions {
+        flex-direction: column;
+    }
+
+    .bill-item-row {
+        align-items: flex-start;
+    }
+
+}
+
 </style>
 
 </head>
 
+
 <body>
+
 
 <header>
 
@@ -335,6 +580,7 @@ header p {
         Loading table...
     </div>
 
+
     <div id="statusContainer">
 
         <div class="loading">
@@ -344,6 +590,16 @@ header p {
     </div>
 
 </div>
+
+
+<!-- =========================================
+     PRINT BILL CONTAINER
+========================================= -->
+
+<div
+    id="printBillContainer"
+    style="display:none;"
+></div>
 
 
 <script type="module">
@@ -375,6 +631,10 @@ from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
 const firebaseConfig = {
 
     apiKey:
@@ -401,6 +661,10 @@ const firebaseConfig = {
 };
 
 
+/* =====================================================
+   INITIALIZE FIREBASE
+===================================================== */
+
 const app =
     initializeApp(firebaseConfig);
 
@@ -420,11 +684,14 @@ const params =
         window.location.search
     );
 
+
 const restaurantId =
     params.get("restaurantId");
 
+
 const table =
     params.get("table");
+
 
 const orderId =
     params.get("orderId") ||
@@ -442,10 +709,12 @@ const restaurantName =
         "restaurantName"
     );
 
+
 const tableInfo =
     document.getElementById(
         "tableInfo"
     );
+
 
 const statusContainer =
     document.getElementById(
@@ -518,10 +787,12 @@ async function loadRestaurant() {
                 restaurantId
             );
 
+
         const snapshot =
             await getDoc(
                 restaurantRef
             );
+
 
         if (
             snapshot.exists()
@@ -529,6 +800,7 @@ async function loadRestaurant() {
 
             const data =
                 snapshot.data();
+
 
             restaurantName.textContent =
                 data.restaurantName ||
@@ -577,8 +849,10 @@ function waitForLogin() {
 
             }
 
+
             currentUser =
                 user;
+
 
             loadOrder();
 
@@ -701,7 +975,9 @@ function renderOrder() {
 
 
     const statusInfo =
-        getStatusInfo(status);
+        getStatusInfo(
+            status
+        );
 
 
     const waiterCalled =
@@ -711,17 +987,6 @@ function renderOrder() {
     const billRequested =
         orderData.billRequested === true;
 
-
-    /*
-     * IMPORTANT:
-     *
-     * Admin generates:
-     * billGenerated: true
-     *
-     * Therefore customer checks that field.
-     *
-     * billStatus is also supported for compatibility.
-     */
 
     const billGenerated =
         orderData.billGenerated === true ||
@@ -942,6 +1207,16 @@ function renderGeneratedBill() {
         "";
 
 
+    const items =
+        Array.isArray(
+            orderData.items
+        )
+        ?
+        orderData.items
+        :
+        [];
+
+
     let paymentSection = "";
 
 
@@ -966,13 +1241,17 @@ function renderGeneratedBill() {
                 ">
 
                     Payment method:
+
                     ${
                         paymentMethod === "cash"
-                        ? "💵 Cash"
-                        : paymentMethod === "upi"
-                        ? "📱 UPI"
-                        : "Payment"
-
+                        ?
+                        "💵 Cash"
+                        :
+                        paymentMethod === "upi"
+                        ?
+                        "📱 UPI"
+                        :
+                        "Payment"
                     }
 
                 </small>
@@ -985,7 +1264,7 @@ function renderGeneratedBill() {
 
 
     /* ================================================
-       CASH SELECTED / WAITING ADMIN
+       CASH SELECTED
     ================================================ */
 
     else if (
@@ -1066,6 +1345,7 @@ function renderGeneratedBill() {
 
                 </div>
 
+
                 <div class="payment-help">
 
                     Select how you want to pay.
@@ -1108,6 +1388,7 @@ function renderGeneratedBill() {
                         💵 Pay by Cash
                     </strong>
 
+
                     <p style="
                         color:#777;
                         font-size:14px;
@@ -1118,6 +1399,7 @@ function renderGeneratedBill() {
                         to collect your payment.
 
                     </p>
+
 
                     <button
                         class="payment-action-btn"
@@ -1141,6 +1423,7 @@ function renderGeneratedBill() {
                         📱 Pay by UPI
                     </strong>
 
+
                     <div class="upi-placeholder">
 
                         UPI payment option selected.
@@ -1155,6 +1438,7 @@ function renderGeneratedBill() {
                         </small>
 
                     </div>
+
 
                     <button
                         class="payment-action-btn"
@@ -1174,6 +1458,145 @@ function renderGeneratedBill() {
     }
 
 
+    /* ================================================
+       BILL ITEMS
+    ================================================ */
+
+    let itemsHTML = "";
+
+
+    if (items.length) {
+
+        items.forEach(
+            function(item) {
+
+                const name =
+                    item.name ||
+                    item.foodName ||
+                    "Item";
+
+
+                const quantity =
+                    Number(
+                        item.quantity || 1
+                    );
+
+
+                const price =
+                    Number(
+                        item.price || 0
+                    );
+
+
+                const lineTotal =
+                    price * quantity;
+
+
+                itemsHTML += `
+
+                    <div class="bill-item-row">
+
+                        <div>
+
+                            <div class="bill-item-name">
+
+                                ${escapeHTML(name)}
+
+                            </div>
+
+                            <div class="bill-item-quantity">
+
+                                ₹${price.toFixed(2)}
+                                × ${quantity}
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="bill-item-price">
+
+                            ₹${lineTotal.toFixed(2)}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        );
+
+    }
+    else {
+
+        itemsHTML = `
+
+            <div style="
+                text-align:center;
+                color:#777;
+                padding:10px;
+            ">
+
+                No item details available.
+
+            </div>
+
+        `;
+
+    }
+
+
+    /* ================================================
+       BILL DATE
+    ================================================ */
+
+    const generatedAt =
+        getTimestampMillis(
+            orderData.billGeneratedAt
+        );
+
+
+    const billDate =
+        generatedAt
+        ?
+        new Date(
+            generatedAt
+        ).toLocaleString()
+        :
+        new Date().toLocaleString();
+
+
+    /* ================================================
+       PAYMENT STATUS TEXT
+    ================================================ */
+
+    let paymentText =
+        "Payment Pending";
+
+
+    if (
+        paymentStatus === "paid"
+    ) {
+
+        paymentText =
+            "Paid";
+
+    }
+    else if (
+        paymentStatus === "payment_selected"
+    ) {
+
+        paymentText =
+            paymentMethod === "cash"
+            ?
+            "Cash Selected"
+            :
+            "UPI Selected";
+
+    }
+
+
     return `
 
         <div class="bill-card">
@@ -1186,6 +1609,74 @@ function renderGeneratedBill() {
             <div class="bill-status bill-generated">
 
                 ✅ Bill Generated
+
+            </div>
+
+
+            <div class="bill-meta">
+
+                <div class="bill-meta-row">
+
+                    <strong>
+                        Restaurant
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(
+                            restaurantName.textContent ||
+                            "Restaurant"
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="bill-meta-row">
+
+                    <strong>
+                        Table
+                    </strong>
+
+                    <span>
+                        🪑 ${escapeHTML(
+                            String(table)
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="bill-meta-row">
+
+                    <strong>
+                        Order ID
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(orderId)}
+                    </span>
+
+                </div>
+
+
+                <div class="bill-meta-row">
+
+                    <strong>
+                        Bill Generated
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(billDate)}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="bill-items">
+
+                ${itemsHTML}
 
             </div>
 
@@ -1248,6 +1739,52 @@ function renderGeneratedBill() {
             </div>
 
 
+            <div style="
+                margin-top:15px;
+                padding:12px;
+                border-radius:9px;
+                background:#f5f5f5;
+                text-align:center;
+                color:#555;
+            ">
+
+                <strong>
+                    Payment:
+                </strong>
+
+                ${paymentText}
+
+            </div>
+
+
+            <!-- =====================================
+                 PRINT / PDF BUTTONS
+            ====================================== -->
+
+            <div class="bill-print-actions">
+
+                <button
+                    class="bill-print-btn"
+                    onclick="printBill()"
+                >
+
+                    🖨️ Print Bill
+
+                </button>
+
+
+                <button
+                    class="bill-pdf-btn"
+                    onclick="downloadBillPDF()"
+                >
+
+                    💾 Save PDF
+
+                </button>
+
+            </div>
+
+
             ${paymentSection}
 
         </div>
@@ -1258,130 +1795,489 @@ function renderGeneratedBill() {
 
 
 /* =====================================================
-   STATUS INFORMATION
+   CREATE PRINT BILL
 ===================================================== */
 
-function getStatusInfo(status) {
+function createPrintBill() {
 
-    switch(status) {
-
-        case "new":
-
-        case "received":
-
-            return {
-
-                icon: "📥",
-
-                text: "Order Received",
-
-                message:
-                    "Your order has been received by the restaurant."
-
-            };
+    if (!orderData) {
+        return;
+    }
 
 
-        case "accepted":
-
-            return {
-
-                icon: "✅",
-
-                text: "Order Accepted",
-
-                message:
-                    "The restaurant has accepted your order."
-
-            };
+    const printContainer =
+        document.getElementById(
+            "printBillContainer"
+        );
 
 
-        case "preparing":
-
-            return {
-
-                icon: "👨‍🍳",
-
-                text: "Preparing",
-
-                message:
-                    "The kitchen is preparing your order."
-
-            };
+    if (!printContainer) {
+        return;
+    }
 
 
-        case "ready":
-
-            return {
-
-                icon: "🍽️",
-
-                text: "Ready",
-
-                message:
-                    "Your order is ready."
-
-            };
+    const restaurant =
+        restaurantName.textContent ||
+        "Restaurant";
 
 
-        case "served":
-
-            return {
-
-                icon: "✅",
-
-                text: "Served",
-
-                message:
-                    "Your order has been served."
-
-            };
+    const subtotal =
+        Number(
+            orderData.billSubtotal ??
+            orderData.subtotal ??
+            orderData.total ??
+            0
+        );
 
 
-        case "completed":
-
-            return {
-
-                icon: "🎉",
-
-                text: "Completed",
-
-                message:
-                    "Your order is completed."
-
-            };
+    const discount =
+        Number(
+            orderData.billDiscountAmount ??
+            orderData.discountAmount ??
+            0
+        );
 
 
-        case "cancelled":
-
-            return {
-
-                icon: "❌",
-
-                text: "Cancelled",
-
-                message:
-                    "This order has been cancelled."
-
-            };
+    const total =
+        Number(
+            orderData.billTotal ??
+            orderData.finalTotal ??
+            orderData.total ??
+            Math.max(
+                0,
+                subtotal - discount
+            )
+        );
 
 
-        default:
+    const items =
+        Array.isArray(
+            orderData.items
+        )
+        ?
+        orderData.items
+        :
+        [];
 
-            return {
 
-                icon: "📋",
+    const generatedAt =
+        getTimestampMillis(
+            orderData.billGeneratedAt
+        );
 
-                text:
-                    String(status),
 
-                message:
-                    "Your order status has been updated."
+    const billDate =
+        generatedAt
+        ?
+        new Date(
+            generatedAt
+        ).toLocaleString()
+        :
+        new Date().toLocaleString();
 
-            };
+
+    const paymentStatus =
+        orderData.paymentStatus ||
+        "unpaid";
+
+
+    const paymentMethod =
+        orderData.paymentMethod ||
+        "";
+
+
+    let paymentText =
+        "Payment Pending";
+
+
+    if (
+        paymentStatus === "paid"
+    ) {
+
+        paymentText =
+            paymentMethod === "cash"
+            ?
+            "Paid - Cash"
+            :
+            paymentMethod === "upi"
+            ?
+            "Paid - UPI"
+            :
+            "Paid";
+
+    }
+    else if (
+        paymentStatus === "payment_selected"
+    ) {
+
+        paymentText =
+            paymentMethod === "cash"
+            ?
+            "Cash Selected"
+            :
+            "UPI Selected";
 
     }
 
+
+    let itemsHTML = "";
+
+
+    if (items.length) {
+
+        items.forEach(
+            function(item) {
+
+                const name =
+                    item.name ||
+                    item.foodName ||
+                    "Item";
+
+
+                const quantity =
+                    Number(
+                        item.quantity || 1
+                    );
+
+
+                const price =
+                    Number(
+                        item.price || 0
+                    );
+
+
+                const lineTotal =
+                    price * quantity;
+
+
+                itemsHTML += `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHTML(name)}
+                        </td>
+
+                        <td>
+                            ${quantity}
+                        </td>
+
+                        <td>
+                            ₹${price.toFixed(2)}
+                        </td>
+
+                        <td>
+                            ₹${lineTotal.toFixed(2)}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }
+        );
+
+    }
+    else {
+
+        itemsHTML = `
+
+            <tr>
+
+                <td colspan="4">
+                    No item details available.
+                </td>
+
+            </tr>
+
+        `;
+
+    }
+
+
+    printContainer.innerHTML = `
+
+        <div class="print-bill">
+
+            <div class="print-header">
+
+                <h1>
+                    ${escapeHTML(restaurant)}
+                </h1>
+
+                <p>
+                    Restaurant Bill
+                </p>
+
+            </div>
+
+
+            <div class="print-info">
+
+                <div class="print-info-row">
+
+                    <strong>
+                        Order ID
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(orderId)}
+                    </span>
+
+                </div>
+
+
+                <div class="print-info-row">
+
+                    <strong>
+                        Table
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(
+                            String(table)
+                        )}
+                    </span>
+
+                </div>
+
+
+                <div class="print-info-row">
+
+                    <strong>
+                        Bill Date
+                    </strong>
+
+                    <span>
+                        ${escapeHTML(billDate)}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <table class="print-items">
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Item
+                        </th>
+
+                        <th>
+                            Qty
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Amount
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    ${itemsHTML}
+
+                </tbody>
+
+            </table>
+
+
+            <div class="print-summary">
+
+                <div class="print-summary-row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ₹${subtotal.toFixed(2)}
+                    </span>
+
+                </div>
+
+
+                ${
+                    discount > 0
+                    ?
+                    `
+
+                    <div class="print-summary-row">
+
+                        <span>
+                            Discount
+                        </span>
+
+                        <span>
+                            -₹${discount.toFixed(2)}
+                        </span>
+
+                    </div>
+
+                    `
+                    :
+                    ""
+                }
+
+
+                <div class="
+                    print-summary-row
+                    print-summary-total
+                ">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <span>
+                        ₹${total.toFixed(2)}
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="print-payment">
+
+                <strong>
+                    Payment Status
+                </strong>
+
+                <br>
+
+                ${escapeHTML(paymentText)}
+
+            </div>
+
+
+            <div class="print-footer">
+
+                Thank you for dining with us!<br>
+
+                Please keep this bill for your records.
+
+            </div>
+
+        </div>
+
+    `;
+
 }
+
+
+/* =====================================================
+   PRINT BILL
+===================================================== */
+
+window.printBill =
+    function() {
+
+        if (!orderData) {
+
+            alert(
+                "Bill information is not available."
+            );
+
+            return;
+
+        }
+
+
+        const billGenerated =
+            orderData.billGenerated === true ||
+            orderData.billStatus === "generated";
+
+
+        if (!billGenerated) {
+
+            alert(
+                "The bill has not been generated yet."
+            );
+
+            return;
+
+        }
+
+
+        createPrintBill();
+
+
+        setTimeout(
+            function() {
+
+                window.print();
+
+            },
+            100
+        );
+
+    };
+
+
+/* =====================================================
+   SAVE BILL AS PDF
+===================================================== */
+
+window.downloadBillPDF =
+    function() {
+
+        if (!orderData) {
+
+            alert(
+                "Bill information is not available."
+            );
+
+            return;
+
+        }
+
+
+        const billGenerated =
+            orderData.billGenerated === true ||
+            orderData.billStatus === "generated";
+
+
+        if (!billGenerated) {
+
+            alert(
+                "The bill has not been generated yet."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Browsers use the Print dialog
+         * to save a page as PDF.
+         */
+
+        createPrintBill();
+
+
+        setTimeout(
+            function() {
+
+                window.print();
+
+            },
+            100
+        );
+
+    };
 
 
 /* =====================================================
@@ -1620,15 +2516,18 @@ window.showPaymentPanel =
                 "cashPanel"
             );
 
+
         const upiPanel =
             document.getElementById(
                 "upiPanel"
             );
 
+
         const cashTab =
             document.getElementById(
                 "cashTab"
             );
+
 
         const upiTab =
             document.getElementById(
@@ -1636,8 +2535,15 @@ window.showPaymentPanel =
             );
 
 
-        if (!cashPanel || !upiPanel) {
+        if (
+            !cashPanel ||
+            !upiPanel ||
+            !cashTab ||
+            !upiTab
+        ) {
+
             return;
+
         }
 
 
@@ -1780,13 +2686,6 @@ window.selectPayment =
             };
 
 
-            /*
-             * IMPORTANT:
-             *
-             * This flag makes the request
-             * clearly visible to admin.
-             */
-
             if (
                 method === "cash"
             ) {
@@ -1860,6 +2759,212 @@ window.goBackToMenu =
 
 
 /* =====================================================
+   STATUS INFORMATION
+===================================================== */
+
+function getStatusInfo(status) {
+
+    switch(status) {
+
+        case "new":
+
+        case "received":
+
+            return {
+
+                icon:
+                    "📥",
+
+                text:
+                    "Order Received",
+
+                message:
+                    "Your order has been received by the restaurant."
+
+            };
+
+
+        case "accepted":
+
+            return {
+
+                icon:
+                    "✅",
+
+                text:
+                    "Order Accepted",
+
+                message:
+                    "The restaurant has accepted your order."
+
+            };
+
+
+        case "preparing":
+
+            return {
+
+                icon:
+                    "👨‍🍳",
+
+                text:
+                    "Preparing",
+
+                message:
+                    "The kitchen is preparing your order."
+
+            };
+
+
+        case "ready":
+
+            return {
+
+                icon:
+                    "🍽️",
+
+                text:
+                    "Ready",
+
+                message:
+                    "Your order is ready."
+
+            };
+
+
+        case "served":
+
+            return {
+
+                icon:
+                    "✅",
+
+                text:
+                    "Served",
+
+                message:
+                    "Your order has been served."
+
+            };
+
+
+        case "completed":
+
+            return {
+
+                icon:
+                    "🎉",
+
+                text:
+                    "Completed",
+
+                message:
+                    "Your order is completed."
+
+            };
+
+
+        case "cancelled":
+
+            return {
+
+                icon:
+                    "❌",
+
+                text:
+                    "Cancelled",
+
+                message:
+                    "This order has been cancelled."
+
+            };
+
+
+        default:
+
+            return {
+
+                icon:
+                    "📋",
+
+                text:
+                    String(status),
+
+                message:
+                    "Your order status has been updated."
+
+            };
+
+    }
+
+}
+
+
+/* =====================================================
+   FIREBASE TIMESTAMP HELPER
+===================================================== */
+
+function getTimestampMillis(value) {
+
+    if (!value) {
+        return 0;
+    }
+
+
+    if (
+        typeof value.toMillis ===
+        "function"
+    ) {
+
+        return value.toMillis();
+
+    }
+
+
+    if (
+        value.seconds !== undefined
+    ) {
+
+        return (
+            Number(value.seconds) *
+            1000
+        );
+
+    }
+
+
+    if (
+        value instanceof Date
+    ) {
+
+        return value.getTime();
+
+    }
+
+
+    if (
+        typeof value === "string"
+    ) {
+
+        const parsed =
+            Date.parse(value);
+
+
+        return Number.isNaN(parsed)
+            ?
+            0
+            :
+            parsed;
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =====================================================
    ESCAPE HTML
 ===================================================== */
 
@@ -1897,4 +3002,5 @@ function escapeHTML(value) {
 </script>
 
 </body>
+
 </html>
