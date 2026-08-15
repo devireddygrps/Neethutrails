@@ -742,6 +742,14 @@
             display: none !important;
         }
 
+        /*
+         * Customer menu is hidden until Firebase authentication succeeds.
+         * JavaScript reveals it after the authenticated initialization.
+         */
+        .customer-auth-hidden {
+            display: none !important;
+        }
+
         /* ================================
            MOBILE
         ================================= */
@@ -979,7 +987,7 @@
          MENU
     ================================= -->
 
-    <div id="menuContent" class="container">
+    <div id="menuContent" class="container customer-auth-hidden">
 
         <div
             id="menuList"
@@ -994,7 +1002,7 @@
          CART BAR
     ================================= -->
 
-    <div class="cart-bar">
+    <div id="customerCartBar" class="cart-bar customer-auth-hidden">
 
         <div class="cart-inner">
 
@@ -1184,8 +1192,17 @@
             (user) => {
 
                 if (!user) {
-                    document.getElementById("status").textContent =
-                        "Please login to continue.";
+
+                    /*
+                     * QR customers must login before using the menu.
+                     * Preserve the restaurant + table parameters so that
+                     * customer-login.html can return to this exact table.
+                     */
+                    const loginUrl =
+                        "customer-login.html" +
+                        window.location.search;
+
+                    window.location.replace(loginUrl);
 
                     return;
                 }
@@ -3179,11 +3196,41 @@
            INITIAL LOAD
         ===================================== */
 
-        loadRestaurant();
+        /*
+         * Firebase authentication controls the customer entry flow.
+         * Once the user is authenticated, load the restaurant/menu.
+         */
+        onAuthStateChanged(
+            auth,
+            async (user) => {
 
-        loadMenu();
+                if (!user) {
+                    return;
+                }
 
-        updateCartDisplay();
+                try {
+                    await loadRestaurant();
+                    await loadMenu();
+                    updateCartDisplay();
+
+                    document
+                        .getElementById("menuContent")
+                        .classList.remove("customer-auth-hidden");
+
+                    document
+                        .getElementById("customerCartBar")
+                        .classList.remove("customer-auth-hidden");
+                } catch (error) {
+                    console.error(
+                        "Customer page initialization error:",
+                        error
+                    );
+
+                    document.getElementById("status").textContent =
+                        "Unable to load restaurant menu.";
+                }
+            }
+        );
 
 
     </script>
