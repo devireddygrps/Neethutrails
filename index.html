@@ -1,109 +1,367 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Restaurant Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, sans-serif;
-}
+    <title>Restaurant Login</title>
 
-body{
-    background:#f5f5f5;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    height:100vh;
-}
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-.container{
-    width:350px;
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 5px 20px rgba(0,0,0,0.2);
-    text-align:center;
-}
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-h2{
-    color:#ff5722;
-    margin-bottom:10px;
-}
+        .login-box {
+            width: 90%;
+            max-width: 400px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        }
 
-p{
-    color:gray;
-    margin-bottom:25px;
-}
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
 
-input{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:16px;
-}
+        .subtitle {
+            text-align: center;
+            color: #777;
+            margin-bottom: 25px;
+        }
 
-button{
-    width:100%;
-    padding:12px;
-    background:#ff5722;
-    color:white;
-    border:none;
-    border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
-}
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
 
-button:hover{
-    background:#e64a19;
-}
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: #ff5722;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
 
-#otpSection{
-    display:none;
-}
-</style>
+        button:hover {
+            background: #e64a19;
+        }
 
+        #otpSection {
+            display: none;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 10px;
+            color: #d32f2f;
+        }
+
+        #recaptcha-container {
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
+
 <body>
 
-<div class="container">
+<div class="login-box">
 
-<h2>Restaurant Login</h2>
+    <h1>Restaurant Menu</h1>
 
-<p>Login using your mobile number</p>
+    <p class="subtitle">
+        Login to view the menu
+    </p>
 
-<div id="mobileSection">
+    <!-- Phone Number -->
+    <div id="phoneSection">
 
-    <input type="tel" id="mobile" placeholder="Enter Mobile Number">
+        <input
+            type="tel"
+            id="phoneNumber"
+            placeholder="Enter mobile number"
+            maxlength="10"
+        >
 
-    <div id="recaptcha-container"></div>
+        <div id="recaptcha-container"></div>
 
-    <button id="sendBtn">
-        Send OTP
-    </button>
+        <button id="sendBtn">
+            Send OTP
+        </button>
+
+    </div>
+
+    <!-- OTP -->
+    <div id="otpSection">
+
+        <input
+            type="text"
+            id="otp"
+            placeholder="Enter 6 digit OTP"
+            maxlength="6"
+        >
+
+        <button id="verifyBtn">
+            Verify OTP
+        </button>
+
+    </div>
+
+    <p id="message"></p>
 
 </div>
 
-<div id="otpSection">
 
-<input type="text"
-id="otp"
-placeholder="Enter OTP">
+<script type="module">
 
-<button onclick="verifyOTP()">
-Verify OTP
-</button>
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-</div>
+    import {
+        getAuth,
+        RecaptchaVerifier,
+        signInWithPhoneNumber
+    }
+    from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-</div>
-<script type="module" src="./firebase.js">
+
+    // =====================================================
+    // YOUR FIREBASE CONFIGURATION
+    // =====================================================
+
+    const firebaseConfig = {
+
+        apiKey: "YOUR_API_KEY",
+
+        authDomain:
+            "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+        projectId:
+            "restaurant-qr-ordering-fdf9b",
+
+        storageBucket:
+            "restaurant-qr-ordering-fdf9b.appspot.com",
+
+        messagingSenderId:
+            "YOUR_MESSAGING_SENDER_ID",
+
+        appId:
+            "YOUR_APP_ID"
+    };
+
+
+    // Initialize Firebase
+
+    const app = initializeApp(firebaseConfig);
+
+    const auth = getAuth(app);
+
+
+    // =====================================================
+    // ELEMENTS
+    // =====================================================
+
+    const phoneNumber =
+        document.getElementById("phoneNumber");
+
+    const otp =
+        document.getElementById("otp");
+
+    const sendBtn =
+        document.getElementById("sendBtn");
+
+    const verifyBtn =
+        document.getElementById("verifyBtn");
+
+    const message =
+        document.getElementById("message");
+
+    const phoneSection =
+        document.getElementById("phoneSection");
+
+    const otpSection =
+        document.getElementById("otpSection");
+
+
+    // =====================================================
+    // RECAPTCHA
+    // =====================================================
+
+    window.recaptchaVerifier = new RecaptchaVerifier(
+        auth,
+        "recaptcha-container",
+        {
+            size: "normal",
+
+            callback: function(response) {
+                console.log("reCAPTCHA completed");
+            }
+        }
+    );
+
+
+    // =====================================================
+    // SEND OTP
+    // =====================================================
+
+    sendBtn.addEventListener("click", async function() {
+
+        message.innerText = "";
+
+        let number = phoneNumber.value.trim();
+
+        if (number.length !== 10) {
+
+            message.innerText =
+                "Please enter a valid 10 digit mobile number.";
+
+            return;
+        }
+
+
+        const fullPhoneNumber = "+91" + number;
+
+
+        try {
+
+            sendBtn.disabled = true;
+
+            message.style.color = "green";
+
+            message.innerText =
+                "Sending OTP...";
+
+
+            const appVerifier =
+                window.recaptchaVerifier;
+
+
+            window.confirmationResult =
+                await signInWithPhoneNumber(
+                    auth,
+                    fullPhoneNumber,
+                    appVerifier
+                );
+
+
+            message.innerText =
+                "OTP sent successfully.";
+
+
+            phoneSection.style.display = "none";
+
+            otpSection.style.display = "block";
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            sendBtn.disabled = false;
+
+            message.style.color = "red";
+
+            message.innerText =
+                error.message;
+
+        }
+
+    });
+
+
+    // =====================================================
+    // VERIFY OTP
+    // =====================================================
+
+    verifyBtn.addEventListener("click", async function() {
+
+        const code = otp.value.trim();
+
+
+        if (code.length !== 6) {
+
+            message.style.color = "red";
+
+            message.innerText =
+                "Please enter the 6 digit OTP.";
+
+            return;
+        }
+
+
+        try {
+
+            verifyBtn.disabled = true;
+
+            message.style.color = "green";
+
+            message.innerText =
+                "Verifying OTP...";
+
+
+            const result =
+                await window.confirmationResult.confirm(code);
+
+
+            console.log(
+                "Login successful:",
+                result.user
+            );
+
+
+            message.innerText =
+                "Login successful! Opening menu...";
+
+
+            // =================================================
+            // IMPORTANT:
+            // OPEN menu.html AFTER SUCCESSFUL LOGIN
+            // =================================================
+
+            setTimeout(function() {
+
+                window.location.href =
+                    "menu.html";
+
+            }, 500);
+
+
+        } catch (error) {
+
+            console.error(error);
+
+            verifyBtn.disabled = false;
+
+            message.style.color = "red";
+
+            message.innerText =
+                "Invalid OTP. Please try again.";
+
+        }
+
+    });
+
 </script>
+
 </body>
 </html>
