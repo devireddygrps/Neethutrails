@@ -15,9 +15,9 @@
     <style>
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
             font-family: Arial, sans-serif;
         }
 
@@ -40,16 +40,16 @@
 
             padding: 30px;
 
-            border-radius: 16px;
+            border-radius: 15px;
 
             box-shadow:
-                0 5px 25px rgba(0, 0, 0, 0.12);
+                0 5px 20px rgba(0,0,0,0.15);
 
             text-align: center;
         }
 
         .logo {
-            font-size: 50px;
+            font-size: 45px;
             margin-bottom: 10px;
         }
 
@@ -61,7 +61,7 @@
         .subtitle {
             color: #777;
             font-size: 14px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         input {
@@ -82,9 +82,6 @@
 
         input:focus {
             border-color: #ff5722;
-
-            box-shadow:
-                0 0 0 2px rgba(255, 87, 34, 0.12);
         }
 
         button {
@@ -94,13 +91,13 @@
 
             margin-top: 15px;
 
-            background: #ff5722;
-
-            color: white;
-
             border: none;
 
             border-radius: 8px;
+
+            background: #ff5722;
+
+            color: white;
 
             font-size: 16px;
 
@@ -114,8 +111,16 @@
         }
 
         button:disabled {
-            background: #aaa;
+            background: #999;
             cursor: not-allowed;
+        }
+
+        .secondary {
+            background: #444;
+        }
+
+        .secondary:hover {
+            background: #222;
         }
 
         #otpSection {
@@ -126,23 +131,14 @@
             margin-top: 15px;
 
             display: flex;
+
             justify-content: center;
-        }
-
-        .back-button {
-            background: #555;
-        }
-
-        .back-button:hover {
-            background: #333;
         }
 
         .message {
             margin-top: 15px;
 
             font-size: 14px;
-
-            color: #777;
 
             min-height: 20px;
         }
@@ -153,14 +149,6 @@
 
         .success {
             color: #2e7d32;
-        }
-
-        .footer {
-            margin-top: 25px;
-
-            font-size: 12px;
-
-            color: #999;
         }
 
     </style>
@@ -174,47 +162,47 @@
 <div class="container">
 
 
-    <!-- =================================================
-         LOGIN HEADER
-    ================================================== -->
-
     <div class="logo">
         🍽️
     </div>
+
 
     <h2>
         Restaurant Login
     </h2>
 
+
     <p class="subtitle">
-        Login using your registered mobile number
+        Login using your mobile number
     </p>
 
 
-    <!-- =================================================
+    <!-- =========================================
          MOBILE SECTION
-    ================================================== -->
+    ========================================== -->
 
     <div id="mobileSection">
 
         <input
-            type="tel"
             id="mobile"
+            type="tel"
             maxlength="10"
             inputmode="numeric"
             placeholder="Enter 10-digit mobile number"
-            autocomplete="tel"
         >
 
-
-        <!-- Firebase reCAPTCHA -->
 
         <div id="recaptcha-container"></div>
 
 
+        <!-- IMPORTANT:
+             onclick directly calls JavaScript
+        -->
+
         <button
             id="sendBtn"
             type="button"
+            onclick="sendOTP()"
         >
             Send OTP
         </button>
@@ -228,9 +216,9 @@
     </div>
 
 
-    <!-- =================================================
+    <!-- =========================================
          OTP SECTION
-    ================================================== -->
+    ========================================== -->
 
     <div id="otpSection">
 
@@ -238,32 +226,31 @@
             id="otpInfo"
             class="subtitle"
         >
-            Enter the OTP sent to your mobile number.
+            Enter the OTP sent to your mobile.
         </p>
 
 
         <input
-            type="text"
             id="otp"
+            type="text"
             maxlength="6"
             inputmode="numeric"
             placeholder="Enter 6-digit OTP"
-            autocomplete="one-time-code"
         >
 
 
         <button
-            id="verifyBtn"
             type="button"
+            onclick="verifyOTP()"
         >
             Verify OTP
         </button>
 
 
         <button
-            id="backBtn"
             type="button"
-            class="back-button"
+            class="secondary"
+            onclick="changeMobile()"
         >
             Change Mobile Number
         </button>
@@ -277,17 +264,8 @@
     </div>
 
 
-    <div class="footer">
-        Restaurant Management System
-    </div>
-
-
 </div>
 
-
-<!-- =====================================================
-     FIREBASE JS
-====================================================== -->
 
 <script
     type="module"
