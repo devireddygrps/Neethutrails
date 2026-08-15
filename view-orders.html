@@ -2,11 +2,18 @@
 <html lang="en">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>View Orders</title>
 
     <style>
+
         * {
             margin: 0;
             padding: 0;
@@ -16,6 +23,7 @@
 
         body {
             background: #f5f5f5;
+            padding-bottom: 30px;
         }
 
         .header {
@@ -48,6 +56,7 @@
             padding: 14px;
             border-radius: 10px;
             font-weight: bold;
+            margin-bottom: 18px;
         }
 
         .waiter-alert {
@@ -60,11 +69,19 @@
             font-weight: bold;
         }
 
-        .waiter-alert small {
+        .waiter-alert small,
+        .cash-payment-alert small {
             display: block;
             margin-top: 7px;
-            color: #7f1d1d;
             font-weight: normal;
+        }
+
+        .waiter-alert small {
+            color: #7f1d1d;
+        }
+
+        .cash-payment-alert small {
+            color: #8d4b00;
         }
 
         .waiter-clear-btn {
@@ -78,13 +95,6 @@
             font-weight: bold;
         }
 
-        .cash-payment-alert small {
-            display: block;
-            margin-top: 6px;
-            color: #8d4b00;
-            font-weight: normal;
-        }
-
         .orders-list {
             display: grid;
             gap: 18px;
@@ -94,7 +104,7 @@
             background: white;
             padding: 20px;
             border-radius: 12px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
 
         .order-header {
@@ -138,18 +148,6 @@
 
         .item-quantity {
             color: #666;
-        }
-
-        .instructions {
-            background: #fff8e1;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-        }
-
-        .instructions strong {
-            display: block;
-            margin-bottom: 5px;
         }
 
         .summary {
@@ -229,6 +227,11 @@
             color: #155724;
         }
 
+        .payment-selected {
+            background: #e3f2fd;
+            color: #1565c0;
+        }
+
         .payment-unavailable {
             background: #eeeeee;
             color: #555;
@@ -251,14 +254,60 @@
 
         .payment-info {
             background: #f5f5f5;
-            padding: 12px;
+            padding: 15px;
             border-radius: 8px;
             margin-bottom: 15px;
         }
 
         .payment-info strong {
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 6px;
+        }
+
+        .bill-request-box {
+            background: #e3f2fd;
+            color: #1565c0;
+            border: 1px solid #90caf9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .generate-bill-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 9px;
+            background: #ff5722;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .generate-bill-btn:hover {
+            background: #e64a19;
+        }
+
+        .generate-bill-btn:disabled {
+            background: #aaa;
+            cursor: not-allowed;
+        }
+
+        .bill-generated-box {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #81c784;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .bill-amount {
+            margin-top: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #ff5722;
         }
 
         .payment-tabs {
@@ -270,7 +319,7 @@
 
         .payment-tab {
             flex: 1;
-            padding: 10px;
+            padding: 11px;
             border: 1px solid #ddd;
             border-radius: 8px;
             background: #fff;
@@ -289,14 +338,14 @@
             background: white;
             border: 1px solid #eee;
             border-radius: 8px;
-            padding: 12px;
+            padding: 15px;
             margin-top: 8px;
         }
 
         .cash-paid-btn {
             width: 100%;
-            margin-top: 10px;
-            padding: 12px;
+            margin-top: 12px;
+            padding: 13px;
             border: none;
             border-radius: 8px;
             background: #4caf50;
@@ -304,6 +353,10 @@
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
+        }
+
+        .cash-paid-btn:hover {
+            background: #388e3c;
         }
 
         .cash-paid-btn:disabled {
@@ -378,6 +431,7 @@
         }
 
         @media (max-width: 600px) {
+
             .container {
                 padding: 15px;
             }
@@ -394,852 +448,1855 @@
             .action-buttons button {
                 width: 100%;
             }
+
+            .payment-tabs {
+                flex-direction: column;
+            }
+
         }
+
     </style>
+
 </head>
+
 
 <body>
 
+
     <div class="header">
-        <h2>📦 View Orders</h2>
-        <p>Restaurant Order Management</p>
+
+        <h2>
+            📦 View Orders
+        </h2>
+
+        <p>
+            Restaurant Order Management
+        </p>
+
     </div>
+
 
     <div class="container">
 
-        <div id="status" class="status">
+        <div
+            id="status"
+            class="status"
+        >
             Loading orders...
         </div>
 
+
         <div id="waiterAlerts"></div>
 
-        <div id="cashPaymentAlerts" style="margin-bottom:18px;"></div>
 
-        <div id="ordersList" class="orders-list"></div>
+        <div id="cashPaymentAlerts"></div>
 
-        <button class="back-btn" onclick="goBack()">
+
+        <div
+            id="ordersList"
+            class="orders-list"
+        ></div>
+
+
+        <button
+            class="back-btn"
+            onclick="goBack()"
+        >
             ← Back to Dashboard
         </button>
 
     </div>
 
-    <script type="module">
 
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-        import {
-            getAuth,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-        import {
-            getFirestore,
-            collection,
-            getDocs,
-            doc,
-            updateDoc,
-            serverTimestamp
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+<script type="module">
 
 
-        /* =========================================
-           FIREBASE CONFIGURATION
-        ========================================= */
+/* =====================================================
+   FIREBASE IMPORTS
+===================================================== */
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-            authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-            projectId: "restaurant-qr-ordering-fdf9b",
-            storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-            messagingSenderId: "907571024375",
-            appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
-            measurementId: "G-G3Q89BDFF9"
-        };
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
-        /* =========================================
-           INITIALIZE FIREBASE
-        ========================================= */
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-        let currentUser = null;
-        let waiterIntervalStarted = false;
-        let cashIntervalStarted = false;
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
-        /* =========================================
-           AUTHENTICATION
-        ========================================= */
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    updateDoc,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-        onAuthStateChanged(auth, async (user) => {
 
-            if (user) {
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
 
-                currentUser = user;
+const firebaseConfig = {
 
-                console.log("Admin logged in:");
-                console.log("UID:", currentUser.uid);
-                console.log("Email:", currentUser.email);
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
 
-                await loadOrders();
-                await checkWaiterRequests();
-                await checkCashPaymentRequests();
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
 
-                if (!waiterIntervalStarted) {
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
 
-                    waiterIntervalStarted = true;
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
 
-                    setInterval(
-                        checkWaiterRequests,
-                        3000
-                    );
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
+};
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+let currentUser = null;
+
+let waiterIntervalStarted = false;
+
+let cashIntervalStarted = false;
+
+let ordersIntervalStarted = false;
+
+
+/* =====================================================
+   AUTH
+===================================================== */
+
+onAuthStateChanged(
+    auth,
+    async function(user) {
+
+        if (!user) {
+
+            alert(
+                "Please login first."
+            );
+
+            window.location.href =
+                "index.html";
+
+            return;
+
+        }
+
+
+        currentUser =
+            user;
+
+
+        console.log(
+            "Admin logged in:",
+            currentUser.uid
+        );
+
+
+        await loadOrders();
+
+        await checkWaiterRequests();
+
+        await checkCashPaymentRequests();
+
+
+        /*
+         * Keep admin page updated automatically.
+         */
+
+        if (
+            !ordersIntervalStarted
+        ) {
+
+            ordersIntervalStarted =
+                true;
+
+
+            setInterval(
+                loadOrders,
+                3000
+            );
+
+        }
+
+
+        if (
+            !waiterIntervalStarted
+        ) {
+
+            waiterIntervalStarted =
+                true;
+
+
+            setInterval(
+                checkWaiterRequests,
+                3000
+            );
+
+        }
+
+
+        if (
+            !cashIntervalStarted
+        ) {
+
+            cashIntervalStarted =
+                true;
+
+
+            setInterval(
+                checkCashPaymentRequests,
+                3000
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   CHECK WAITER REQUESTS
+===================================================== */
+
+async function checkWaiterRequests() {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    try {
+
+        const ordersCollection =
+            collection(
+                db,
+                "restaurants",
+                currentUser.uid,
+                "orders"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                ordersCollection
+            );
+
+
+        const requests = [];
+
+
+        snapshot.forEach(
+            function(orderDoc) {
+
+                const order =
+                    orderDoc.data();
+
+
+                if (
+                    order.waiterCalled === true
+                ) {
+
+                    requests.push({
+
+                        id:
+                            orderDoc.id,
+
+                        table:
+                            order.table ||
+                            order.tableNumber ||
+                            "N/A",
+
+                        order:
+                            order.orderNumber ||
+                            orderDoc.id.substring(
+                                0,
+                                6
+                            )
+
+                    });
+
                 }
 
-                if (!cashIntervalStarted) {
-
-                    cashIntervalStarted = true;
-
-                    setInterval(
-                        checkCashPaymentRequests,
-                        3000
-                    );
-                }
-
-            } else {
-
-                alert("Please login first.");
-
-                window.location.href = "index.html";
             }
-
-        });
-
-
-        /* =========================================
-           CHECK WAITER REQUESTS
-        ========================================= */
-
-        async function checkWaiterRequests() {
-
-            if (!currentUser) {
-                return;
-            }
-
-            try {
-
-                const ordersCollection = collection(
-                    db,
-                    "restaurants",
-                    currentUser.uid,
-                    "orders"
-                );
-
-                const snapshot =
-                    await getDocs(ordersCollection);
-
-                const requests = [];
-
-                snapshot.forEach((orderDoc) => {
-
-                    const order = orderDoc.data();
-
-                    if (order.waiterCalled === true) {
-
-                        requests.push({
-
-                            id: orderDoc.id,
-
-                            table:
-                                order.table ||
-                                order.tableNumber ||
-                                "N/A",
-
-                            order:
-                                order.orderNumber ||
-                                orderDoc.id.substring(0, 6)
-
-                        });
-
-                    }
-
-                });
+        );
 
 
-                const alertBox =
-                    document.getElementById(
-                        "waiterAlerts"
-                    );
-
-                if (!alertBox) {
-                    return;
-                }
+        const alertBox =
+            document.getElementById(
+                "waiterAlerts"
+            );
 
 
-                if (!requests.length) {
-
-                    alertBox.innerHTML = "";
-
-                    return;
-                }
+        if (!alertBox) {
+            return;
+        }
 
 
-                alertBox.innerHTML = `
+        if (!requests.length) {
 
-                    <div class="waiter-alert">
+            alertBox.innerHTML =
+                "";
 
-                        🔔 ${requests.length}
-                        Waiter Request${requests.length > 1 ? "s" : ""}
+            return;
 
-                        ${requests.map((request) => `
+        }
+
+
+        alertBox.innerHTML = `
+
+            <div class="waiter-alert">
+
+                🔔 ${requests.length}
+                Waiter Request
+                ${requests.length > 1 ? "s" : ""}
+
+                ${requests.map(
+                    function(request) {
+
+                        return `
 
                             <small>
 
                                 🪑 Table
                                 ${escapeHTML(
-                                    String(request.table)
+                                    String(
+                                        request.table
+                                    )
                                 )}
 
                                 —
 
                                 Order #
                                 ${escapeHTML(
-                                    String(request.order)
+                                    String(
+                                        request.order
+                                    )
                                 )}
+
+                                <br>
 
                                 <button
                                     class="waiter-clear-btn"
-                                    onclick="clearWaiterRequest('${request.id}')"
+                                    onclick="
+                                        clearWaiterRequest(
+                                            '${escapeHTML(
+                                                request.id
+                                            )}'
+                                        )
+                                    "
                                 >
 
-                                    ✅ Acknowledge / Clear
+                                    ✅
+                                    Acknowledge / Clear
 
                                 </button>
 
                             </small>
 
-                        `).join("")}
+                        `;
 
-                    </div>
+                    }
+                ).join("")}
 
-                `;
+            </div>
 
-            } catch (error) {
+        `;
 
-                console.error(
-                    "Waiter request check error:",
-                    error
-                );
+    }
+    catch(error) {
 
-            }
+        console.error(
+            "Waiter request error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   CLEAR WAITER REQUEST
+===================================================== */
+
+window.clearWaiterRequest =
+    async function(orderId) {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
 
         }
 
 
-        /* =========================================
-           CLEAR WAITER REQUEST
-        ========================================= */
-
-        window.clearWaiterRequest =
-            async function(orderId) {
-
-                if (!currentUser) {
-
-                    alert("Please login first.");
-
-                    return;
-                }
+        const confirmed =
+            confirm(
+                "Confirm that the waiter has attended this table?"
+            );
 
 
-                const confirmed = confirm(
-                    "Confirm that the waiter has attended this table?"
+        if (!confirmed) {
+            return;
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    currentUser.uid,
+                    "orders",
+                    orderId
                 );
 
 
-                if (!confirmed) {
-                    return;
-                }
+            await updateDoc(
+                orderRef,
+                {
 
+                    waiterCalled:
+                        false,
 
-                try {
+                    waiterAcknowledgedAt:
+                        serverTimestamp(),
 
-                    const orderRef = doc(
-                        db,
-                        "restaurants",
-                        currentUser.uid,
-                        "orders",
-                        orderId
-                    );
-
-
-                    await updateDoc(
-                        orderRef,
-                        {
-                            waiterCalled: false,
-                            waiterAcknowledgedAt:
-                                serverTimestamp(),
-                            updatedAt:
-                                serverTimestamp()
-                        }
-                    );
-
-
-                    await checkWaiterRequests();
-
-                    await loadOrders();
-
-                } catch (error) {
-
-                    console.error(
-                        "Clear waiter request error:",
-                        error
-                    );
-
-                    alert(
-                        "Could not clear waiter request:\n\n" +
-                        error.message
-                    );
+                    updatedAt:
+                        serverTimestamp()
 
                 }
+            );
 
-            };
+
+            await checkWaiterRequests();
+
+            await loadOrders();
+
+        }
+        catch(error) {
+
+            console.error(
+                "Clear waiter error:",
+                error
+            );
 
 
-        /* =========================================
-           CHECK CASH PAYMENT REQUESTS
-        ========================================= */
+            alert(
+                "Could not clear waiter request:\n\n" +
+                error.message
+            );
 
-        async function checkCashPaymentRequests() {
+        }
 
-            if (!currentUser) {
-                return;
+    };
+
+
+/* =====================================================
+   CHECK CASH PAYMENT REQUESTS
+===================================================== */
+
+async function checkCashPaymentRequests() {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    try {
+
+        const ordersCollection =
+            collection(
+                db,
+                "restaurants",
+                currentUser.uid,
+                "orders"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                ordersCollection
+            );
+
+
+        const requests = [];
+
+
+        snapshot.forEach(
+            function(orderDoc) {
+
+                const order =
+                    orderDoc.data();
+
+
+                if (
+                    order.cashPaymentRequested === true &&
+                    order.paymentStatus !== "paid"
+                ) {
+
+                    requests.push({
+
+                        id:
+                            orderDoc.id,
+
+                        table:
+                            order.tableNumber ||
+                            order.table ||
+                            "N/A",
+
+                        order:
+                            order.orderNumber ||
+                            orderDoc.id.substring(
+                                0,
+                                6
+                            ),
+
+                        amount:
+                            Number(
+                                order.billTotal ??
+                                order.finalTotal ??
+                                order.total ??
+                                0
+                            )
+
+                    });
+
+                }
+
             }
-
-            try {
-
-                const ordersCollection =
-                    collection(
-                        db,
-                        "restaurants",
-                        currentUser.uid,
-                        "orders"
-                    );
+        );
 
 
-                const snapshot =
-                    await getDocs(ordersCollection);
+        const alertBox =
+            document.getElementById(
+                "cashPaymentAlerts"
+            );
 
 
-                const requests = [];
+        if (!alertBox) {
+            return;
+        }
 
 
-                snapshot.forEach((orderDoc) => {
+        if (!requests.length) {
 
-                    const order =
-                        orderDoc.data();
+            alertBox.innerHTML =
+                "";
 
+            return;
 
-                    if (
-                        order.cashPaymentRequested === true &&
-                        order.paymentStatus !== "paid"
-                    ) {
-
-                        requests.push({
-
-                            table:
-                                order.tableNumber ||
-                                order.table ||
-                                "N/A",
-
-                            order:
-                                order.orderNumber ||
-                                orderDoc.id.substring(0, 6),
-
-                            amount:
-                                Number(
-                                    order.billTotal ??
-                                    order.finalTotal ??
-                                    order.total ??
-                                    0
-                                )
-
-                        });
-
-                    }
-
-                });
+        }
 
 
-                const alertBox =
-                    document.getElementById(
-                        "cashPaymentAlerts"
-                    );
+        alertBox.innerHTML = `
 
+            <div class="cash-payment-alert">
 
-                if (!alertBox) {
-                    return;
-                }
+                🔔 ${requests.length}
+                Cash Payment Request
+                ${requests.length > 1 ? "s" : ""}
 
+                ${requests.map(
+                    function(request) {
 
-                if (!requests.length) {
-
-                    alertBox.innerHTML = "";
-
-                    return;
-                }
-
-
-                alertBox.innerHTML = `
-
-                    <div class="cash-payment-alert">
-
-                        🔔 ${requests.length}
-                        Cash Payment Request${requests.length > 1 ? "s" : ""}
-
-                        ${requests.map((request) => `
+                        return `
 
                             <small>
 
                                 💵 Table
                                 ${escapeHTML(
-                                    String(request.table)
+                                    String(
+                                        request.table
+                                    )
                                 )}
 
                                 —
 
                                 Order #
                                 ${escapeHTML(
-                                    String(request.order)
+                                    String(
+                                        request.order
+                                    )
                                 )}
 
                                 —
 
-                                Customer requested cash
-                                collection of
-                                ₹${request.amount.toFixed(2)}.
+                                Amount:
+                                ₹${request.amount.toFixed(2)}
 
-                                Please send a waiter
-                                to the table.
+                                <br>
+
+                                Customer requested
+                                cash payment.
 
                             </small>
 
-                        `).join("")}
+                        `;
 
-                    </div>
+                    }
+                ).join("")}
 
-                `;
+            </div>
 
-            } catch (error) {
+        `;
 
-                console.error(
-                    "Cash payment request check error:",
-                    error
-                );
+    }
+    catch(error) {
 
-            }
+        console.error(
+            "Cash payment check error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   LOAD ORDERS
+===================================================== */
+
+async function loadOrders() {
+
+    if (!currentUser) {
+        return;
+    }
+
+
+    const ordersList =
+        document.getElementById(
+            "ordersList"
+        );
+
+
+    const statusElement =
+        document.getElementById(
+            "status"
+        );
+
+
+    if (!ordersList || !statusElement) {
+        return;
+    }
+
+
+    try {
+
+        const ordersCollection =
+            collection(
+                db,
+                "restaurants",
+                currentUser.uid,
+                "orders"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                ordersCollection
+            );
+
+
+        if (snapshot.empty) {
+
+            statusElement.textContent =
+                "No orders yet.";
+
+
+            ordersList.innerHTML = `
+
+                <div class="empty">
+
+                    <h3>
+                        📦 No Orders Yet
+                    </h3>
+
+                    <p>
+                        Customer orders will
+                        appear here.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
 
         }
 
 
-        /* =========================================
-           LOAD ORDERS
-        ========================================= */
+        const orders = [];
 
-        async function loadOrders() {
 
-            if (!currentUser) {
+        snapshot.forEach(
+            function(orderDoc) {
 
-                console.warn(
-                    "loadOrders called without user."
-                );
+                orders.push({
 
-                return;
+                    id:
+                        orderDoc.id,
+
+                    ...orderDoc.data()
+
+                });
+
             }
+        );
 
 
-            const restaurantId =
-                currentUser.uid;
+        orders.sort(
+            function(a, b) {
 
-
-            console.log(
-                "================================"
-            );
-
-            console.log(
-                "LOADING ORDERS"
-            );
-
-            console.log(
-                "Admin UID:",
-                restaurantId
-            );
-
-            console.log(
-                "Collection:",
-                "restaurants/" +
-                restaurantId +
-                "/orders"
-            );
-
-            console.log(
-                "================================"
-            );
-
-
-            const ordersList =
-                document.getElementById(
-                    "ordersList"
+                return (
+                    getTimestampMillis(
+                        b.createdAt
+                    ) -
+                    getTimestampMillis(
+                        a.createdAt
+                    )
                 );
 
-            const statusElement =
-                document.getElementById(
-                    "status"
-                );
-
-
-            if (!ordersList || !statusElement) {
-
-                console.error(
-                    "Orders page elements not found."
-                );
-
-                return;
             }
+        );
 
 
-            statusElement.textContent =
-                "Loading orders...";
+        statusElement.textContent =
+            `${orders.length} order(s)`;
 
 
-            ordersList.innerHTML = "";
+        ordersList.innerHTML =
+            "";
 
 
-            try {
+        orders.forEach(
+            function(order) {
 
-                const ordersCollection =
-                    collection(
-                        db,
-                        "restaurants",
-                        restaurantId,
-                        "orders"
-                    );
-
-
-                /*
-                 * We intentionally do NOT use
-                 * orderBy().
-                 *
-                 * This avoids Firestore index problems.
-                 */
-
-                const snapshot =
-                    await getDocs(
-                        ordersCollection
-                    );
-
-
-                console.log(
-                    "Orders found:",
-                    snapshot.size
+                renderOrder(
+                    order,
+                    ordersList
                 );
 
-
-                if (snapshot.empty) {
-
-                    statusElement.textContent =
-                        "No orders yet.";
+            }
+        );
 
 
-                    ordersList.innerHTML = `
+    }
+    catch(error) {
 
-                        <div class="empty">
-
-                            <h3>
-                                📦 No Orders Yet
-                            </h3>
-
-                            <p>
-                                Customer orders will
-                                appear here.
-                            </p>
-
-                        </div>
-
-                    `;
-
-                    return;
-                }
+        console.error(
+            "LOAD ORDERS ERROR:",
+            error
+        );
 
 
-                const orders = [];
+        statusElement.innerHTML = `
 
+            <div class="error-box">
 
-                snapshot.forEach(
-                    (orderDoc) => {
+                ❌ Unable to load orders.
 
-                        orders.push({
+                <br><br>
 
-                            id:
-                                orderDoc.id,
-
-                            ...orderDoc.data()
-
-                        });
-
-                    }
-                );
-
-
-                /*
-                 * Sort newest orders first.
-                 */
-
-                orders.sort(
-                    (a, b) => {
-
-                        const aTime =
-                            getTimestampMillis(
-                                a.createdAt
-                            );
-
-                        const bTime =
-                            getTimestampMillis(
-                                b.createdAt
-                            );
-
-                        return bTime - aTime;
-
-                    }
-                );
-
-
-                statusElement.textContent =
-                    `${orders.length} order(s)`;
-
-
-                /*
-                 * Render orders.
-                 */
-
-                orders.forEach(
-                    (order) => {
-
-                        renderOrder(
-                            order,
-                            ordersList
-                        );
-
-                    }
-                );
-
-
-                startPreparationTimers();
-
-
-            } catch (error) {
-
-                console.error(
-                    "🔥 ERROR LOADING ORDERS:",
-                    error
-                );
-
-
-                console.error(
-                    "Error code:",
-                    error.code
-                );
-
-
-                console.error(
-                    "Error message:",
+                ${escapeHTML(
                     error.message
+                )}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   CHECK BILL GENERATED
+===================================================== */
+
+function isBillGenerated(order) {
+
+    return (
+        order.billGenerated === true ||
+        order.billStatus === "generated"
+    );
+
+}
+
+
+/* =====================================================
+   RENDER ORDER
+===================================================== */
+
+function renderOrder(
+    order,
+    ordersList
+) {
+
+    const orderId =
+        order.id;
+
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "order-card";
+
+
+    const status =
+        order.status ||
+        "new";
+
+
+    const items =
+        Array.isArray(order.items)
+        ?
+        order.items
+        :
+        [];
+
+
+    let itemsHTML =
+        "";
+
+
+    items.forEach(
+        function(item) {
+
+            const quantity =
+                Number(
+                    item.quantity || 1
                 );
 
 
-                statusElement.innerHTML = `
+            const price =
+                Number(
+                    item.price || 0
+                );
 
-                    <div class="error-box">
 
-                        ❌ Unable to load orders.
+            itemsHTML += `
 
-                        <br><br>
+                <div class="item-row">
 
-                        <strong>
-                            Firebase error:
-                        </strong>
+                    <div>
+
+                        <span class="item-name">
+
+                            ${escapeHTML(
+                                item.name ||
+                                item.foodName ||
+                                ""
+                            )}
+
+                        </span>
+
+                        <span class="item-quantity">
+
+                            × ${quantity}
+
+                        </span>
+
+                    </div>
+
+                    <div>
+
+                        ₹${(
+                            price *
+                            quantity
+                        ).toFixed(2)}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    const subtotal =
+        Number(
+            order.subtotal ??
+            order.total ??
+            0
+        );
+
+
+    const discountAmount =
+        Number(
+            order.discountAmount ||
+            0
+        );
+
+
+    const discountPercent =
+        Number(
+            order.discountPercent ||
+            0
+        );
+
+
+    const finalTotal =
+        Number(
+            order.finalTotal ??
+            order.total ??
+            Math.max(
+                0,
+                subtotal -
+                discountAmount
+            )
+        );
+
+
+    const billTotal =
+        Number(
+            order.billTotal ??
+            finalTotal
+        );
+
+
+    const paymentStatus =
+        order.paymentStatus ||
+        "pending";
+
+
+    const billGenerated =
+        isBillGenerated(
+            order
+        );
+
+
+    /*
+     * Notification area.
+     */
+
+    let notificationHTML =
+        "";
+
+
+    if (
+        order.waiterCalled === true
+    ) {
+
+        notificationHTML += `
+
+            <div style="
+                background:#fff3cd;
+                color:#856404;
+                padding:14px;
+                border-radius:10px;
+                margin-bottom:12px;
+                font-weight:bold;
+                border:1px solid #ffe08a;
+            ">
+
+                🔔 WAITER REQUEST
+
+                <br>
+
+                <small style="
+                    font-weight:normal;
+                ">
+
+                    Customer at Table
+                    ${escapeHTML(
+                        String(
+                            order.table ||
+                            order.tableNumber ||
+                            "N/A"
+                        )
+                    )}
+                    has called a waiter.
+
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * IMPORTANT:
+     *
+     * Bill request is now independent
+     * of order status.
+     *
+     * So Generate Bill appears whenever
+     * customer requested the bill.
+     */
+
+    if (
+        order.billRequested === true &&
+        !billGenerated
+    ) {
+
+        notificationHTML += `
+
+            <div class="bill-request-box">
+
+                <strong>
+
+                    🧾 BILL REQUESTED
+
+                </strong>
+
+                <br>
+
+                <span style="
+                    display:block;
+                    margin-top:6px;
+                    font-weight:normal;
+                ">
+
+                    Customer has requested
+                    the bill.
+
+                </span>
+
+            </div>
+
+        `;
+
+    }
+
+
+    if (
+        order.cashPaymentRequested === true &&
+        paymentStatus !== "paid"
+    ) {
+
+        notificationHTML += `
+
+            <div style="
+                background:#fff3e0;
+                color:#e65100;
+                padding:14px;
+                border-radius:10px;
+                margin-bottom:12px;
+                font-weight:bold;
+                border:1px solid #ffcc80;
+            ">
+
+                💵 CASH PAYMENT REQUEST
+
+                <br>
+
+                <small style="
+                    font-weight:normal;
+                ">
+
+                    Customer is ready
+                    to pay cash.
+
+                </small>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * Bill controls.
+     */
+
+    let billHTML =
+        "";
+
+
+    if (
+        order.billRequested === true &&
+        !billGenerated
+    ) {
+
+        billHTML = `
+
+            <div class="bill-request-box">
+
+                <strong>
+                    🧾 Customer Requested Bill
+                </strong>
+
+                <p style="
+                    margin-top:7px;
+                    margin-bottom:12px;
+                    font-weight:normal;
+                ">
+
+                    Click the button below to
+                    generate and send the bill
+                    to the customer.
+
+                </p>
+
+
+                <button
+                    id="generate-btn-${escapeHTML(
+                        orderId
+                    )}"
+                    class="generate-bill-btn"
+                    onclick="
+                        generateBill(
+                            '${escapeHTML(
+                                orderId
+                            )}'
+                        )
+                    "
+                >
+
+                    🧾 Generate Bill
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * Generated bill + payment section.
+     */
+
+    if (billGenerated) {
+
+        billHTML = `
+
+            <div class="bill-generated-box">
+
+                <strong>
+
+                    ✅ BILL GENERATED
+
+                </strong>
+
+                <div class="bill-amount">
+
+                    ₹${billTotal.toFixed(2)}
+
+                </div>
+
+                <div style="
+                    margin-top:6px;
+                    color:#555;
+                    font-size:14px;
+                ">
+
+                    Customer can now see
+                    the bill.
+
+                </div>
+
+            </div>
+
+
+            <div class="payment-info">
+
+                <strong>
+                    💳 Payment
+                </strong>
+
+
+                ${
+                    paymentStatus === "paid"
+
+                    ?
+
+                    `
+
+                    <div style="
+                        margin-top:10px;
+                        background:#e8f5e9;
+                        color:#2e7d32;
+                        padding:13px;
+                        border-radius:8px;
+                        font-weight:bold;
+                        text-align:center;
+                    ">
+
+                        ✅ PAYMENT COMPLETED
 
                         <br>
 
-                        ${escapeHTML(
-                            error.message
-                        )}
+                        <small style="
+                            font-weight:normal;
+                        ">
+
+                            Method:
+                            ${
+                                order.paymentMethod === "upi"
+                                ?
+                                "UPI"
+                                :
+                                "Cash"
+                            }
+
+                        </small>
 
                     </div>
 
-                `;
+                    `
+
+                    :
+
+                    `
+
+                    <div style="
+                        color:#777;
+                        font-size:14px;
+                    ">
+
+                        Customer has not completed
+                        payment yet.
+
+                    </div>
+
+
+                    <div class="payment-tabs">
+
+                        <button
+                            id="cash-tab-${escapeHTML(
+                                orderId
+                            )}"
+                            class="payment-tab active"
+                            onclick="
+                                showPaymentTab(
+                                    '${escapeHTML(
+                                        orderId
+                                    )}',
+                                    'cash'
+                                )
+                            "
+                        >
+
+                            💵 Cash
+
+                        </button>
+
+
+                        <button
+                            id="upi-tab-${escapeHTML(
+                                orderId
+                            )}"
+                            class="payment-tab"
+                            onclick="
+                                showPaymentTab(
+                                    '${escapeHTML(
+                                        orderId
+                                    )}',
+                                    'upi'
+                                )
+                            "
+                        >
+
+                            📱 UPI
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="cash-panel-${escapeHTML(
+                            orderId
+                        )}"
+                        class="payment-method-panel"
+                    >
+
+                        <strong>
+                            💵 Cash Payment
+                        </strong>
+
+                        <p style="
+                            margin-top:7px;
+                            color:#666;
+                            font-size:14px;
+                        ">
+
+                            If customer gives cash,
+                            confirm that you received
+                            the full bill amount.
+
+                        </p>
+
+
+                        <button
+                            class="cash-paid-btn"
+                            onclick="
+                                markCashPaymentDone(
+                                    '${escapeHTML(
+                                        orderId
+                                    )}'
+                                )
+                            "
+                        >
+
+                            ✅ Mark Cash Payment Done
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="upi-panel-${escapeHTML(
+                            orderId
+                        )}"
+                        class="payment-method-panel"
+                        style="display:none;"
+                    >
+
+                        <strong>
+                            📱 UPI Payment
+                        </strong>
+
+                        <p style="
+                            margin-top:7px;
+                            color:#666;
+                            font-size:14px;
+                        ">
+
+                            ${
+                                order.paymentMethod === "upi"
+                                ?
+                                "Customer selected UPI payment."
+                                :
+                                "Customer can select UPI from the customer page."
+                            }
+
+                        </p>
+
+                    </div>
+
+                    `
+
+                }
+
+            </div>
+
+        `;
+
+    }
+
+
+    /*
+     * Main card.
+     */
+
+    card.innerHTML = `
+
+        ${notificationHTML}
+
+
+        <div class="order-header">
+
+            <div class="order-number">
+
+                Order #
+                ${escapeHTML(
+                    order.orderNumber ||
+                    orderId.substring(
+                        0,
+                        6
+                    )
+                )}
+
+            </div>
+
+
+            <div class="table-number">
+
+                🪑 Table
+                ${escapeHTML(
+                    String(
+                        order.table ||
+                        order.tableNumber ||
+                        "N/A"
+                    )
+                )}
+
+            </div>
+
+        </div>
+
+
+        <div class="status-badge ${
+            getStatusClass(
+                status
+            )
+        }">
+
+            ${getStatusText(
+                status
+            )}
+
+        </div>
+
+
+        <div class="items">
+
+            ${
+                itemsHTML ||
+                "<p>No items found.</p>"
+            }
+
+        </div>
+
+
+        <div class="summary">
+
+            <div class="summary-row">
+
+                <span>
+                    Subtotal
+                </span>
+
+                <span>
+                    ₹${subtotal.toFixed(2)}
+                </span>
+
+            </div>
+
+
+            ${
+                discountAmount > 0
+
+                ?
+
+                `
+
+                <div class="summary-row discount">
+
+                    <span>
+
+                        Discount
+
+                        ${
+                            discountPercent > 0
+                            ?
+                            `(${discountPercent}%)`
+                            :
+                            ""
+                        }
+
+                    </span>
+
+                    <span>
+
+                        -₹${discountAmount.toFixed(2)}
+
+                    </span>
+
+                </div>
+
+                `
+
+                :
+
+                ""
 
             }
+
+
+            <div class="summary-row total">
+
+                <span>
+                    Total
+                </span>
+
+                <span>
+                    ₹${finalTotal.toFixed(2)}
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="payment-badge ${
+            getPaymentClass(
+                paymentStatus,
+                status
+            )
+        }">
+
+            ${
+                getPaymentText(
+                    paymentStatus,
+                    status
+                )
+            }
+
+        </div>
+
+
+        ${billHTML}
+
+
+        <div class="action-buttons">
+
+
+            ${
+                status === "new"
+
+                ?
+
+                `
+
+                <button
+                    class="accept-btn"
+                    onclick="
+                        updateOrderStatus(
+                            '${escapeHTML(
+                                orderId
+                            )}',
+                            'accepted'
+                        )
+                    "
+                >
+
+                    ✅ Accept
+
+                </button>
+
+
+                <button
+                    class="cancel-btn"
+                    onclick="
+                        updateOrderStatus(
+                            '${escapeHTML(
+                                orderId
+                            )}',
+                            'cancelled'
+                        )
+                    "
+                >
+
+                    ❌ Cancel
+
+                </button>
+
+                `
+
+                :
+
+                ""
+
+            }
+
+
+            ${
+                status === "accepted"
+
+                ?
+
+                `
+
+                <button
+                    class="prepare-btn"
+                    onclick="
+                        updateOrderStatus(
+                            '${escapeHTML(
+                                orderId
+                            )}',
+                            'preparing'
+                        )
+                    "
+                >
+
+                    👨‍🍳 Start Preparing
+
+                </button>
+
+                `
+
+                :
+
+                ""
+
+            }
+
+
+            ${
+                status === "preparing"
+
+                ?
+
+                `
+
+                <button
+                    class="ready-btn"
+                    onclick="
+                        updateOrderStatus(
+                            '${escapeHTML(
+                                orderId
+                            )}',
+                            'ready'
+                        )
+                    "
+                >
+
+                    🍽️ Mark Ready
+
+                </button>
+
+                `
+
+                :
+
+                ""
+
+            }
+
+
+            ${
+                status === "ready"
+
+                ?
+
+                `
+
+                <button
+                    class="complete-btn"
+                    onclick="
+                        updateOrderStatus(
+                            '${escapeHTML(
+                                orderId
+                            )}',
+                            'completed'
+                        )
+                    "
+                >
+
+                    ✅ Complete Order
+
+                </button>
+
+                `
+
+                :
+
+                ""
+
+            }
+
+
+        </div>
+
+    `;
+
+
+    ordersList.appendChild(
+        card
+    );
+
+}
+
+
+/* =====================================================
+   GENERATE BILL
+===================================================== */
+
+window.generateBill =
+    async function(orderId) {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
 
         }
 
 
-        /* =========================================
-           RENDER SINGLE ORDER
-        ========================================= */
-
-        function renderOrder(
-            order,
-            ordersList
-        ) {
-
-            const orderId =
-                order.id;
+        const button =
+            document.getElementById(
+                "generate-btn-" +
+                orderId
+            );
 
 
-            const card =
-                document.createElement(
-                    "div"
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "⏳ Generating Bill...";
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    currentUser.uid,
+                    "orders",
+                    orderId
                 );
 
 
-            card.className =
-                "order-card";
+            const ordersSnapshot =
+                await getDocs(
+                    collection(
+                        db,
+                        "restaurants",
+                        currentUser.uid,
+                        "orders"
+                    )
+                );
 
 
-            /*
-             * Preparation timer data.
-             */
-
-            if (
-                order.preparingStartedAt
-            ) {
-
-                const preparingMillis =
-                    getTimestampMillis(
-                        order.preparingStartedAt
-                    );
+            let orderData =
+                null;
 
 
-                if (preparingMillis) {
+            ordersSnapshot.forEach(
+                function(snap) {
 
-                    card.dataset.preparingStartedAt =
-                        preparingMillis;
+                    if (
+                        snap.id ===
+                        orderId
+                    ) {
+
+                        orderData =
+                            snap.data();
+
+                    }
 
                 }
+            );
+
+
+            if (!orderData) {
+
+                alert(
+                    "Order not found."
+                );
+
+                return;
 
             }
 
 
-            const status =
-                order.status ||
-                "new";
+            /*
+             * Customer MUST have requested bill.
+             */
 
+            if (
+                orderData.billRequested !==
+                true
+            ) {
 
-            const statusClass =
-                getStatusClass(
-                    status
+                alert(
+                    "The customer has not requested the bill yet."
                 );
 
+                return;
 
-            const items =
-                Array.isArray(
-                    order.items
+            }
+
+
+            /*
+             * Do not generate twice.
+             */
+
+            if (
+                isBillGenerated(
+                    orderData
                 )
-                    ?
-                order.items
-                    :
-                [];
+            ) {
 
+                alert(
+                    "Bill has already been generated."
+                );
 
-            let itemsHTML = "";
+                await loadOrders();
 
+                return;
 
-            items.forEach(
-                (item) => {
-
-                    const quantity =
-                        Number(
-                            item.quantity || 1
-                        );
-
-
-                    const price =
-                        Number(
-                            item.price || 0
-                        );
-
-
-                    itemsHTML += `
-
-                        <div class="item-row">
-
-                            <div>
-
-                                <span class="item-name">
-
-                                    ${escapeHTML(
-                                        item.name ||
-                                        item.foodName ||
-                                        ""
-                                    )}
-
-                                </span>
-
-                                <span class="item-quantity">
-
-                                    × ${quantity}
-
-                                </span>
-
-                            </div>
-
-                            <div>
-
-                                ₹${(
-                                    price *
-                                    quantity
-                                ).toFixed(2)}
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }
-            );
+            }
 
 
             const subtotal =
                 Number(
-                    order.subtotal ??
-                    order.total ??
+                    orderData.subtotal ??
+                    orderData.total ??
                     0
                 );
 
 
             const discountAmount =
                 Number(
-                    order.discountAmount ||
-                    0
-                );
-
-
-            const discountPercent =
-                Number(
-                    order.discountPercent ||
+                    orderData.discountAmount ||
                     0
                 );
 
 
             const finalTotal =
                 Number(
-                    order.finalTotal ??
-                    order.total ??
+                    orderData.finalTotal ??
+                    orderData.total ??
                     Math.max(
                         0,
                         subtotal -
@@ -1248,1407 +2305,790 @@
                 );
 
 
-            const paymentStatus =
-                order.paymentStatus ||
-                "pending";
-
-
             /*
-             * Notifications.
+             * IMPORTANT:
+             *
+             * We save BOTH:
+             *
+             * billGenerated = true
+             *
+             * billStatus = "generated"
+             *
+             * because your customer page
+             * checks billStatus.
              */
 
-            let notificationHTML =
-                "";
+            await updateDoc(
+                orderRef,
+                {
 
+                    billGenerated:
+                        true,
 
-            if (
-                order.waiterCalled === true
-            ) {
+                    billStatus:
+                        "generated",
 
-                notificationHTML += `
+                    billGeneratedAt:
+                        serverTimestamp(),
 
-                    <div style="
-                        background:#fff3cd;
-                        color:#856404;
-                        padding:14px;
-                        border-radius:10px;
-                        margin-bottom:12px;
-                        font-weight:bold;
-                        border:1px solid #ffe08a;
-                    ">
+                    billSubtotal:
+                        subtotal,
 
-                        🔔 WAITER REQUEST
+                    billDiscountAmount:
+                        discountAmount,
 
-                        <br>
+                    billTotal:
+                        finalTotal,
 
-                        <small style="
-                            font-weight:normal;
-                        ">
+                    paymentStatus:
+                        orderData.paymentStatus ||
+                        "pending",
 
-                            Customer at Table
-                            ${escapeHTML(
-                                String(
-                                    order.table ||
-                                    order.tableNumber ||
-                                    "N/A"
-                                )
-                            )}
-                            has called a waiter.
+                    updatedAt:
+                        serverTimestamp()
 
-                        </small>
-
-                    </div>
-
-                `;
-
-            }
-
-
-            if (
-                order.billRequested === true &&
-                !order.billGenerated
-            ) {
-
-                notificationHTML += `
-
-                    <div style="
-                        background:#e3f2fd;
-                        color:#1565c0;
-                        padding:14px;
-                        border-radius:10px;
-                        margin-bottom:12px;
-                        font-weight:bold;
-                        border:1px solid #90caf9;
-                    ">
-
-                        🧾 BILL REQUEST
-
-                        <br>
-
-                        <small style="
-                            font-weight:normal;
-                        ">
-
-                            Customer has requested
-                            the bill.
-
-                        </small>
-
-                    </div>
-
-                `;
-
-            }
-
-
-            if (
-                order.cashPaymentRequested === true &&
-                paymentStatus !== "paid"
-            ) {
-
-                notificationHTML += `
-
-                    <div style="
-                        background:#fff3e0;
-                        color:#e65100;
-                        padding:14px;
-                        border-radius:10px;
-                        margin-bottom:12px;
-                        font-weight:bold;
-                        border:1px solid #ffcc80;
-                    ">
-
-                        💵 CASH PAYMENT REQUEST
-
-                        <br>
-
-                        <small style="
-                            font-weight:normal;
-                        ">
-
-                            Customer is ready
-                            to pay cash.
-
-                        </small>
-
-                    </div>
-
-                `;
-
-            }
-
-
-            /*
-             * Main order card.
-             */
-
-            card.innerHTML = `
-
-                ${notificationHTML}
-
-
-                <div class="order-header">
-
-                    <div class="order-number">
-
-                        Order #
-                        ${escapeHTML(
-                            order.orderNumber ||
-                            orderId.substring(0, 6)
-                        )}
-
-                    </div>
-
-
-                    <div class="table-number">
-
-                        🪑 Table
-                        ${escapeHTML(
-                            String(
-                                order.table ||
-                                order.tableNumber ||
-                                "N/A"
-                            )
-                        )}
-
-                    </div>
-
-                </div>
-
-
-                <div class="status-badge ${statusClass}">
-
-                    ${getStatusText(
-                        status
-                    )}
-
-                </div>
-
-
-                ${
-                    status === "preparing" &&
-                    order.preparingStartedAt
-                    ?
-                    `
-
-                    <div class="prep-timer">
-
-                        ⏱️ Preparation Time
-
-                        <span
-                            id="prepTimer-${escapeHTML(
-                                orderId
-                            )}"
-                        >
-                            — 0m 00s
-                        </span>
-
-                        <small>
-                            Time since preparation started.
-                        </small>
-
-                    </div>
-
-                    `
-                    :
-                    ""
                 }
+            );
 
 
-                <div class="items">
-
-                    ${
-                        itemsHTML ||
-                        "<p>No items found.</p>"
-                    }
-
-                </div>
+            alert(
+                "✅ Bill generated successfully.\n\n" +
+                "The customer can now see the bill."
+            );
 
 
-                <div class="summary">
+            await loadOrders();
 
-                    <div class="summary-row">
+        }
+        catch(error) {
 
-                        <span>
-                            Subtotal
-                        </span>
-
-                        <span>
-                            ₹${subtotal.toFixed(2)}
-                        </span>
-
-                    </div>
+            console.error(
+                "Bill generation error:",
+                error
+            );
 
 
-                    ${
-                        discountAmount > 0
-
-                        ?
-
-                        `
-
-                        <div class="summary-row discount">
-
-                            <span>
-
-                                Discount
-
-                                ${
-                                    discountPercent > 0
-                                    ?
-                                    `(${discountPercent}%)`
-                                    :
-                                    ""
-                                }
-
-                            </span>
-
-                            <span>
-
-                                -₹${discountAmount.toFixed(2)}
-
-                            </span>
-
-                        </div>
-
-                        `
-
-                        :
-
-                        ""
-
-                    }
+            alert(
+                "Could not generate bill:\n\n" +
+                error.message
+            );
 
 
-                    <div class="summary-row total">
+            if (button) {
 
-                        <span>
-                            Total
-                        </span>
+                button.disabled =
+                    false;
 
-                        <span>
-                            ₹${finalTotal.toFixed(2)}
-                        </span>
+                button.textContent =
+                    "🧾 Generate Bill";
 
-                    </div>
+            }
 
-                </div>
+        }
+
+    };
 
 
-                <div class="payment-badge ${
-                    getPaymentClass(
-                        paymentStatus,
-                        status
-                    )
-                }">
+/* =====================================================
+   UPDATE ORDER STATUS
+===================================================== */
 
-                    ${
-                        getPaymentText(
-                            paymentStatus,
-                            status
+window.updateOrderStatus =
+    async function(
+        orderId,
+        newStatus
+    ) {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        const orderRef =
+            doc(
+                db,
+                "restaurants",
+                currentUser.uid,
+                "orders",
+                orderId
+            );
+
+
+        try {
+
+            const updateData = {
+
+                status:
+                    newStatus,
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+            if (
+                newStatus ===
+                "preparing"
+            ) {
+
+                updateData.preparingStartedAt =
+                    serverTimestamp();
+
+            }
+
+
+            if (
+                newStatus ===
+                "ready"
+            ) {
+
+                updateData.readyAt =
+                    serverTimestamp();
+
+
+                const existingOrders =
+                    await getDocs(
+                        collection(
+                            db,
+                            "restaurants",
+                            currentUser.uid,
+                            "orders"
                         )
+                    );
+
+
+                let startMillis =
+                    null;
+
+
+                existingOrders.forEach(
+                    function(snap) {
+
+                        if (
+                            snap.id ===
+                            orderId
+                        ) {
+
+                            const data =
+                                snap.data();
+
+
+                            if (
+                                data.preparingStartedAt
+                            ) {
+
+                                startMillis =
+                                    getTimestampMillis(
+                                        data.preparingStartedAt
+                                    );
+
+                            }
+
+                        }
+
                     }
+                );
 
-                </div>
+
+                if (startMillis) {
+
+                    const minutes =
+                        (
+                            Date.now() -
+                            startMillis
+                        ) /
+                        60000;
 
 
-                ${
-                    order.billGenerated
-
-                    ?
-
-                    `
-
-                    <div class="payment-info">
-
-                        <strong>
-                            🧾 Bill Generated
-                        </strong>
-
-                        Customer can now
-                        view the bill and pay.
-
-                    </div>
-
-                    `
-
-                    :
-
-                    ""
+                    updateData.preparationTimeMinutes =
+                        Number(
+                            minutes.toFixed(
+                                1
+                            )
+                        );
 
                 }
 
+            }
 
-                ${
-                    status === "completed" &&
-                    order.billRequested &&
-                    !order.billGenerated
 
-                    ?
+            if (
+                newStatus ===
+                "completed"
+            ) {
 
-                    `
+                updateData.deliveredAt =
+                    serverTimestamp();
 
-                    <div style="
-                        margin-bottom:12px;
-                    ">
+            }
 
-                        <button
-                            class="complete-btn"
-                            style="width:100%;"
-                            onclick="generateBill('${orderId}')"
-                        >
 
-                            🧾 Generate Bill
+            await updateDoc(
+                orderRef,
+                updateData
+            );
 
-                        </button>
 
-                    </div>
+            await loadOrders();
 
-                    `
+        }
+        catch(error) {
 
-                    :
+            console.error(
+                "Status update error:",
+                error
+            );
 
-                    ""
 
-                }
-
-
-                <div class="action-buttons">
-
-
-                    ${
-                        status === "new"
-
-                        ?
-
-                        `
-
-                        <button
-                            class="accept-btn"
-                            onclick="updateOrderStatus(
-                                '${orderId}',
-                                'accepted'
-                            )"
-                        >
-
-                            ✅ Accept
-
-                        </button>
-
-
-                        <button
-                            class="cancel-btn"
-                            onclick="updateOrderStatus(
-                                '${orderId}',
-                                'cancelled'
-                            )"
-                        >
-
-                            ❌ Cancel
-
-                        </button>
-
-                        `
-
-                        :
-
-                        ""
-
-                    }
-
-
-                    ${
-                        status === "accepted"
-
-                        ?
-
-                        `
-
-                        <button
-                            class="prepare-btn"
-                            onclick="updateOrderStatus(
-                                '${orderId}',
-                                'preparing'
-                            )"
-                        >
-
-                            👨‍🍳 Start Preparing
-
-                        </button>
-
-                        `
-
-                        :
-
-                        ""
-
-                    }
-
-
-                    ${
-                        status === "preparing"
-
-                        ?
-
-                        `
-
-                        <button
-                            class="ready-btn"
-                            onclick="updateOrderStatus(
-                                '${orderId}',
-                                'ready'
-                            )"
-                        >
-
-                            🍽️ Mark Ready
-
-                        </button>
-
-                        `
-
-                        :
-
-                        ""
-
-                    }
-
-
-                    ${
-                        status === "ready"
-
-                        ?
-
-                        `
-
-                        <button
-                            class="complete-btn"
-                            onclick="updateOrderStatus(
-                                '${orderId}',
-                                'completed'
-                            )"
-                        >
-
-                            ✅ Complete Order
-
-                        </button>
-
-                        `
-
-                        :
-
-                        ""
-
-                    }
-
-
-                </div>
-
-            `;
-
-
-            ordersList.appendChild(
-                card
+            alert(
+                "Could not update order:\n\n" +
+                error.message
             );
 
         }
 
+    };
 
-        /* =========================================
-           GENERATE BILL
-        ========================================= */
 
-        window.generateBill =
-            async function(orderId) {
+/* =====================================================
+   PAYMENT TAB
+===================================================== */
 
-                if (!currentUser) {
+window.showPaymentTab =
+    function(
+        orderId,
+        method
+    ) {
 
-                    alert(
-                        "Please login first."
-                    );
+        const cashPanel =
+            document.getElementById(
+                "cash-panel-" +
+                orderId
+            );
 
-                    return;
-                }
 
+        const upiPanel =
+            document.getElementById(
+                "upi-panel-" +
+                orderId
+            );
 
-                const orderRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        currentUser.uid,
-                        "orders",
-                        orderId
-                    );
 
+        const cashTab =
+            document.getElementById(
+                "cash-tab-" +
+                orderId
+            );
 
-                try {
 
-                    const ordersSnapshot =
-                        await getDocs(
-                            collection(
-                                db,
-                                "restaurants",
-                                currentUser.uid,
-                                "orders"
-                            )
-                        );
+        const upiTab =
+            document.getElementById(
+                "upi-tab-" +
+                orderId
+            );
 
 
-                    let orderData =
-                        null;
+        if (
+            !cashPanel ||
+            !upiPanel ||
+            !cashTab ||
+            !upiTab
+        ) {
 
+            return;
 
-                    ordersSnapshot.forEach(
-                        (snap) => {
+        }
 
-                            if (
-                                snap.id === orderId
-                            ) {
 
-                                orderData =
-                                    snap.data();
+        if (
+            method ===
+            "upi"
+        ) {
 
-                            }
+            cashPanel.style.display =
+                "none";
 
-                        }
-                    );
+            upiPanel.style.display =
+                "block";
 
+            cashTab.classList.remove(
+                "active"
+            );
 
-                    if (!orderData) {
+            upiTab.classList.add(
+                "active"
+            );
 
-                        alert(
-                            "Order not found."
-                        );
+        }
+        else {
 
-                        return;
-                    }
+            cashPanel.style.display =
+                "block";
 
+            upiPanel.style.display =
+                "none";
 
-                    if (
-                        orderData.status !==
-                        "completed"
-                    ) {
+            cashTab.classList.add(
+                "active"
+            );
 
-                        alert(
-                            "The order must be Delivered before generating the bill."
-                        );
+            upiTab.classList.remove(
+                "active"
+            );
 
-                        return;
-                    }
+        }
 
+    };
 
-                    if (
-                        !orderData.billRequested
-                    ) {
 
-                        alert(
-                            "The customer has not requested the bill yet."
-                        );
+/* =====================================================
+   MARK CASH PAYMENT DONE
+===================================================== */
 
-                        return;
-                    }
+window.markCashPaymentDone =
+    async function(orderId) {
 
+        if (!currentUser) {
 
-                    const subtotal =
-                        Number(
-                            orderData.subtotal ??
-                            orderData.total ??
-                            0
-                        );
+            alert(
+                "Please login first."
+            );
 
+            return;
 
-                    const discountAmount =
-                        Number(
-                            orderData.discountAmount ||
-                            0
-                        );
+        }
 
 
-                    const finalTotal =
-                        Number(
-                            orderData.finalTotal ??
-                            orderData.total ??
-                            Math.max(
-                                0,
-                                subtotal -
-                                discountAmount
-                            )
-                        );
+        const confirmed =
+            confirm(
+                "Confirm that the customer has paid the full bill in cash?"
+            );
 
 
-                    await updateDoc(
-                        orderRef,
-                        {
+        if (!confirmed) {
+            return;
+        }
 
-                            billGenerated:
-                                true,
 
-                            billGeneratedAt:
-                                serverTimestamp(),
+        try {
 
-                            billSubtotal:
-                                subtotal,
-
-                            billDiscountAmount:
-                                discountAmount,
-
-                            billTotal:
-                                finalTotal
-
-                        }
-                    );
-
-
-                    await loadOrders();
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Bill generation error:",
-                        error
-                    );
-
-
-                    alert(
-                        "Could not generate bill:\n\n" +
-                        error.message
-                    );
-
-                }
-
-            };
-
-
-        /* =========================================
-           UPDATE ORDER STATUS
-        ========================================= */
-
-        window.updateOrderStatus =
-            async function(
-                orderId,
-                newStatus
-            ) {
-
-                if (!currentUser) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-                    return;
-                }
-
-
-                const orderRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        currentUser.uid,
-                        "orders",
-                        orderId
-                    );
-
-
-                try {
-
-                    const updateData = {
-
-                        status:
-                            newStatus
-
-                    };
-
-
-                    /*
-                     * START PREPARING
-                     */
-
-                    if (
-                        newStatus ===
-                        "preparing"
-                    ) {
-
-                        updateData.preparingStartedAt =
-                            serverTimestamp();
-
-                    }
-
-
-                    /*
-                     * MARK READY
-                     */
-
-                    if (
-                        newStatus ===
-                        "ready"
-                    ) {
-
-                        const existingOrders =
-                            await getDocs(
-                                collection(
-                                    db,
-                                    "restaurants",
-                                    currentUser.uid,
-                                    "orders"
-                                )
-                            );
-
-
-                        let startMillis =
-                            null;
-
-
-                        existingOrders.forEach(
-                            (snap) => {
-
-                                if (
-                                    snap.id ===
-                                    orderId
-                                ) {
-
-                                    const data =
-                                        snap.data();
-
-
-                                    if (
-                                        data.preparingStartedAt
-                                    ) {
-
-                                        startMillis =
-                                            getTimestampMillis(
-                                                data.preparingStartedAt
-                                            );
-
-                                    }
-
-                                }
-
-                            }
-                        );
-
-
-                        if (startMillis) {
-
-                            const minutes =
-                                (
-                                    Date.now() -
-                                    startMillis
-                                ) / 60000;
-
-
-                            updateData.preparationTimeMinutes =
-                                Math.max(
-                                    0,
-                                    Number(
-                                        minutes.toFixed(
-                                            1
-                                        )
-                                    )
-                                );
-
-
-                            updateData.readyAt =
-                                serverTimestamp();
-
-                        }
-
-                    }
-
-
-                    /*
-                     * COMPLETED
-                     */
-
-                    if (
-                        newStatus ===
-                        "completed"
-                    ) {
-
-                        updateData.deliveredAt =
-                            serverTimestamp();
-
-                    }
-
-
-                    await updateDoc(
-                        orderRef,
-                        updateData
-                    );
-
-
-                    await loadOrders();
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Status update error:",
-                        error
-                    );
-
-
-                    alert(
-                        "Could not update order:\n\n" +
-                        error.message
-                    );
-
-                }
-
-            };
-
-
-        /* =========================================
-           PREPARATION TIMERS
-        ========================================= */
-
-        function startPreparationTimers() {
-
-            document
-                .querySelectorAll(
-                    "[id^='prepTimer-']"
-                )
-                .forEach(
-                    (element) => {
-
-                        const card =
-                            element.closest(
-                                ".order-card"
-                            );
-
-
-                        const startedAt =
-                            card &&
-                            card.dataset
-                                .preparingStartedAt
-                                ?
-                            Number(
-                                card.dataset
-                                    .preparingStartedAt
-                            )
-                                :
-                            null;
-
-
-                        if (!startedAt) {
-                            return;
-                        }
-
-
-                        const updateTimer =
-                            () => {
-
-                                const elapsed =
-                                    Math.max(
-                                        0,
-                                        Date.now() -
-                                        startedAt
-                                    );
-
-
-                                const totalSeconds =
-                                    Math.floor(
-                                        elapsed /
-                                        1000
-                                    );
-
-
-                                const minutes =
-                                    Math.floor(
-                                        totalSeconds /
-                                        60
-                                    );
-
-
-                                const seconds =
-                                    totalSeconds %
-                                    60;
-
-
-                                element.textContent =
-                                    ` — ${minutes}m ${String(
-                                        seconds
-                                    ).padStart(
-                                        2,
-                                        "0"
-                                    )}s`;
-
-                            };
-
-
-                        updateTimer();
-
-
-                        setInterval(
-                            updateTimer,
-                            1000
-                        );
-
-                    }
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    currentUser.uid,
+                    "orders",
+                    orderId
                 );
 
-        }
 
+            await updateDoc(
+                orderRef,
+                {
 
-        /* =========================================
-           PAYMENT TAB
-        ========================================= */
+                    paymentStatus:
+                        "paid",
 
-        window.showPaymentTab =
-            function(
-                orderId,
-                method
-            ) {
+                    paymentMethod:
+                        "cash",
 
-                const cashPanel =
-                    document.getElementById(
-                        "cash-panel-" +
-                        orderId
-                    );
+                    paidAt:
+                        serverTimestamp(),
 
+                    cashPaymentRequested:
+                        false,
 
-                const upiPanel =
-                    document.getElementById(
-                        "upi-panel-" +
-                        orderId
-                    );
+                    cashPaymentCollected:
+                        true,
 
+                    cashPaymentCollectedAt:
+                        serverTimestamp(),
 
-                const cashTab =
-                    document.getElementById(
-                        "cash-tab-" +
-                        orderId
-                    );
+                    waiterCalled:
+                        false,
 
-
-                const upiTab =
-                    document.getElementById(
-                        "upi-tab-" +
-                        orderId
-                    );
-
-
-                if (
-                    !cashPanel ||
-                    !upiPanel ||
-                    !cashTab ||
-                    !upiTab
-                ) {
-
-                    return;
-                }
-
-
-                if (
-                    method === "upi"
-                ) {
-
-                    cashPanel.style.display =
-                        "none";
-
-                    upiPanel.style.display =
-                        "block";
-
-                    cashTab.classList.remove(
-                        "active"
-                    );
-
-                    upiTab.classList.add(
-                        "active"
-                    );
-
-                } else {
-
-                    cashPanel.style.display =
-                        "block";
-
-                    upiPanel.style.display =
-                        "none";
-
-                    cashTab.classList.add(
-                        "active"
-                    );
-
-                    upiTab.classList.remove(
-                        "active"
-                    );
+                    updatedAt:
+                        serverTimestamp()
 
                 }
-
-            };
-
-
-        /* =========================================
-           MARK CASH PAYMENT DONE
-        ========================================= */
-
-        window.markCashPaymentDone =
-            async function(orderId) {
-
-                if (!currentUser) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-                    return;
-                }
+            );
 
 
-                const confirmed =
-                    confirm(
-                        "Confirm that the customer has paid the full bill in cash?"
-                    );
+            alert(
+                "✅ Cash payment marked as paid."
+            );
 
 
-                if (!confirmed) {
-                    return;
-                }
+            await loadOrders();
+
+            await checkCashPaymentRequests();
+
+        }
+        catch(error) {
+
+            console.error(
+                "Cash payment error:",
+                error
+            );
 
 
-                const orderRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        currentUser.uid,
-                        "orders",
-                        orderId
-                    );
-
-
-                try {
-
-                    await updateDoc(
-                        orderRef,
-                        {
-
-                            paymentStatus:
-                                "paid",
-
-                            paymentMethod:
-                                "cash",
-
-                            paidAt:
-                                serverTimestamp(),
-
-                            cashPaymentRequested:
-                                false,
-
-                            cashPaymentCollected:
-                                true,
-
-                            waiterCalled:
-                                false,
-
-                            cashPaymentCollectedAt:
-                                serverTimestamp()
-
-                        }
-                    );
-
-
-                    alert(
-                        "✅ Cash payment marked as paid."
-                    );
-
-
-                    await loadOrders();
-
-
-                } catch (error) {
-
-                    console.error(
-                        "Cash payment update error:",
-                        error
-                    );
-
-
-                    alert(
-                        "Could not mark cash payment as paid:\n\n" +
-                        error.message
-                    );
-
-                }
-
-            };
-
-
-        /* =========================================
-           STATUS HELPERS
-        ========================================= */
-
-        function getStatusClass(
-            status
-        ) {
-
-            if (
-                status === "accepted"
-            ) {
-
-                return "accepted";
-
-            }
-
-
-            if (
-                status === "preparing"
-            ) {
-
-                return "preparing";
-
-            }
-
-
-            if (
-                status === "ready"
-            ) {
-
-                return "ready";
-
-            }
-
-
-            if (
-                status === "completed"
-            ) {
-
-                return "completed";
-
-            }
-
-
-            if (
-                status === "cancelled"
-            ) {
-
-                return "cancelled";
-
-            }
-
-
-            return "new";
+            alert(
+                "Could not mark cash payment as paid:\n\n" +
+                error.message
+            );
 
         }
 
+    };
 
-        function getStatusText(
-            status
-        ) {
 
-            if (
-                status === "accepted"
-            ) {
+/* =====================================================
+   STATUS CLASS
+===================================================== */
 
-                return "🔵 Accepted";
+function getStatusClass(
+    status
+) {
 
-            }
+    if (
+        status ===
+        "accepted"
+    ) {
 
+        return "accepted";
 
-            if (
-                status === "preparing"
-            ) {
+    }
 
-                return "👨‍🍳 Preparing";
 
-            }
+    if (
+        status ===
+        "preparing"
+    ) {
 
+        return "preparing";
 
-            if (
-                status === "ready"
-            ) {
+    }
 
-                return "🟢 Ready";
 
-            }
+    if (
+        status ===
+        "ready"
+    ) {
 
+        return "ready";
 
-            if (
-                status === "completed"
-            ) {
+    }
 
-                return "🚚 Delivered";
 
-            }
+    if (
+        status ===
+        "completed"
+    ) {
 
+        return "completed";
 
-            if (
-                status === "cancelled"
-            ) {
+    }
 
-                return "❌ Cancelled";
 
-            }
+    if (
+        status ===
+        "cancelled"
+    ) {
 
+        return "cancelled";
 
-            return "🆕 New Order";
+    }
 
-        }
 
+    return "new";
 
-        function getPaymentClass(
-            paymentStatus,
-            orderStatus
-        ) {
+}
 
-            if (
-                paymentStatus === "paid"
-            ) {
 
-                return "payment-paid";
+/* =====================================================
+   STATUS TEXT
+===================================================== */
 
-            }
+function getStatusText(
+    status
+) {
 
+    if (
+        status ===
+        "accepted"
+    ) {
 
-            if (
-                orderStatus === "completed"
-            ) {
+        return "🔵 Accepted";
 
-                return "payment-pending";
+    }
 
-            }
 
+    if (
+        status ===
+        "preparing"
+    ) {
 
-            return "payment-unavailable";
+        return "👨‍🍳 Preparing";
 
-        }
+    }
 
 
-        function getPaymentText(
-            paymentStatus,
-            orderStatus
-        ) {
+    if (
+        status ===
+        "ready"
+    ) {
 
-            if (
-                paymentStatus === "paid"
-            ) {
+        return "🟢 Ready";
 
-                return "✅ Payment Paid";
+    }
 
-            }
 
+    if (
+        status ===
+        "completed"
+    ) {
 
-            if (
-                orderStatus === "completed"
-            ) {
+        return "🚚 Delivered";
 
-                return "⏳ Payment Pending";
+    }
 
-            }
 
+    if (
+        status ===
+        "cancelled"
+    ) {
 
-            return "🔒 Payment Not Available Yet";
+        return "❌ Cancelled";
 
-        }
+    }
 
 
-        /* =========================================
-           FIREBASE TIMESTAMP HELPER
-        ========================================= */
+    return "🆕 New Order";
 
-        function getTimestampMillis(
-            value
-        ) {
+}
 
-            if (!value) {
-                return 0;
-            }
 
+/* =====================================================
+   PAYMENT CLASS
+===================================================== */
 
-            if (
-                typeof value.toMillis ===
-                "function"
-            ) {
+function getPaymentClass(
+    paymentStatus,
+    orderStatus
+) {
 
-                return value.toMillis();
+    if (
+        paymentStatus ===
+        "paid"
+    ) {
 
-            }
+        return "payment-paid";
 
+    }
 
-            if (
-                value.seconds !== undefined
-            ) {
 
-                return (
-                    Number(value.seconds) *
-                    1000
-                );
+    if (
+        paymentStatus ===
+        "payment_selected"
+    ) {
 
-            }
+        return "payment-selected";
 
+    }
 
-            if (
-                value instanceof Date
-            ) {
 
-                return value.getTime();
+    if (
+        orderStatus ===
+        "completed"
+    ) {
 
-            }
+        return "payment-pending";
 
+    }
 
-            if (
-                typeof value === "string"
-            ) {
 
-                const parsed =
-                    Date.parse(value);
+    return "payment-unavailable";
 
-                return Number.isNaN(parsed)
-                    ? 0
-                    : parsed;
+}
 
-            }
 
+/* =====================================================
+   PAYMENT TEXT
+===================================================== */
 
-            return 0;
+function getPaymentText(
+    paymentStatus,
+    orderStatus
+) {
 
-        }
+    if (
+        paymentStatus ===
+        "paid"
+    ) {
 
+        return "✅ Payment Paid";
 
-        /* =========================================
-           HTML ESCAPE
-        ========================================= */
+    }
 
-        function escapeHTML(
-            value
-        ) {
 
-            return String(value)
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
+    if (
+        paymentStatus ===
+        "payment_selected"
+    ) {
 
-        }
+        return "💳 Payment Method Selected";
 
+    }
 
-        /* =========================================
-           BACK TO DASHBOARD
-        ========================================= */
 
-        window.goBack =
-            function() {
+    if (
+        orderStatus ===
+        "completed"
+    ) {
 
-                window.location.href =
-                    "dashboard.html";
+        return "⏳ Payment Pending";
 
-            };
+    }
 
-    </script>
+
+    return "🔒 Payment Not Available Yet";
+
+}
+
+
+/* =====================================================
+   TIMESTAMP
+===================================================== */
+
+function getTimestampMillis(
+    value
+) {
+
+    if (!value) {
+        return 0;
+    }
+
+
+    if (
+        typeof value.toMillis ===
+        "function"
+    ) {
+
+        return value.toMillis();
+
+    }
+
+
+    if (
+        value.seconds !==
+        undefined
+    ) {
+
+        return (
+            Number(
+                value.seconds
+            ) *
+            1000
+        );
+
+    }
+
+
+    if (
+        value instanceof Date
+    ) {
+
+        return value.getTime();
+
+    }
+
+
+    if (
+        typeof value ===
+        "string"
+    ) {
+
+        const parsed =
+            Date.parse(
+                value
+            );
+
+
+        return Number.isNaN(
+            parsed
+        )
+        ?
+        0
+        :
+        parsed;
+
+    }
+
+
+    return 0;
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(
+    value
+) {
+
+    return String(value)
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   BACK
+===================================================== */
+
+window.goBack =
+    function() {
+
+        window.location.href =
+            "dashboard.html";
+
+    };
+
+
+</script>
 
 </body>
 
