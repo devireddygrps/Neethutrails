@@ -648,9 +648,10 @@
 
             <!-- Restaurant Profile -->
 
-            <div
+            <a
                 class="card"
-                onclick="profile()"
+                href="./restaurant-profile.html"
+                style="text-decoration:none;color:inherit;display:block;"
             >
 
                 <div class="icon">
@@ -665,7 +666,7 @@
                     Manage restaurant information
                 </p>
 
-            </div>
+            </a>
 
 
         </div>
@@ -1003,10 +1004,7 @@
 
         window.profile =
             function() {
-
-                window.location.href =
-                    "restaurant-profile.html";
-
+                window.location.assign("./restaurant-profile.html");
             };
 
 
