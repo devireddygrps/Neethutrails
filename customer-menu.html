@@ -5,13 +5,9 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Restaurant Menu</title>
-
 
 <style>
 
@@ -22,16 +18,12 @@
     font-family: Arial, sans-serif;
 }
 
-
 body {
     background: #f5f5f5;
     padding-bottom: 90px;
 }
 
-
-/* ================================
-   HEADER
-================================ */
+/* HEADER */
 
 header {
     background: #ff5722;
@@ -51,10 +43,7 @@ header p {
     font-size: 14px;
 }
 
-
-/* ================================
-   CATEGORY TABS
-================================ */
+/* TABS */
 
 .tabs-wrapper {
     position: sticky;
@@ -63,7 +52,6 @@ header p {
     background: white;
     box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
-
 
 .tabs {
     display: flex;
@@ -77,7 +65,6 @@ header p {
     display: none;
 }
 
-
 .tab {
     flex-shrink: 0;
     border: 1px solid #ddd;
@@ -90,29 +77,23 @@ header p {
     white-space: nowrap;
 }
 
-
 .tab.active {
     background: #ff5722;
     color: white;
     border-color: #ff5722;
 }
 
-
 .tab.order-status {
     font-weight: bold;
 }
 
-
-/* ================================
-   CONTAINER
-================================ */
+/* CONTAINER */
 
 .container {
     max-width: 600px;
     margin: auto;
     padding: 15px;
 }
-
 
 .table-info {
     background: white;
@@ -124,17 +105,13 @@ header p {
     color: #ff5722;
 }
 
-
-/* ================================
-   MENU
-================================ */
+/* MENU */
 
 .loading {
     text-align: center;
     padding: 40px 20px;
     color: #777;
 }
-
 
 .error {
     background: white;
@@ -144,7 +121,6 @@ header p {
     color: #c62828;
 }
 
-
 .empty {
     background: white;
     padding: 25px;
@@ -153,14 +129,12 @@ header p {
     color: #777;
 }
 
-
 .category {
     margin-top: 20px;
     margin-bottom: 10px;
     font-size: 22px;
     font-weight: bold;
 }
-
 
 .item {
     background: white;
@@ -170,7 +144,6 @@ header p {
     box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
 
-
 .item-top {
     display: flex;
     justify-content: space-between;
@@ -178,12 +151,10 @@ header p {
     gap: 10px;
 }
 
-
 .item-name {
     font-size: 18px;
     font-weight: bold;
 }
-
 
 .price {
     font-weight: bold;
@@ -191,13 +162,11 @@ header p {
     white-space: nowrap;
 }
 
-
 .description {
     color: #777;
     font-size: 14px;
     margin-top: 6px;
 }
-
 
 .unavailable {
     color: #c62828;
@@ -206,10 +175,7 @@ header p {
     margin-top: 6px;
 }
 
-
-/* ================================
-   QUANTITY
-================================ */
+/* QUANTITY */
 
 .controls {
     display: flex;
@@ -217,7 +183,6 @@ header p {
     gap: 12px;
     margin-top: 12px;
 }
-
 
 .controls button {
     width: 35px;
@@ -230,22 +195,17 @@ header p {
     cursor: pointer;
 }
 
-
 .controls button:disabled {
     background: #aaa;
     cursor: not-allowed;
 }
-
 
 .quantity {
     font-size: 18px;
     font-weight: bold;
 }
 
-
-/* ================================
-   INSTRUCTIONS
-================================ */
+/* INSTRUCTIONS */
 
 .instructions {
     width: 100%;
@@ -256,64 +216,7 @@ header p {
     resize: none;
 }
 
-
-/* ================================
-   ORDER STATUS
-================================ */
-
-.order-status-card {
-    background: white;
-    border-radius: 15px;
-    padding: 22px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-
-
-.order-status-card h2 {
-    margin-bottom: 10px;
-}
-
-
-.status-message {
-    color: #777;
-    line-height: 1.5;
-}
-
-
-.status-step {
-    display: flex;
-    align-items: center;
-    margin: 18px 0;
-}
-
-
-.status-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 12px;
-}
-
-
-.status-step.active .status-circle {
-    background: #ff5722;
-    color: white;
-}
-
-
-.status-step.active .status-text {
-    font-weight: bold;
-    color: #ff5722;
-}
-
-
-/* ================================
-   CART
-================================ */
+/* CART BAR */
 
 .cart {
     position: fixed;
@@ -329,12 +232,10 @@ header p {
     z-index: 30;
 }
 
-
 .cart-total {
     font-size: 18px;
     font-weight: bold;
 }
-
 
 .order-btn {
     background: #ff5722;
@@ -346,18 +247,162 @@ header p {
     cursor: pointer;
 }
 
+/* CART PAGE */
+
+.cart-page {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.cart-page h2 {
+    margin-bottom: 15px;
+}
+
+.cart-item {
+    border-bottom: 1px solid #eee;
+    padding: 15px 0;
+}
+
+.cart-item:last-child {
+    border-bottom: none;
+}
+
+.cart-item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.cart-item-name {
+    font-weight: bold;
+    font-size: 17px;
+}
+
+.cart-item-price {
+    color: #ff5722;
+    font-weight: bold;
+}
+
+.cart-item-info {
+    color: #777;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.cart-summary {
+    border-top: 2px solid #eee;
+    margin-top: 15px;
+    padding-top: 15px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 8px 0;
+}
+
+.grand-total {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.confirm-btn {
+    width: 100%;
+    background: #4caf50;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 9px;
+    font-size: 17px;
+    font-weight: bold;
+    margin-top: 18px;
+    cursor: pointer;
+}
+
+.confirm-btn:disabled {
+    background: #aaa;
+}
+
+.back-menu-btn {
+    width: 100%;
+    background: #333;
+    color: white;
+    border: none;
+    padding: 13px;
+    border-radius: 9px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+/* ORDER STATUS */
+
+.order-status-card {
+    background: white;
+    border-radius: 15px;
+    padding: 22px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.order-status-card h2 {
+    margin-bottom: 10px;
+}
+
+.status-message {
+    color: #777;
+    line-height: 1.5;
+}
+
+.status-step {
+    display: flex;
+    align-items: center;
+    margin: 18px 0;
+}
+
+.status-circle {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.status-step.active .status-circle {
+    background: #ff5722;
+    color: white;
+}
+
+.status-step.active .status-text {
+    font-weight: bold;
+    color: #ff5722;
+}
+
+/* SUCCESS */
+
+.success-box {
+    background: #e8f5e9;
+    color: #2e7d32;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.success-box h2 {
+    margin-bottom: 8px;
+}
 
 </style>
 
 </head>
 
-
 <body>
 
-
-<!-- ================================
-     HEADER
-================================ -->
 
 <header>
 
@@ -372,91 +417,49 @@ header p {
 </header>
 
 
-
-<!-- ================================
-     TABS
-================================ -->
+<!-- TABS -->
 
 <div class="tabs-wrapper">
 
     <div class="tabs">
 
-        <button
-            class="tab active"
-            data-category="All"
-        >
+        <button class="tab active" data-category="All">
             All
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Starters"
-        >
+        <button class="tab" data-category="Starters">
             Starters
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Signature Items"
-        >
+        <button class="tab" data-category="Signature Items">
             Signature Items
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Fast Food"
-        >
+        <button class="tab" data-category="Fast Food">
             Fast Food
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Beverages"
-        >
+        <button class="tab" data-category="Beverages">
             Drinks
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Biryanis"
-        >
+        <button class="tab" data-category="Biryanis">
             Biryanis
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Main Course"
-        >
+        <button class="tab" data-category="Main Course">
             Main Course
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Chinese"
-        >
+        <button class="tab" data-category="Chinese">
             Chinese
         </button>
 
-
-        <button
-            class="tab"
-            data-category="Desserts"
-        >
+        <button class="tab" data-category="Desserts">
             Desserts
         </button>
 
-
-        <button
-            class="tab order-status"
-            data-category="Order Status"
-        >
+        <button class="tab order-status" data-category="Order Status">
             📋 Order Status
         </button>
 
@@ -465,21 +468,11 @@ header p {
 </div>
 
 
-
-<!-- ================================
-     MAIN
-================================ -->
-
 <div class="container">
 
-
-    <div
-        id="tableInfo"
-        class="table-info"
-    >
+    <div id="tableInfo" class="table-info">
         Loading table...
     </div>
-
 
     <div id="menuContainer">
 
@@ -489,14 +482,10 @@ header p {
 
     </div>
 
-
 </div>
 
 
-
-<!-- ================================
-     CART
-================================ -->
+<!-- CART BAR -->
 
 <div class="cart">
 
@@ -507,7 +496,6 @@ header p {
 
     </div>
 
-
     <button
         class="order-btn"
         onclick="viewCart()"
@@ -516,7 +504,6 @@ header p {
     </button>
 
 </div>
-
 
 
 <script type="module">
@@ -538,7 +525,9 @@ import {
     collection,
     getDocs,
     doc,
-    getDoc
+    getDoc,
+    addDoc,
+    serverTimestamp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
@@ -578,7 +567,6 @@ const db =
     getFirestore(app);
 
 
-
 /* ==========================================
    QR PARAMETERS
 ========================================== */
@@ -597,7 +585,6 @@ const table =
     params.get("table");
 
 
-
 /* ==========================================
    ELEMENTS
 ========================================== */
@@ -607,18 +594,15 @@ const menuContainer =
         "menuContainer"
     );
 
-
 const tableInfo =
     document.getElementById(
         "tableInfo"
     );
 
-
 const restaurantName =
     document.getElementById(
         "restaurantName"
     );
-
 
 const totalElement =
     document.getElementById(
@@ -626,15 +610,13 @@ const totalElement =
     );
 
 
-
 /* ==========================================
-   CART DATA
+   DATA
 ========================================== */
 
 let items = [];
 
 let currentCategory = "All";
-
 
 
 /* ==========================================
@@ -664,7 +646,6 @@ if (
 }
 
 
-
 /* ==========================================
    LOAD RESTAURANT
 ========================================== */
@@ -680,731 +661,6 @@ async function loadRestaurant() {
                 restaurantId
             );
 
-
         const snapshot =
             await getDoc(
                 restaurantRef
-            );
-
-
-        if (
-            snapshot.exists()
-        ) {
-
-            const data =
-                snapshot.data();
-
-
-            restaurantName.textContent =
-                data.restaurantName ||
-                data.name ||
-                "Restaurant Menu";
-
-        }
-
-    }
-
-    catch(error) {
-
-        console.error(
-            "Restaurant loading error:",
-            error
-        );
-
-    }
-
-}
-
-
-
-/* ==========================================
-   LOAD MENU
-========================================== */
-
-async function loadMenu() {
-
-    try {
-
-        const menuRef =
-            collection(
-                db,
-                "restaurants",
-                restaurantId,
-                "menu"
-            );
-
-
-        const snapshot =
-            await getDocs(
-                menuRef
-            );
-
-
-        items = [];
-
-
-        snapshot.forEach(
-            (docSnapshot) => {
-
-                const data =
-                    docSnapshot.data();
-
-
-                items.push({
-
-                    id:
-                        docSnapshot.id,
-
-                    name:
-                        data.foodName ||
-                        "Unnamed Item",
-
-                    category:
-                        data.category ||
-                        "Others",
-
-                    description:
-                        data.description ||
-                        "",
-
-                    price:
-                        Number(
-                            data.price || 0
-                        ),
-
-                    availability:
-                        data.availability ||
-                        "available",
-
-                    quantity:
-                        0,
-
-                    instruction:
-                        ""
-
-                });
-
-            }
-        );
-
-
-        if (
-            items.length === 0
-        ) {
-
-            menuContainer.innerHTML = `
-                <div class="empty">
-                    🍽️ No menu items available yet.
-                </div>
-            `;
-
-            return;
-
-        }
-
-
-        renderMenu();
-
-    }
-
-    catch(error) {
-
-        console.error(
-            "Menu loading error:",
-            error
-        );
-
-
-        menuContainer.innerHTML = `
-            <div class="error">
-                ❌ Unable to load restaurant menu.
-                <br><br>
-                ${escapeHTML(error.message)}
-            </div>
-        `;
-
-    }
-
-}
-
-
-
-/* ==========================================
-   RENDER MENU
-========================================== */
-
-function renderMenu() {
-
-    menuContainer.innerHTML = "";
-
-
-    let filteredItems = [];
-
-
-    if (
-        currentCategory === "All"
-    ) {
-
-        filteredItems =
-            items;
-
-    }
-
-    else {
-
-        filteredItems =
-            items.filter(
-                item =>
-                    item.category ===
-                    currentCategory
-            );
-
-    }
-
-
-    if (
-        filteredItems.length === 0
-    ) {
-
-        menuContainer.innerHTML = `
-            <div class="empty">
-                🍽️ No items available in this category.
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    const categories = [];
-
-
-    filteredItems.forEach(
-        item => {
-
-            if (
-                !categories.includes(
-                    item.category
-                )
-            ) {
-
-                categories.push(
-                    item.category
-                );
-
-            }
-
-        }
-    );
-
-
-    categories.forEach(
-        category => {
-
-            const categoryItems =
-                filteredItems.filter(
-                    item =>
-                        item.category ===
-                        category
-                );
-
-
-            const categoryTitle =
-                document.createElement(
-                    "div"
-                );
-
-
-            categoryTitle.className =
-                "category";
-
-
-            categoryTitle.textContent =
-                category === "Beverages"
-                ? "🥤 Drinks"
-                : category;
-
-
-            menuContainer.appendChild(
-                categoryTitle
-            );
-
-
-            categoryItems.forEach(
-                item => {
-
-                    renderItem(
-                        item
-                    );
-
-                }
-            );
-
-        }
-    );
-
-}
-
-
-
-/* ==========================================
-   RENDER ITEM
-========================================== */
-
-function renderItem(item) {
-
-    const card =
-        document.createElement(
-            "div"
-        );
-
-
-    card.className =
-        "item";
-
-
-    const unavailable =
-        item.availability !==
-        "available";
-
-
-    card.innerHTML = `
-
-        <div class="item-top">
-
-            <div>
-
-                <div class="item-name">
-                    ${escapeHTML(item.name)}
-                </div>
-
-                <div class="description">
-                    ${escapeHTML(item.description)}
-                </div>
-
-                ${
-                    unavailable
-                    ?
-                    `
-                    <div class="unavailable">
-                        Currently unavailable
-                    </div>
-                    `
-                    :
-                    ""
-                }
-
-            </div>
-
-
-            <div class="price">
-                ₹${item.price}
-            </div>
-
-        </div>
-
-
-        <div class="controls">
-
-            <button
-                class="minus"
-                ${unavailable ? "disabled" : ""}
-            >
-                −
-            </button>
-
-
-            <span
-                class="quantity"
-            >
-                ${item.quantity}
-            </span>
-
-
-            <button
-                class="plus"
-                ${unavailable ? "disabled" : ""}
-            >
-                +
-            </button>
-
-        </div>
-
-
-        <textarea
-            class="instructions"
-            placeholder="Special instructions..."
-            ${unavailable ? "disabled" : ""}
-        >${escapeHTML(item.instruction)}</textarea>
-
-    `;
-
-
-    const minus =
-        card.querySelector(
-            ".minus"
-        );
-
-
-    const plus =
-        card.querySelector(
-            ".plus"
-        );
-
-
-    const quantity =
-        card.querySelector(
-            ".quantity"
-        );
-
-
-    const instruction =
-        card.querySelector(
-            ".instructions"
-        );
-
-
-    minus.onclick =
-        () => {
-
-            if (
-                item.quantity > 0
-            ) {
-
-                item.quantity--;
-
-                quantity.textContent =
-                    item.quantity;
-
-                calculateTotal();
-
-            }
-
-        };
-
-
-    plus.onclick =
-        () => {
-
-            item.quantity++;
-
-            quantity.textContent =
-                item.quantity;
-
-            calculateTotal();
-
-        };
-
-
-    instruction.oninput =
-        () => {
-
-            item.instruction =
-                instruction.value;
-
-        };
-
-
-    menuContainer.appendChild(
-        card
-    );
-
-}
-
-
-
-/* ==========================================
-   TAB HANDLING
-========================================== */
-
-document
-    .querySelectorAll(".tab")
-    .forEach(
-        tab => {
-
-            tab.addEventListener(
-                "click",
-                () => {
-
-                    document
-                        .querySelectorAll(
-                            ".tab"
-                        )
-                        .forEach(
-                            button =>
-                                button.classList.remove(
-                                    "active"
-                                )
-                        );
-
-
-                    tab.classList.add(
-                        "active"
-                    );
-
-
-                    currentCategory =
-                        tab.dataset.category;
-
-
-                    if (
-                        currentCategory ===
-                        "Order Status"
-                    ) {
-
-                        showOrderStatus();
-
-                    }
-
-                    else {
-
-                        renderMenu();
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-
-
-/* ==========================================
-   ORDER STATUS
-========================================== */
-
-function showOrderStatus() {
-
-    menuContainer.innerHTML = `
-
-        <div class="order-status-card">
-
-            <h2>
-                📋 Order Status
-            </h2>
-
-            <p class="status-message">
-                Your order status will appear here
-                after you place an order.
-            </p>
-
-
-            <div class="status-step active">
-
-                <div class="status-circle">
-                    ✓
-                </div>
-
-                <div class="status-text">
-                    Order Placed
-                </div>
-
-            </div>
-
-
-            <div class="status-step">
-
-                <div class="status-circle">
-                    2
-                </div>
-
-                <div class="status-text">
-                    Accepted
-                </div>
-
-            </div>
-
-
-            <div class="status-step">
-
-                <div class="status-circle">
-                    3
-                </div>
-
-                <div class="status-text">
-                    Preparing
-                </div>
-
-            </div>
-
-
-            <div class="status-step">
-
-                <div class="status-circle">
-                    4
-                </div>
-
-                <div class="status-text">
-                    Ready
-                </div>
-
-            </div>
-
-
-            <div class="status-step">
-
-                <div class="status-circle">
-                    5
-                </div>
-
-                <div class="status-text">
-                    Served
-                </div>
-
-            </div>
-
-        </div>
-
-    `;
-
-}
-
-
-
-/* ==========================================
-   CALCULATE TOTAL
-========================================== */
-
-function calculateTotal() {
-
-    let total = 0;
-
-
-    items.forEach(
-        item => {
-
-            total +=
-                item.price *
-                item.quantity;
-
-        }
-    );
-
-
-    totalElement.textContent =
-        total;
-
-}
-
-
-
-/* ==========================================
-   VIEW CART
-========================================== */
-
-window.viewCart =
-    function() {
-
-        const selectedItems =
-            items.filter(
-                item =>
-                    item.quantity > 0
-            );
-
-
-        if (
-            selectedItems.length === 0
-        ) {
-
-            alert(
-                "Please add at least one item."
-            );
-
-            return;
-
-        }
-
-
-        let message =
-            "Your Order:\n\n";
-
-
-        selectedItems.forEach(
-            item => {
-
-                message +=
-                    item.name +
-                    " x " +
-                    item.quantity;
-
-
-                if (
-                    item.instruction
-                ) {
-
-                    message +=
-                        "\nInstruction: " +
-                        item.instruction;
-
-                }
-
-
-                message +=
-                    "\n\n";
-
-            }
-        );
-
-
-        message +=
-            "Table: " +
-            table +
-            "\n";
-
-
-        message +=
-            "Total: ₹" +
-            totalElement.textContent;
-
-
-        alert(
-            message
-        );
-
-    };
-
-
-
-/* ==========================================
-   ESCAPE HTML
-========================================== */
-
-function escapeHTML(value) {
-
-    return String(value)
-
-        .replaceAll(
-            "&",
-            "&amp;"
-        )
-
-        .replaceAll(
-            "<",
-            "&lt;"
-        )
-
-        .replaceAll(
-            ">",
-            "&gt;"
-        )
-
-        .replaceAll(
-            '"',
-            "&quot;"
-        )
-
-        .replaceAll(
-            "'",
-            "&#039;"
-        );
-
-}
-
-</script>
-
-
-</body>
-
-</html>
