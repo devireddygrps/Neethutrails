@@ -1289,74 +1289,34 @@ function calculateTotal() {
    VIEW CART
 ========================================== */
 
-window.viewCart =
-    function() {
+window.viewCart = function() {
 
-        const selectedItems =
-            items.filter(
-                item =>
-                    item.quantity > 0
-            );
+    const selectedItems = items.filter(
+        item => item.quantity > 0
+    );
 
+    if (selectedItems.length === 0) {
+        alert("Please add at least one item.");
+        return;
+    }
 
-        if (
-            selectedItems.length === 0
-        ) {
+    localStorage.setItem(
+        "restaurantCart",
+        JSON.stringify(selectedItems)
+    );
 
-            alert(
-                "Please add at least one item."
-            );
+    let cartURL = "cart.html";
 
-            return;
+    cartURL +=
+        "?restaurantId=" +
+        encodeURIComponent(restaurantId);
 
-        }
+    cartURL +=
+        "&table=" +
+        encodeURIComponent(table);
 
-
-        let message =
-            "Your Order:\n\n";
-
-
-        selectedItems.forEach(
-            item => {
-
-                message +=
-                    item.name +
-                    " x " +
-                    item.quantity;
-
-
-                if (
-                    item.instruction
-                ) {
-
-                    message +=
-                        "\nInstruction: " +
-                        item.instruction;
-
-                }
-
-
-                message +=
-                    "\n\n";
-
-            }
-        );
-
-
-        message +=
-            "Table: " +
-            table +
-            "\n";
-
-
-        message +=
-            "Total: ₹" +
-            totalElement.textContent;
-
-
-        alert(
-            message
-        );
+    window.location.href = cartURL;
+};
 
     };
 
