@@ -41,6 +41,22 @@
             margin-bottom: 20px;
         }
 
+        .cash-payment-alert {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .cash-payment-alert small {
+            display: block;
+            margin-top: 6px;
+            color: #8d4b00;
+            font-weight: normal;
+        }
+
         .orders-list {
             display: grid;
             gap: 18px;
@@ -358,6 +374,8 @@
             Loading orders...
         </div>
 
+        <div id="cashPaymentAlerts" style="margin-bottom:18px;"></div>
+
         <div id="ordersList" class="orders-list"></div>
 
         <button class="back-btn" onclick="goBack()">
@@ -408,11 +426,77 @@
             if (user) {
                 currentUser = user;
                 await loadOrders();
+                checkCashPaymentRequests();
+                setInterval(checkCashPaymentRequests, 3000);
             } else {
                 alert("Please login first.");
                 window.location.href = "index.html";
             }
         });
+
+        async function checkCashPaymentRequests() {
+
+            if (!currentUser) return;
+
+            try {
+                const ordersCollection = collection(
+                    db,
+                    "restaurants",
+                    currentUser.uid,
+                    "orders"
+                );
+
+                const snapshot = await getDocs(ordersCollection);
+                const requests = [];
+
+                snapshot.forEach((orderDoc) => {
+                    const order = orderDoc.data();
+
+                    if (
+                        order.cashPaymentRequested === true &&
+                        order.paymentStatus !== "paid"
+                    ) {
+                        requests.push({
+                            table: order.tableNumber || "N/A",
+                            order: order.orderNumber || orderDoc.id.substring(0, 6),
+                            amount: Number(
+                                order.billTotal ??
+                                order.finalTotal ??
+                                order.total ??
+                                0
+                            )
+                        });
+                    }
+                });
+
+                const alertBox = document.getElementById("cashPaymentAlerts");
+
+                if (!alertBox) return;
+
+                if (!requests.length) {
+                    alertBox.innerHTML = "";
+                    return;
+                }
+
+                alertBox.innerHTML = `
+                    <div class="cash-payment-alert">
+                        🔔 ${requests.length} Cash Payment Request${requests.length > 1 ? "s" : ""}
+                        ${requests.map((request) => `
+                            <small>
+                                💵 Table ${escapeHTML(String(request.table))} —
+                                Order #${escapeHTML(String(request.order))} —
+                                Customer requested cash collection of
+                                ₹${request.amount.toFixed(2)}.
+                                Please send a waiter to the table.
+                            </small>
+                        `).join("")}
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error("Cash payment request check error:", error);
+            }
+        }
 
         async function loadOrders() {
 
@@ -1246,7 +1330,11 @@
                 await updateDoc(orderRef, {
                     paymentStatus: "paid",
                     paymentMethod: "cash",
-                    paidAt: serverTimestamp()
+                    paidAt: serverTimestamp(),
+                    cashPaymentRequested: false,
+                    cashPaymentCollected: true,
+                    waiterCalled: false,
+                    cashPaymentCollectedAt: serverTimestamp()
                 });
 
                 alert("✅ Cash payment marked as paid.");
