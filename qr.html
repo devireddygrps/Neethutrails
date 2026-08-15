@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -81,6 +80,63 @@
             margin-bottom: 20px;
         }
 
+
+        .table-count-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.10);
+            max-width: 500px;
+            margin: 0 auto 25px;
+        }
+
+        .table-count-box label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .table-count-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .table-count-row input {
+            flex: 1;
+            min-width: 0;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .generate-btn {
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            background: #ff5722;
+            color: white;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .generate-btn:hover {
+            background: #e64a19;
+        }
+
+        .count-help {
+            margin-top: 8px;
+            color: #777;
+            font-size: 13px;
+        }
+
+        .generated-title {
+            text-align: center;
+            margin: 10px 0 18px;
+            color: #333;
+        }
 
         .qr-grid {
             display: grid;
@@ -251,6 +307,47 @@
         </div>
 
 
+        <div class="table-count-box">
+
+            <label for="tableCount">
+                Number of Tables
+            </label>
+
+            <div class="table-count-row">
+
+                <input
+                    id="tableCount"
+                    type="number"
+                    min="1"
+                    max="200"
+                    step="1"
+                    placeholder="Example: 5"
+                    inputmode="numeric"
+                >
+
+                <button
+                    type="button"
+                    class="generate-btn"
+                    onclick="generateRequestedQRCodes()"
+                >
+                    Generate QRs
+                </button>
+
+            </div>
+
+            <div class="count-help">
+                Enter your table count. Example: 5 generates
+                separate QR codes for Table 1 through Table 5.
+            </div>
+
+        </div>
+
+        <div
+            id="generatedTitle"
+            class="generated-title"
+            style="display:none;"
+        ></div>
+
         <div
             id="qrGrid"
             class="qr-grid"
@@ -346,17 +443,12 @@
 
 
         /* =====================================
-           CUSTOMER LOGIN BASE URL
-           
-           IMPORTANT:
-           
-           QR codes now open customer-login.html
-           instead of customer-menu.html.
+           CUSTOMER MENU BASE URL
         ===================================== */
 
-        const baseLoginUrl =
+        const baseMenuUrl =
             window.location.origin +
-            "/Neethutrails/customer-login.html";
+            "/Neethutrails/customer-menu.html";
 
 
         /* =====================================
@@ -403,6 +495,9 @@
         }
 
 
+        let loggedInRestaurantId = "";
+
+
         /* =====================================
            CHECK LOGGED-IN RESTAURANT
         ===================================== */
@@ -423,6 +518,8 @@
 
 
                 /*
+                 * THIS IS THE IMPORTANT PART
+                 *
                  * Firebase automatically gives
                  * us the restaurant owner's UID.
                  */
@@ -450,9 +547,17 @@
                  * Generate QR codes
                  */
 
-                generateQRCodes(
-                    restaurantId
-                );
+                loggedInRestaurantId =
+                    restaurantId;
+
+                document.getElementById(
+                    "loading"
+                ).textContent =
+                    "✅ Login verified. Enter your number of tables above.";
+
+                document.getElementById(
+                    "tableCount"
+                ).focus();
 
             }
         );
@@ -518,11 +623,12 @@
 
 
         /* =====================================
-           GENERATE 10 QR CODES
+           GENERATE REQUESTED QR CODES
         ===================================== */
 
         function generateQRCodes(
-            restaurantId
+            restaurantId,
+            tableCount
         ) {
 
             const qrGrid =
@@ -530,63 +636,55 @@
                     "qrGrid"
                 );
 
-
             const loading =
                 document.getElementById(
                     "loading"
                 );
 
+            const generatedTitle =
+                document.getElementById(
+                    "generatedTitle"
+                );
 
             qrGrid.innerHTML = "";
-
-
-            /*
-             * Hide loading message
-             */
 
             loading.style.display =
                 "none";
 
+            generatedTitle.style.display =
+                "block";
+
+            generatedTitle.textContent =
+                `Generated ${tableCount} table QR code(s)`;
+
 
             /*
-             * Generate Table 1 to Table 10
+             * Generate exactly the requested number.
+             *
+             * Example:
+             * 5 = Table 1, Table 2, Table 3, Table 4, Table 5.
+             *
+             * Every QR is different because its URL contains
+             * the restaurant UID and its own table number.
              */
 
             for (
                 let tableNumber = 1;
-                tableNumber <= 10;
+                tableNumber <= tableCount;
                 tableNumber++
             ) {
 
-
-                /*
-                 * IMPORTANT:
-                 *
-                 * QR now points to CUSTOMER LOGIN.
-                 *
-                 * The restaurant UID and table number
-                 * are preserved in the URL.
-                 *
-                 * Example:
-                 *
-                 * customer-login.html
-                 * ?restaurant=UID
-                 * &table=1
-                 */
-
                 const tableUrl =
-                    baseLoginUrl +
+                    baseMenuUrl +
                     "?restaurant=" +
                     encodeURIComponent(
                         restaurantId
                     ) +
                     "&table=" +
-                    tableNumber;
+                    encodeURIComponent(
+                        tableNumber
+                    );
 
-
-                /*
-                 * QR IMAGE
-                 */
 
                 const qrImageUrl =
                     "https://api.qrserver.com/v1/create-qr-code/" +
@@ -596,15 +694,10 @@
                     );
 
 
-                /*
-                 * CREATE CARD
-                 */
-
                 const card =
                     document.createElement(
                         "div"
                     );
-
 
                 card.className =
                     "qr-card";
@@ -613,11 +706,8 @@
                 card.innerHTML = `
 
                     <div class="table-title">
-
                         🪑 Table ${tableNumber}
-
                     </div>
-
 
                     <div class="qr-image-container">
 
@@ -629,13 +719,9 @@
 
                     </div>
 
-
                     <div class="qr-url">
-
                         ${tableUrl}
-
                     </div>
-
 
                     <button
                         class="download-btn"
@@ -644,9 +730,7 @@
                             ${tableNumber}
                         )"
                     >
-
                         📥 Download Table ${tableNumber} QR
-
                     </button>
 
                 `;
@@ -662,8 +746,68 @@
 
 
         /* =====================================
+           GENERATE BUTTON
+        ===================================== */
+
+        window.generateRequestedQRCodes =
+            function () {
+
+                if (!loggedInRestaurantId) {
+
+                    alert(
+                        "Please login first."
+                    );
+
+                    return;
+
+                }
+
+
+                const input =
+                    document.getElementById(
+                        "tableCount"
+                    );
+
+
+                const tableCount =
+                    Number(
+                        input.value
+                    );
+
+
+                if (
+                    !Number.isInteger(
+                        tableCount
+                    ) ||
+                    tableCount < 1 ||
+                    tableCount > 200
+                ) {
+
+                    alert(
+                        "Please enter a valid number of tables between 1 and 200."
+                    );
+
+                    input.focus();
+
+                    return;
+
+                }
+
+
+                generateQRCodes(
+                    loggedInRestaurantId,
+                    tableCount
+                );
+
+            };
+
+
+        /* =====================================
            DOWNLOAD QR
         ===================================== */
+
+
+
 
         window.downloadQR =
             async function(
@@ -791,4 +935,3 @@
 </body>
 
 </html>
-```
