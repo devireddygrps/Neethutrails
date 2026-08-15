@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
 <title>Customer Login - OTP</title>
 
@@ -119,7 +113,6 @@ button{
 
 button:disabled{
     background:#aaa;
-    cursor:not-allowed;
 }
 
 .secondary{
@@ -128,8 +121,11 @@ button:disabled{
     margin-top:10px;
 }
 
-#otpSection,
-#profileSection{
+#otpSection{
+    display:none;
+}
+
+#nameSection{
     display:none;
 }
 
@@ -160,89 +156,50 @@ button:disabled{
     color:#666;
 }
 
-.profile-box{
-    background:#fff8f4;
-    border-radius:12px;
-    padding:15px;
-    margin-bottom:15px;
-}
-
-.profile-title{
-    font-size:18px;
-    font-weight:bold;
-    color:#333;
-    margin-bottom:5px;
-}
-
-.profile-subtitle{
-    font-size:13px;
-    color:#777;
-    line-height:1.5;
-}
-
-.mobile-display{
-    margin-top:12px;
-    background:white;
-    border:1px solid #eee;
-    border-radius:9px;
-    padding:12px;
-    text-align:center;
-    font-weight:bold;
-    color:#555;
-}
-
 #recaptcha-container{
     display:flex;
     justify-content:center;
 }
 
+.customer-note{
+    background:#fff8f4;
+    padding:12px;
+    border-radius:8px;
+    color:#666;
+    font-size:13px;
+    margin-top:12px;
+    line-height:1.5;
+}
+
 </style>
-
 </head>
-
 
 <body>
 
-
 <main class="card">
 
+<div class="logo">🍽️</div>
 
-<div class="logo">
-🍽️
-</div>
-
-
-<h1>
-Customer Login
-</h1>
-
+<h1>Customer Login</h1>
 
 <p class="sub">
-Login with your mobile number to continue
-to the restaurant menu.
+Enter your mobile number to continue to the restaurant menu.
 </p>
 
-
-<div
-    id="tableInfo"
-    class="table"
->
-    Checking QR...
+<div id="tableInfo" class="table">
+Checking QR...
 </div>
 
 
-
-<!-- =====================================================
-     MOBILE SECTION
-====================================================== -->
+<!-- ==============================
+     MOBILE
+============================== -->
 
 <section id="mobileSection">
-
 
 <label for="mobile">
 Mobile Number
 </label>
-
 
 <div class="row">
 
@@ -251,142 +208,96 @@ Mobile Number
 </div>
 
 <input
-    id="mobile"
-    type="tel"
-    inputmode="numeric"
-    maxlength="10"
-    autocomplete="tel"
-    placeholder="10-digit mobile number"
+id="mobile"
+type="tel"
+inputmode="numeric"
+maxlength="10"
+autocomplete="tel"
+placeholder="10-digit mobile number"
 >
 
 </div>
 
-
 <button id="send">
-📱 Send OTP
+Send OTP
 </button>
 
-
 <div id="recaptcha-container"></div>
-
 
 </section>
 
 
-
-<!-- =====================================================
-     OTP SECTION
-====================================================== -->
+<!-- ==============================
+     OTP
+============================== -->
 
 <section id="otpSection">
-
 
 <label for="otp">
 Enter OTP
 </label>
 
-
 <input
-    id="otp"
-    class="otp"
-    type="tel"
-    inputmode="numeric"
-    maxlength="6"
-    autocomplete="one-time-code"
-    placeholder="••••••"
+id="otp"
+class="otp"
+type="tel"
+inputmode="numeric"
+maxlength="6"
+autocomplete="one-time-code"
+placeholder="••••••"
 >
 
-
 <button id="verify">
-✅ Verify OTP
+Verify OTP
 </button>
 
-
 <button
-    id="change"
-    class="secondary"
+id="change"
+class="secondary"
 >
 Change Mobile Number
 </button>
 
-
 </section>
 
 
+<!-- ==============================
+     CUSTOMER NAME
+============================== -->
 
-<!-- =====================================================
-     CUSTOMER PROFILE SECTION
-====================================================== -->
-
-<section id="profileSection">
-
-
-<div class="profile-box">
-
-<div class="profile-title">
-👤 Welcome!
-</div>
-
-<div class="profile-subtitle">
-
-Please enter your name.
-
-This information will be saved with
-your orders so the restaurant can
-identify your order.
-
-</div>
-
-
-<div
-    id="mobileDisplay"
-    class="mobile-display"
->
-📱 Loading mobile number...
-</div>
-
-</div>
-
+<section id="nameSection">
 
 <label for="customerName">
-Your Name
+Your Good Name
 </label>
 
-
 <input
-    id="customerName"
-    type="text"
-    maxlength="80"
-    autocomplete="name"
-    placeholder="Enter your name"
+id="customerName"
+type="text"
+maxlength="80"
+autocomplete="name"
+placeholder="Enter your name"
 >
 
+<div class="customer-note">
 
-<button id="saveProfile">
-Continue to Menu →
+Your name will be saved with your restaurant orders so the restaurant can identify your order.
+
+</div>
+
+<button id="continueBtn">
+Continue to Menu
 </button>
-
 
 </section>
 
 
-
-<div
-    id="status"
-    class="status info"
-></div>
-
+<div id="status" class="status info"></div>
 
 </main>
 
 
-
 <script type="module">
-
-
-/* =====================================================
-   FIREBASE
-====================================================== */
 
 import {
     initializeApp
@@ -407,18 +318,12 @@ from
 import {
     getFirestore,
     doc,
-    getDoc,
     setDoc,
     serverTimestamp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-
-
-/* =====================================================
-   FIREBASE CONFIG
-====================================================== */
 
 const firebaseConfig = {
 
@@ -442,128 +347,93 @@ const firebaseConfig = {
 
     measurementId:
         "G-G3Q89BDFF9"
-
 };
 
 
-
-/* =====================================================
-   INITIALIZE
-====================================================== */
-
 const app =
-    initializeApp(
-        firebaseConfig
-    );
-
+    initializeApp(firebaseConfig);
 
 const auth =
     getAuth(app);
-
 
 const db =
     getFirestore(app);
 
 
-
-/* =====================================================
-   URL PARAMETERS
-====================================================== */
+/* ==========================================
+   URL
+========================================== */
 
 const params =
     new URLSearchParams(
         location.search
     );
 
-
 const restaurantId =
-    params.get(
-        "restaurantId"
-    );
-
+    params.get("restaurantId");
 
 const table =
-    params.get(
-        "table"
-    );
+    params.get("table");
 
 
-
-/* =====================================================
+/* ==========================================
    ELEMENTS
-====================================================== */
+========================================== */
 
 const tableInfo =
     document.getElementById(
         "tableInfo"
     );
 
-
 const mobileSection =
     document.getElementById(
         "mobileSection"
     );
-
 
 const otpSection =
     document.getElementById(
         "otpSection"
     );
 
-
-const profileSection =
+const nameSection =
     document.getElementById(
-        "profileSection"
+        "nameSection"
     );
-
 
 const mobile =
     document.getElementById(
         "mobile"
     );
 
-
 const otp =
     document.getElementById(
         "otp"
     );
-
-
-const send =
-    document.getElementById(
-        "send"
-    );
-
-
-const verify =
-    document.getElementById(
-        "verify"
-    );
-
-
-const change =
-    document.getElementById(
-        "change"
-    );
-
 
 const customerName =
     document.getElementById(
         "customerName"
     );
 
-
-const saveProfile =
+const send =
     document.getElementById(
-        "saveProfile"
+        "send"
     );
 
-
-const mobileDisplay =
+const verify =
     document.getElementById(
-        "mobileDisplay"
+        "verify"
     );
 
+const change =
+    document.getElementById(
+        "change"
+    );
+
+const continueBtn =
+    document.getElementById(
+        "continueBtn"
+    );
 
 const status =
     document.getElementById(
@@ -571,10 +441,9 @@ const status =
     );
 
 
-
-/* =====================================================
-   CHECK QR
-====================================================== */
+/* ==========================================
+   QR CHECK
+========================================== */
 
 if(
     !restaurantId ||
@@ -584,10 +453,8 @@ if(
     tableInfo.textContent =
         "❌ Invalid QR code";
 
-
     send.disabled =
         true;
-
 
     setStatus(
         "This QR code is missing restaurant or table information.",
@@ -603,10 +470,9 @@ else{
 }
 
 
-
-/* =====================================================
+/* ==========================================
    STATUS
-====================================================== */
+========================================== */
 
 function setStatus(
     msg,
@@ -622,76 +488,52 @@ function setStatus(
 }
 
 
-
-/* =====================================================
-   VARIABLES
-====================================================== */
+/* ==========================================
+   RECAPTCHA
+========================================== */
 
 let verifier =
     null;
 
-
 let confirmation =
     null;
 
+let verifiedMobile =
+    "";
 
-let verifiedUser =
-    null;
-
-
-
-/* =====================================================
-   RECAPTCHA
-====================================================== */
 
 function createRecaptcha(){
 
-    if(verifier){
+    if(verifier)
         return;
-    }
-
 
     verifier =
         new RecaptchaVerifier(
             auth,
             "recaptcha-container",
             {
+                size:"invisible",
 
-                size:
-                    "invisible",
+                callback:()=>{
+                    console.log(
+                        "reCAPTCHA verified"
+                    );
+                },
 
-                callback:
-                    ()=>{
-                        console.log(
-                            "reCAPTCHA verified"
-                        );
-                    },
-
-                "expired-callback":
-                    ()=>{
-                        setStatus(
-                            "reCAPTCHA expired. Try again.",
-                            "error"
-                        );
-                    }
-
+                "expired-callback":()=>{
+                    setStatus(
+                        "reCAPTCHA expired. Try again.",
+                        "error"
+                    );
+                }
             }
         );
 
-
     verifier
         .render()
-        .catch(
-            console.error
-        );
-
+        .catch(console.error);
 }
 
-
-
-/* =====================================================
-   CREATE RECAPTCHA
-====================================================== */
 
 if(
     restaurantId &&
@@ -703,10 +545,9 @@ if(
 }
 
 
-
-/* =====================================================
+/* ==========================================
    SEND OTP
-====================================================== */
+========================================== */
 
 send.onclick =
 async function(){
@@ -714,11 +555,8 @@ async function(){
     const number =
         mobile.value.trim();
 
-
     if(
-        !/^[6-9]\d{9}$/.test(
-            number
-        )
+        !/^[6-9]\d{9}$/.test(number)
     ){
 
         setStatus(
@@ -730,21 +568,17 @@ async function(){
 
     }
 
-
     send.disabled =
         true;
-
 
     setStatus(
         "Sending OTP...",
         "info"
     );
 
-
     try{
 
         createRecaptcha();
-
 
         confirmation =
             await signInWithPhoneNumber(
@@ -753,17 +587,16 @@ async function(){
                 verifier
             );
 
+        verifiedMobile =
+            number;
 
         mobileSection.style.display =
             "none";
 
-
         otpSection.style.display =
             "block";
 
-
         otp.focus();
-
 
         setStatus(
             "OTP sent successfully. Enter the 6-digit OTP.",
@@ -775,17 +608,13 @@ async function(){
 
         console.error(e);
 
-
         send.disabled =
             false;
-
 
         if(verifier){
 
             try{
-
                 verifier.clear();
-
             }
             catch(_){}
 
@@ -794,9 +623,7 @@ async function(){
 
         }
 
-
         createRecaptcha();
-
 
         setStatus(
             firebaseError(e),
@@ -808,10 +635,9 @@ async function(){
 };
 
 
-
-/* =====================================================
+/* ==========================================
    VERIFY OTP
-====================================================== */
+========================================== */
 
 verify.onclick =
 async function(){
@@ -819,11 +645,8 @@ async function(){
     const code =
         otp.value.trim();
 
-
     if(
-        !/^\d{6}$/.test(
-            code
-        )
+        !/^\d{6}$/.test(code)
     ){
 
         setStatus(
@@ -834,7 +657,6 @@ async function(){
         return;
 
     }
-
 
     if(!confirmation){
 
@@ -847,16 +669,13 @@ async function(){
 
     }
 
-
     verify.disabled =
         true;
-
 
     setStatus(
         "Verifying OTP...",
         "info"
     );
-
 
     try{
 
@@ -865,139 +684,36 @@ async function(){
                 code
             );
 
-
-        verifiedUser =
+        const user =
             result.user;
 
+        /*
+         Firebase Auth now knows the
+         verified phone number.
+        */
 
-        console.log(
-            "Customer authenticated:",
-            verifiedUser.uid
-        );
+        const phone =
+            user.phoneNumber ||
+            ("+91" + verifiedMobile);
 
-
-        /* ---------------------------------------------
-           SAVE BASIC LOGIN DATA
-        ---------------------------------------------- */
-
-        localStorage.setItem(
-            "customerUid",
-            verifiedUser.uid
-        );
-
-
-        localStorage.setItem(
-            "customerMobile",
-            verifiedUser.phoneNumber || ""
-        );
-
-
-        localStorage.setItem(
-            "customerRestaurantId",
-            restaurantId
-        );
-
-
-        localStorage.setItem(
-            "customerTable",
-            table
-        );
-
-
-        /* ---------------------------------------------
-           CHECK WHETHER PROFILE ALREADY EXISTS
-        ---------------------------------------------- */
-
-        const customerRef =
-            doc(
-                db,
-                "restaurants",
-                restaurantId,
-                "customers",
-                verifiedUser.uid
+        verifiedMobile =
+            phone.replace(
+                "+91",
+                ""
             );
 
 
-        const customerSnapshot =
-            await getDoc(
-                customerRef
-            );
-
-
-        if(
-            customerSnapshot.exists()
-        ){
-
-            const customerData =
-                customerSnapshot.data();
-
-
-            const existingName =
-                customerData.name ||
-                customerData.customerName ||
-                "";
-
-
-            /* -----------------------------------------
-               EXISTING CUSTOMER
-            ------------------------------------------ */
-
-            if(existingName){
-
-                localStorage.setItem(
-                    "customerName",
-                    existingName
-                );
-
-
-                localStorage.setItem(
-                    "customerProfileComplete",
-                    "true"
-                );
-
-
-                setStatus(
-                    "Login successful. Opening menu...",
-                    "success"
-                );
-
-
-                openMenu();
-
-
-                return;
-
-            }
-
-        }
-
-
-        /* ---------------------------------------------
-           NEW CUSTOMER
-        ---------------------------------------------- */
-
-        mobileDisplay.textContent =
-            "📱 " +
-            (
-                verifiedUser.phoneNumber ||
-                "+91" + mobile.value.trim()
-            );
-
-
-        mobileSection.style.display =
-            "none";
-
+        /*
+         Show name section.
+        */
 
         otpSection.style.display =
             "none";
 
-
-        profileSection.style.display =
+        nameSection.style.display =
             "block";
 
-
         customerName.focus();
-
 
         setStatus(
             "OTP verified. Please enter your name.",
@@ -1009,10 +725,8 @@ async function(){
 
         console.error(e);
 
-
         verify.disabled =
             false;
-
 
         setStatus(
             firebaseError(e),
@@ -1024,29 +738,15 @@ async function(){
 };
 
 
+/* ==========================================
+   SAVE CUSTOMER
+========================================== */
 
-/* =====================================================
-   SAVE CUSTOMER PROFILE
-====================================================== */
-
-saveProfile.onclick =
+continueBtn.onclick =
 async function(){
-
-    if(!verifiedUser){
-
-        setStatus(
-            "Please verify your mobile number first.",
-            "error"
-        );
-
-        return;
-
-    }
-
 
     const name =
         customerName.value.trim();
-
 
     if(
         name.length < 2
@@ -1057,33 +757,31 @@ async function(){
             "error"
         );
 
-
         customerName.focus();
-
 
         return;
 
     }
 
+    const user =
+        auth.currentUser;
 
-    if(
-        name.length > 80
-    ){
+    if(!user){
 
         setStatus(
-            "Name is too long.",
+            "Login session expired. Please login again.",
             "error"
         );
 
-
         return;
 
     }
 
-
-    saveProfile.disabled =
+    continueBtn.disabled =
         true;
 
+    continueBtn.textContent =
+        "Saving...";
 
     setStatus(
         "Saving your details...",
@@ -1093,135 +791,140 @@ async function(){
 
     try{
 
+        const phone =
+            user.phoneNumber ||
+            ("+91" + verifiedMobile);
+
+
+        /*
+         Save customer profile.
+
+         Path:
+
+         restaurants
+           restaurantId
+             customers
+               user.uid
+        */
+
         const customerRef =
             doc(
                 db,
                 "restaurants",
                 restaurantId,
                 "customers",
-                verifiedUser.uid
+                user.uid
             );
 
 
-        const customerData = {
-
-            uid:
-                verifiedUser.uid,
-
-            name:
-                name,
-
-            customerName:
-                name,
-
-            mobile:
-                verifiedUser.phoneNumber ||
-                "+91" + mobile.value.trim(),
-
-            phoneNumber:
-                verifiedUser.phoneNumber ||
-                "+91" + mobile.value.trim(),
-
-            restaurantId:
-                restaurantId,
-
-            lastTable:
-                table,
-
-            updatedAt:
-                serverTimestamp(),
-
-            profileCompleted:
-                true
-
-        };
-
-
-        /* ---------------------------------------------
-           CREATE / UPDATE CUSTOMER PROFILE
-        ---------------------------------------------- */
-
         await setDoc(
             customerRef,
-            customerData,
+            {
+
+                uid:
+                    user.uid,
+
+                name:
+                    name,
+
+                mobile:
+                    phone,
+
+                phoneNumber:
+                    phone,
+
+                restaurantId:
+                    restaurantId,
+
+                lastTable:
+                    table,
+
+                updatedAt:
+                    serverTimestamp(),
+
+                createdAt:
+                    serverTimestamp()
+
+            },
             {
                 merge:true
             }
         );
 
 
-        /* ---------------------------------------------
-           SAVE LOCAL CUSTOMER DATA
-        ---------------------------------------------- */
-
-        localStorage.setItem(
-            "customerUid",
-            verifiedUser.uid
-        );
-
+        /*
+         Save locally as well so
+         cart/order pages can access
+         customer information.
+        */
 
         localStorage.setItem(
             "customerName",
             name
         );
 
-
         localStorage.setItem(
             "customerMobile",
-            verifiedUser.phoneNumber ||
-            "+91" + mobile.value.trim()
+            phone
         );
 
-
         localStorage.setItem(
-            "customerRestaurantId",
-            restaurantId
-        );
-
-
-        localStorage.setItem(
-            "customerTable",
-            table
-        );
-
-
-        localStorage.setItem(
-            "customerProfileComplete",
-            "true"
+            "customerUid",
+            user.uid
         );
 
 
         setStatus(
-            "✅ Details saved. Opening menu...",
+            "Login successful. Opening menu...",
             "success"
         );
 
 
+        /*
+         Go to menu.
+        */
+
+        const menuURL =
+            new URL(
+                "customer-menu.html",
+                location.href
+            );
+
+
+        menuURL.searchParams.set(
+            "restaurantId",
+            restaurantId
+        );
+
+        menuURL.searchParams.set(
+            "table",
+            table
+        );
+
+
         setTimeout(
-            function(){
-
-                openMenu();
-
+            ()=>{
+                location.replace(
+                    menuURL.href
+                );
             },
             500
         );
 
     }
-    catch(error){
+    catch(e){
 
-        console.error(
-            "Customer profile save error:",
-            error
-        );
+        console.error(e);
 
-
-        saveProfile.disabled =
+        continueBtn.disabled =
             false;
 
+        continueBtn.textContent =
+            "Continue to Menu";
 
         setStatus(
-            "❌ Unable to save your details.\n" +
-            error.message,
+            "Unable to save customer details.\n" +
+            (e?.message || ""),
             "error"
         );
 
@@ -1230,43 +933,9 @@ async function(){
 };
 
 
-
-/* =====================================================
-   OPEN CUSTOMER MENU
-====================================================== */
-
-function openMenu(){
-
-    const menuURL =
-        new URL(
-            "customer-menu.html",
-            location.href
-        );
-
-
-    menuURL.searchParams.set(
-        "restaurantId",
-        restaurantId
-    );
-
-
-    menuURL.searchParams.set(
-        "table",
-        table
-    );
-
-
-    location.replace(
-        menuURL.href
-    );
-
-}
-
-
-
-/* =====================================================
-   CHANGE MOBILE
-====================================================== */
+/* ==========================================
+   CHANGE NUMBER
+========================================== */
 
 change.onclick =
 function(){
@@ -1274,51 +943,33 @@ function(){
     confirmation =
         null;
 
-
-    verifiedUser =
-        null;
-
-
     otp.value =
         "";
-
 
     otpSection.style.display =
         "none";
 
-
     mobileSection.style.display =
         "block";
-
-
-    profileSection.style.display =
-        "none";
-
 
     send.disabled =
         false;
 
-
-    setStatus(
-        ""
-    );
-
+    setStatus("");
 
     mobile.focus();
 
 };
 
 
-
-/* =====================================================
-   FIREBASE ERRORS
-====================================================== */
+/* ==========================================
+   FIREBASE ERROR
+========================================== */
 
 function firebaseError(e){
 
     const c =
         e?.code || "";
-
 
     const messages = {
 
@@ -1344,13 +995,9 @@ function firebaseError(e){
             "reCAPTCHA failed. Refresh and try again.",
 
         "auth/operation-not-allowed":
-            "Phone Authentication is not enabled in Firebase.",
-
-        "permission-denied":
-            "You do not have permission to save customer details."
+            "Phone Authentication is not enabled in Firebase."
 
     };
-
 
     return (
         messages[c] ||
