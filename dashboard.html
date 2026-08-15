@@ -5,37 +5,42 @@
 
 <meta charset="UTF-8">
 
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Restaurant Admin</title>
+<title>Restaurant Admin Dashboard</title>
 
 <style>
 
+/* =========================================================
+   RESET
+========================================================= */
+
 *{
+    box-sizing:border-box;
     margin:0;
     padding:0;
-    box-sizing:border-box;
     font-family:Arial,sans-serif;
 }
 
 body{
     background:#f5f5f5;
     color:#222;
+    padding-bottom:40px;
 }
 
-/* HEADER */
+
+/* =========================================================
+   HEADER
+========================================================= */
 
 header{
     background:#ff5722;
     color:white;
-    padding:18px 20px;
+    padding:20px;
 }
 
 .header-inner{
-    max-width:1100px;
+    max-width:1200px;
     margin:auto;
     display:flex;
     justify-content:space-between;
@@ -44,222 +49,595 @@ header{
 }
 
 header h1{
-    font-size:24px;
+    margin-bottom:5px;
 }
 
 header p{
-    font-size:13px;
+    font-size:14px;
     opacity:.9;
-    margin-top:4px;
 }
 
-.logout{
+.logout-btn{
     width:auto;
-    margin:0;
-    padding:10px 16px;
     background:white;
     color:#ff5722;
+    padding:10px 18px;
+    margin:0;
 }
 
-/* CONTAINER */
+
+/* =========================================================
+   MAIN
+========================================================= */
 
 .container{
-    max-width:1100px;
+    max-width:1200px;
     margin:auto;
-    padding:20px 15px 40px;
+    padding:18px;
 }
 
-/* WELCOME */
 
-.welcome{
+/* =========================================================
+   ADMIN INFO
+========================================================= */
+
+.admin-info{
     background:white;
     border-radius:14px;
-    padding:20px;
-    margin-bottom:20px;
+    padding:18px;
+    margin-bottom:18px;
     box-shadow:0 2px 10px rgba(0,0,0,.08);
 }
 
-.welcome h2{
-    margin-bottom:7px;
+.admin-info h3{
+    margin-bottom:14px;
 }
 
-.welcome p{
+.admin-row{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    padding:9px 0;
+    border-bottom:1px solid #eee;
+}
+
+.admin-row:last-child{
+    border-bottom:none;
+}
+
+.admin-label{
     color:#777;
+    font-size:14px;
 }
 
-/* RESTAURANT INFO */
+.admin-value{
+    font-weight:bold;
+    text-align:right;
+    word-break:break-all;
+}
 
-.restaurant-info{
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.section-title{
+    margin-bottom:12px;
+}
+
+.quick-actions{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(4,1fr);
     gap:12px;
     margin-bottom:20px;
 }
 
-.info-card{
-    background:white;
-    padding:16px;
-    border-radius:12px;
-    box-shadow:0 2px 8px rgba(0,0,0,.07);
-}
-
-.info-label{
-    color:#777;
-    font-size:13px;
-    margin-bottom:5px;
-}
-
-.info-value{
-    font-weight:bold;
-    word-break:break-all;
-}
-
-/* FEATURE TITLE */
-
-.section-title{
-    margin:25px 0 12px;
-}
-
-.section-title h2{
-    font-size:20px;
-}
-
-.section-title p{
-    color:#777;
-    font-size:13px;
-    margin-top:4px;
-}
-
-/* FEATURES */
-
-.features{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:15px;
-}
-
-.feature{
+.action-card{
     background:white;
     border-radius:14px;
-    padding:20px;
+    padding:18px;
+    text-decoration:none;
+    color:#222;
     box-shadow:0 2px 10px rgba(0,0,0,.08);
-    cursor:pointer;
     transition:.2s;
-    border:2px solid transparent;
+    cursor:pointer;
 }
 
-.feature:hover{
-    transform:translateY(-3px);
-    border-color:#ff5722;
-    box-shadow:0 5px 18px rgba(0,0,0,.12);
+.action-card:hover{
+    transform:translateY(-2px);
+    box-shadow:0 5px 15px rgba(0,0,0,.12);
 }
 
-.feature-icon{
-    width:52px;
-    height:52px;
-    border-radius:12px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    font-size:27px;
-    margin-bottom:13px;
+.action-icon{
+    font-size:30px;
+    margin-bottom:9px;
 }
 
-.feature h3{
-    margin-bottom:6px;
+.action-title{
+    font-weight:bold;
+    font-size:16px;
 }
 
-.feature p{
+.action-description{
     color:#777;
-    font-size:13px;
-    line-height:1.5;
+    font-size:12px;
+    margin-top:5px;
 }
 
-/* COLORS */
 
-.orange{
-    background:#fff3e0;
-}
-
-.blue{
-    background:#e3f2fd;
-}
-
-.green{
-    background:#e8f5e9;
-}
-
-.purple{
-    background:#ede7f6;
-}
-
-.yellow{
-    background:#fff8e1;
-}
-
-.red{
-    background:#ffebee;
-}
-
-.gray{
-    background:#eeeeee;
-}
-
-.teal{
-    background:#e0f2f1;
-}
-
-/* QUICK STATS */
+/* =========================================================
+   STATISTICS
+========================================================= */
 
 .stats{
     display:grid;
     grid-template-columns:repeat(4,1fr);
     gap:12px;
-    margin-top:20px;
+    margin-bottom:20px;
 }
 
 .stat{
     background:white;
-    border-radius:12px;
-    padding:16px;
+    border-radius:14px;
+    padding:18px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
     text-align:center;
-    box-shadow:0 2px 8px rgba(0,0,0,.07);
 }
 
 .stat-icon{
-    font-size:25px;
+    font-size:28px;
+    margin-bottom:7px;
 }
 
 .stat-number{
-    font-size:23px;
+    font-size:24px;
     font-weight:bold;
-    margin-top:5px;
 }
 
 .stat-label{
     color:#777;
-    font-size:12px;
-    margin-top:3px;
+    font-size:13px;
+    margin-top:4px;
 }
 
-/* LOADING */
+.stat.cash{
+    border:2px solid #ef5350;
+}
 
-.loading{
-    text-align:center;
-    padding:40px;
+
+/* =========================================================
+   TABS
+========================================================= */
+
+.tabs{
+    display:flex;
+    gap:8px;
+    background:white;
+    padding:8px;
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.tab-btn{
+    flex:1;
+    border:none;
+    background:#f2f2f2;
+    color:#555;
+    padding:14px;
+    border-radius:9px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.tab-btn.active{
+    background:#ff5722;
+    color:white;
+}
+
+
+/* =========================================================
+   TAB CONTENT
+========================================================= */
+
+.tab-content{
+    display:none;
+}
+
+.tab-content.active{
+    display:block;
+}
+
+
+/* =========================================================
+   CONTROL
+========================================================= */
+
+.control-card{
+    background:white;
+    padding:16px;
+    border-radius:14px;
+    margin-bottom:18px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.control-card label{
+    font-size:14px;
+    font-weight:bold;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    margin-top:7px;
+    border:1px solid #ddd;
+    border-radius:8px;
+    background:white;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    background:#ff5722;
+    color:white;
+    margin-top:8px;
+}
+
+button:hover{
+    opacity:.92;
+}
+
+button.secondary{
+    background:#333;
+}
+
+button.green{
+    background:#388e3c;
+}
+
+button.blue{
+    background:#1976d2;
+}
+
+button.red{
+    background:#c62828;
+}
+
+button:disabled{
+    background:#aaa;
+    cursor:not-allowed;
+}
+
+
+/* =========================================================
+   CASH ALERT
+========================================================= */
+
+.cash-alert{
+    background:#ffebee;
+    border:2px solid #ef5350;
+    color:#b71c1c;
+    border-radius:14px;
+    padding:16px;
+    margin-bottom:18px;
+    display:none;
+}
+
+.cash-alert.show{
+    display:block;
+}
+
+.cash-alert h3{
+    margin-bottom:7px;
+}
+
+
+/* =========================================================
+   ORDER
+========================================================= */
+
+.order{
+    background:white;
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:16px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.order.cash-requested{
+    border:3px solid #ef5350;
+    background:#fffafa;
+}
+
+.order-head{
+    display:flex;
+    justify-content:space-between;
+    gap:15px;
+    border-bottom:1px solid #eee;
+    padding-bottom:12px;
+}
+
+.table{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.order-id{
+    font-size:12px;
+    color:#777;
+    margin-top:5px;
+    word-break:break-all;
+}
+
+.created{
+    font-size:12px;
+    color:#777;
+    margin-top:5px;
+}
+
+.total{
+    font-size:20px;
+    font-weight:bold;
+    color:#ff5722;
+    white-space:nowrap;
+}
+
+
+/* =========================================================
+   CUSTOMER
+========================================================= */
+
+.customer-box{
+    margin-top:12px;
+    padding:13px;
+    background:#f8f8f8;
+    border-radius:9px;
+    border-left:4px solid #1976d2;
+}
+
+.customer-box h4{
+    margin-bottom:8px;
+    color:#1976d2;
+}
+
+.customer-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:5px 0;
+    font-size:13px;
+}
+
+.customer-row span:first-child{
     color:#777;
 }
 
-/* MOBILE */
+.customer-row span:last-child{
+    font-weight:bold;
+    text-align:right;
+    word-break:break-all;
+}
 
-@media(max-width:800px){
 
-    .features{
+/* =========================================================
+   BADGES
+========================================================= */
+
+.badges{
+    display:flex;
+    gap:7px;
+    flex-wrap:wrap;
+    margin:12px 0;
+}
+
+.badge{
+    padding:6px 9px;
+    border-radius:15px;
+    font-size:12px;
+    font-weight:bold;
+    background:#eee;
+}
+
+.badge.alert{
+    background:#ffe0b2;
+    color:#e65100;
+}
+
+.badge.cash{
+    background:#ffcdd2;
+    color:#b71c1c;
+}
+
+.badge.paid{
+    background:#dcedc8;
+    color:#33691e;
+}
+
+.badge.upi{
+    background:#d1c4e9;
+    color:#4527a0;
+}
+
+.badge.blue{
+    background:#bbdefb;
+    color:#0d47a1;
+}
+
+
+/* =========================================================
+   ITEMS
+========================================================= */
+
+.items-title{
+    font-weight:bold;
+    margin-top:12px;
+    margin-bottom:5px;
+}
+
+.item{
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+}
+
+.item:last-child{
+    border-bottom:none;
+}
+
+.item-name{
+    font-weight:bold;
+}
+
+.item-detail{
+    font-size:14px;
+    color:#666;
+    margin-top:4px;
+}
+
+.instruction{
+    background:#fff8f4;
+    padding:7px;
+    border-radius:6px;
+    font-size:13px;
+    margin-top:5px;
+}
+
+
+/* =========================================================
+   PAYMENT
+========================================================= */
+
+.payment-alert{
+    margin-top:12px;
+    padding:14px;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+.payment-alert.cash{
+    background:#ffebee;
+    border:1px solid #ef5350;
+    color:#b71c1c;
+}
+
+.payment-alert.upi{
+    background:#ede7f6;
+    border:1px solid #9575cd;
+    color:#4527a0;
+}
+
+.payment-alert.paid{
+    background:#e8f5e9;
+    border:1px solid #66bb6a;
+    color:#2e7d32;
+}
+
+
+/* =========================================================
+   BILL
+========================================================= */
+
+.bill{
+    background:#f7f7f7;
+    border:1px dashed #bbb;
+    padding:12px;
+    border-radius:8px;
+    margin-top:12px;
+}
+
+.bill h4{
+    margin-bottom:8px;
+}
+
+.bill-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin:6px 0;
+}
+
+
+/* =========================================================
+   CUSTOMER CARD
+========================================================= */
+
+.customer-card{
+    background:white;
+    border-radius:14px;
+    padding:18px;
+    margin-bottom:14px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.customer-card h3{
+    margin-bottom:10px;
+    color:#1976d2;
+}
+
+.customer-stat{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    border-bottom:1px solid #eee;
+}
+
+.customer-stat:last-child{
+    border-bottom:none;
+}
+
+.customer-orders{
+    margin-top:12px;
+    background:#fafafa;
+    padding:10px;
+    border-radius:8px;
+}
+
+.customer-order-line{
+    padding:7px 0;
+    border-bottom:1px solid #eee;
+    font-size:13px;
+}
+
+.customer-order-line:last-child{
+    border-bottom:none;
+}
+
+
+/* =========================================================
+   STATES
+========================================================= */
+
+.loading,
+.empty,
+.error{
+    background:white;
+    padding:30px;
+    border-radius:14px;
+    text-align:center;
+    color:#777;
+    box-shadow:0 2px 10px rgba(0,0,0,.06);
+}
+
+.error{
+    color:#c62828;
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:850px){
+
+    .quick-actions{
         grid-template-columns:repeat(2,1fr);
-    }
-
-    .restaurant-info{
-        grid-template-columns:1fr;
     }
 
     .stats{
@@ -268,19 +646,48 @@ header p{
 
 }
 
-@media(max-width:500px){
 
-    .header-inner{
-        align-items:flex-start;
-        flex-direction:column;
+@media(max-width:550px){
+
+    .container{
+        padding:12px;
     }
 
-    .features{
-        grid-template-columns:1fr;
+    .header-inner{
+        flex-direction:column;
+        text-align:center;
+    }
+
+    .quick-actions{
+        grid-template-columns:repeat(2,1fr);
     }
 
     .stats{
         grid-template-columns:repeat(2,1fr);
+    }
+
+    .tabs{
+        flex-direction:column;
+    }
+
+    .order-head{
+        flex-direction:column;
+    }
+
+    .total{
+        text-align:left;
+    }
+
+    .admin-row,
+    .customer-row,
+    .customer-stat{
+        flex-direction:column;
+        gap:3px;
+    }
+
+    .admin-value,
+    .customer-row span:last-child{
+        text-align:left;
     }
 
 }
@@ -293,32 +700,36 @@ header p{
 <body>
 
 
-<!-- HEADER -->
+<!-- =========================================================
+     HEADER
+========================================================= -->
 
 <header>
 
-    <div class="header-inner">
+<div class="header-inner">
 
-        <div>
+<div>
 
-            <h1 id="restaurantName">
-                Restaurant Admin
-            </h1>
+<h1 id="restaurantName">
+Restaurant Admin
+</h1>
 
-            <p>
-                Restaurant Management System
-            </p>
+<p>
+Restaurant Management Dashboard
+</p>
 
-        </div>
+</div>
 
-        <button
-            class="logout"
-            onclick="logout()"
-        >
-            Logout
-        </button>
 
-    </div>
+<button
+type="button"
+class="logout-btn"
+id="logoutBtn"
+>
+Logout
+</button>
+
+</div>
 
 </header>
 
@@ -326,719 +737,3079 @@ header p{
 <div class="container">
 
 
-<!-- WELCOME -->
+<!-- =========================================================
+     ADMIN INFO
+========================================================= -->
 
-<div class="welcome">
+<div class="admin-info">
 
-    <h2>
-        Welcome, <span id="adminName">Admin</span> 👋
-    </h2>
-
-    <p>
-        Manage your restaurant, orders, menu,
-        UPI payments and table QR codes.
-    </p>
-
-</div>
+<h3>
+👤 Logged-in Admin
+</h3>
 
 
-<!-- RESTAURANT INFORMATION -->
+<div class="admin-row">
 
-<div class="restaurant-info">
+<span class="admin-label">
+Name
+</span>
 
-    <div class="info-card">
-
-        <div class="info-label">
-            Restaurant ID
-        </div>
-
-        <div
-            class="info-value"
-            id="restaurantId"
-        >
-            Loading...
-        </div>
-
-    </div>
-
-
-    <div class="info-card">
-
-        <div class="info-label">
-            Admin Email
-        </div>
-
-        <div
-            class="info-value"
-            id="adminEmail"
-        >
-            Loading...
-        </div>
-
-    </div>
-
-
-    <div class="info-card">
-
-        <div class="info-label">
-            Admin UID
-        </div>
-
-        <div
-            class="info-value"
-            id="adminUid"
-        >
-            Loading...
-        </div>
-
-    </div>
+<span
+class="admin-value"
+id="adminName"
+>
+Loading...
+</span>
 
 </div>
 
 
-<!-- QUICK STATS -->
+<div class="admin-row">
+
+<span class="admin-label">
+Email
+</span>
+
+<span
+class="admin-value"
+id="adminEmail"
+>
+Loading...
+</span>
+
+</div>
+
+
+<div class="admin-row">
+
+<span class="admin-label">
+Admin UID
+</span>
+
+<span
+class="admin-value"
+id="adminUid"
+>
+Loading...
+</span>
+
+</div>
+
+
+<div class="admin-row">
+
+<span class="admin-label">
+Restaurant ID
+</span>
+
+<span
+class="admin-value"
+id="adminRestaurantId"
+>
+Loading...
+</span>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     QUICK ACTIONS
+========================================================= -->
+
+<h2 class="section-title">
+Restaurant Management
+</h2>
+
+
+<div class="quick-actions">
+
+
+<a
+class="action-card"
+href="./view-orders.html"
+>
+
+<div class="action-icon">
+📦
+</div>
+
+<div class="action-title">
+View Orders
+</div>
+
+<div class="action-description">
+View and manage restaurant orders
+</div>
+
+</a>
+
+
+<a
+class="action-card"
+href="./add-menu.html"
+>
+
+<div class="action-icon">
+➕
+</div>
+
+<div class="action-title">
+Add Items
+</div>
+
+<div class="action-description">
+Add food items to your menu
+</div>
+
+</a>
+
+
+<a
+class="action-card"
+href="./manage-menu.html"
+>
+
+<div class="action-icon">
+🍽️
+</div>
+
+<div class="action-title">
+Manage Items
+</div>
+
+<div class="action-description">
+Edit or remove menu items
+</div>
+
+</a>
+
+
+<a
+class="action-card"
+href="./qr.html"
+>
+
+<div class="action-icon">
+📱
+</div>
+
+<div class="action-title">
+QR Codes
+</div>
+
+<div class="action-description">
+Generate restaurant table QR codes
+</div>
+
+</a>
+
+
+<a
+class="action-card"
+href="./profile.html"
+>
+
+<div class="action-icon">
+👤
+</div>
+
+<div class="action-title">
+Profile
+</div>
+
+<div class="action-description">
+Manage restaurant profile
+</div>
+
+</a>
+
+
+<a
+class="action-card"
+href="./admin-orders.html"
+>
+
+<div class="action-icon">
+🧾
+</div>
+
+<div class="action-title">
+Admin Orders
+</div>
+
+<div class="action-description">
+Advanced order management
+</div>
+
+</a>
+
+
+<div
+class="action-card"
+id="manageUpiCard"
+>
+
+<div class="action-icon">
+💳
+</div>
+
+<div class="action-title">
+Manage UPI
+</div>
+
+<div class="action-description">
+Manage your restaurant UPI settings
+</div>
+
+</div>
+
+
+<a
+class="action-card"
+href="./customer-menu.html"
+>
+
+<div class="action-icon">
+📖
+</div>
+
+<div class="action-title">
+Customer Menu
+</div>
+
+<div class="action-description">
+Preview the customer menu
+</div>
+
+</a>
+
+</div>
+
+
+<!-- =========================================================
+     STATISTICS
+========================================================= -->
 
 <div class="stats">
 
-    <div class="stat">
 
-        <div class="stat-icon">
-            📦
-        </div>
+<div class="stat">
 
-        <div
-            class="stat-number"
-            id="totalOrders"
-        >
-            0
-        </div>
+<div class="stat-icon">
+📦
+</div>
 
-        <div class="stat-label">
-            Total Orders
-        </div>
+<div
+class="stat-number"
+id="totalOrders"
+>
+0
+</div>
 
-    </div>
-
-
-    <div class="stat">
-
-        <div class="stat-icon">
-            🍽️
-        </div>
-
-        <div
-            class="stat-number"
-            id="totalItems"
-        >
-            0
-        </div>
-
-        <div class="stat-label">
-            Menu Items
-        </div>
-
-    </div>
-
-
-    <div class="stat">
-
-        <div class="stat-icon">
-            👥
-        </div>
-
-        <div
-            class="stat-number"
-            id="totalCustomers"
-        >
-            0
-        </div>
-
-        <div class="stat-label">
-            Customers
-        </div>
-
-    </div>
-
-
-    <div class="stat">
-
-        <div class="stat-icon">
-            💰
-        </div>
-
-        <div
-            class="stat-number"
-            id="totalRevenue"
-        >
-            ₹0
-        </div>
-
-        <div class="stat-label">
-            Revenue
-        </div>
-
-    </div>
+<div class="stat-label">
+Total Orders
+</div>
 
 </div>
 
 
-<!-- FEATURES -->
+<div class="stat">
 
-<div class="section-title">
+<div class="stat-icon">
+👥
+</div>
 
-    <h2>
-        Restaurant Management
-    </h2>
+<div
+class="stat-number"
+id="totalCustomers"
+>
+0
+</div>
 
-    <p>
-        Choose what you want to manage.
-    </p>
+<div class="stat-label">
+Customers
+</div>
 
 </div>
 
 
-<div class="features">
+<div class="stat">
+
+<div class="stat-icon">
+💰
+</div>
+
+<div
+class="stat-number"
+id="totalRevenue"
+>
+₹0
+</div>
+
+<div class="stat-label">
+Paid Revenue
+</div>
+
+</div>
 
 
-    <!-- ORDERS -->
+<div class="stat cash">
 
-    <div
-        class="feature"
-        onclick="openPage('orders.html')"
-    >
+<div class="stat-icon">
+💵
+</div>
 
-        <div class="feature-icon orange">
-            📦
-        </div>
+<div
+class="stat-number"
+id="cashRequests"
+>
+0
+</div>
 
-        <h3>
-            View Orders
-        </h3>
+<div class="stat-label">
+Cash Requests
+</div>
 
-        <p>
-            View customer orders, update
-            order status and manage payments.
-        </p>
+</div>
 
-    </div>
-
-
-    <!-- UPI -->
-
-    <div
-        class="feature"
-        onclick="openPage('upi.html')"
-    >
-
-        <div class="feature-icon purple">
-            💳
-        </div>
-
-        <h3>
-            Manage UPI
-        </h3>
-
-        <p>
-            Add or update your UPI ID and
-            manage restaurant payment settings.
-        </p>
-
-    </div>
+</div>
 
 
-    <!-- QR -->
+<!-- =========================================================
+     TABS
+========================================================= -->
 
-    <div
-        class="feature"
-        onclick="openPage('qr-codes.html')"
-    >
+<div class="tabs">
 
-        <div class="feature-icon blue">
-            📱
-        </div>
-
-        <h3>
-            QR Codes
-        </h3>
-
-        <p>
-            Create table QR codes so customers
-            can scan and place orders.
-        </p>
-
-    </div>
+<button
+type="button"
+id="ordersTabButton"
+class="tab-btn active"
+>
+📦 Orders
+</button>
 
 
-    <!-- ADD ITEMS -->
+<button
+type="button"
+id="customersTabButton"
+class="tab-btn"
+>
+👥 Customers
+</button>
 
-    <div
-        class="feature"
-        onclick="openPage('items.html?action=add')"
-    >
-
-        <div class="feature-icon green">
-            ➕
-        </div>
-
-        <h3>
-            Add Items
-        </h3>
-
-        <p>
-            Add new food items, prices,
-            categories and descriptions.
-        </p>
-
-    </div>
+</div>
 
 
-    <!-- MANAGE ITEMS -->
+<!-- =========================================================
+     ORDERS TAB
+========================================================= -->
 
-    <div
-        class="feature"
-        onclick="openPage('items.html')"
-    >
-
-        <div class="feature-icon yellow">
-            🍽️
-        </div>
-
-        <h3>
-            Manage Items
-        </h3>
-
-        <p>
-            Edit, delete, enable or disable
-            items available on your menu.
-        </p>
-
-    </div>
+<div
+id="ordersTab"
+class="tab-content active"
+>
 
 
-    <!-- CUSTOMERS -->
+<div
+id="cashAlert"
+class="cash-alert"
+>
 
-    <div
-        class="feature"
-        onclick="openPage('customers.html')"
-    >
+<h3>
+🚨 CASH PAYMENT REQUEST
+</h3>
 
-        <div class="feature-icon teal">
-            👥
-        </div>
-
-        <h3>
-            Customers
-        </h3>
-
-        <p>
-            View customer information and
-            their previous orders.
-        </p>
-
-    </div>
+<p id="cashAlertText">
+A customer has requested cash payment.
+</p>
 
 
-    <!-- REPORTS -->
+<button
+type="button"
+id="viewOrdersButton"
+>
+View Orders
+</button>
 
-    <div
-        class="feature"
-        onclick="openPage('reports.html')"
-    >
-
-        <div class="feature-icon green">
-            📊
-        </div>
-
-        <h3>
-            Reports
-        </h3>
-
-        <p>
-            View sales, revenue and
-            restaurant performance.
-        </p>
-
-    </div>
+</div>
 
 
-    <!-- SETTINGS -->
+<div class="control-card">
 
-    <div
-        class="feature"
-        onclick="openPage('settings.html')"
-    >
+<label>
+Restaurant ID
+</label>
 
-        <div class="feature-icon gray">
-            ⚙️
-        </div>
 
-        <h3>
-            Restaurant Settings
-        </h3>
+<input
+id="restaurantId"
+type="text"
+placeholder="Restaurant ID"
+>
 
-        <p>
-            Manage restaurant name,
-            contact details and settings.
-        </p>
 
-    </div>
+<button
+type="button"
+id="loadOrdersButton"
+>
+📦 Load Orders
+</button>
 
+
+<button
+type="button"
+class="secondary"
+id="refreshButton"
+>
+🔄 Refresh
+</button>
+
+</div>
+
+
+<div id="ordersContainer">
+
+<div class="empty">
+Loading orders...
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =========================================================
+     CUSTOMERS TAB
+========================================================= -->
+
+<div
+id="customersTab"
+class="tab-content"
+>
+
+<div id="customersContainer">
+
+<div class="empty">
+Customer information will appear here.
+</div>
+
+</div>
 
 </div>
 
 
 </div>
 
+
+<!-- =========================================================
+     FIREBASE
+========================================================= -->
 
 <script type="module">
 
+
+/* =========================================================
+   FIREBASE IMPORTS
+========================================================= */
+
 import {
-    initializeApp
+initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 
 import {
-    getAuth,
-    onAuthStateChanged,
-    signOut
-}
-from
-"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-import {
-    getFirestore,
-    doc,
-    getDoc,
-    collection,
-    getDocs
+getFirestore,
+collection,
+doc,
+getDoc,
+updateDoc,
+serverTimestamp,
+query,
+orderBy,
+onSnapshot
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
 
-/* FIREBASE CONFIG */
+import {
+getAuth,
+onAuthStateChanged,
+signOut
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+/* =========================================================
+   FIREBASE CONFIG
+========================================================= */
 
 const firebaseConfig = {
 
-    apiKey:
-        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+apiKey:
+"AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
 
-    authDomain:
-        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+authDomain:
+"restaurant-qr-ordering-fdf9b.firebaseapp.com",
 
-    projectId:
-        "restaurant-qr-ordering-fdf9b",
+projectId:
+"restaurant-qr-ordering-fdf9b",
 
-    storageBucket:
-        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+storageBucket:
+"restaurant-qr-ordering-fdf9b.firebasestorage.app",
 
-    messagingSenderId:
-        "907571024375",
+messagingSenderId:
+"907571024375",
 
-    appId:
-        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+appId:
+"1:907571024375:web:796894f82f2cae4d7b9ef2",
 
-    measurementId:
-        "G-G3Q89BDFF9"
+measurementId:
+"G-G3Q89BDFF9"
 
 };
 
 
-const app =
-    initializeApp(firebaseConfig);
+/* =========================================================
+   INITIALIZE
+========================================================= */
 
-const auth =
-    getAuth(app);
+const app =
+initializeApp(firebaseConfig);
 
 const db =
-    getFirestore(app);
+getFirestore(app);
+
+const auth =
+getAuth(app);
 
 
-/* AUTH */
+/* =========================================================
+   ELEMENTS
+========================================================= */
 
-onAuthStateChanged(
-    auth,
-    async function(user){
+const ordersTab =
+document.getElementById(
+"ordersTab"
+);
 
-        if(!user){
+const customersTab =
+document.getElementById(
+"customersTab"
+);
 
-            window.location.href =
-                "index.html";
+const ordersTabButton =
+document.getElementById(
+"ordersTabButton"
+);
 
-            return;
+const customersTabButton =
+document.getElementById(
+"customersTabButton"
+);
 
-        }
+const ordersContainer =
+document.getElementById(
+"ordersContainer"
+);
 
+const customersContainer =
+document.getElementById(
+"customersContainer"
+);
 
-        document.getElementById(
-            "adminName"
-        ).textContent =
-            user.displayName ||
-            "Restaurant Admin";
+const restaurantInput =
+document.getElementById(
+"restaurantId"
+);
 
+const restaurantName =
+document.getElementById(
+"restaurantName"
+);
 
-        document.getElementById(
-            "adminEmail"
-        ).textContent =
-            user.email ||
-            "No email";
+const adminName =
+document.getElementById(
+"adminName"
+);
 
+const adminEmail =
+document.getElementById(
+"adminEmail"
+);
 
-        document.getElementById(
-            "adminUid"
-        ).textContent =
-            user.uid;
+const adminUid =
+document.getElementById(
+"adminUid"
+);
 
+const adminRestaurantId =
+document.getElementById(
+"adminRestaurantId"
+);
 
-        document.getElementById(
-            "restaurantId"
-        ).textContent =
-            user.uid;
+const totalOrders =
+document.getElementById(
+"totalOrders"
+);
 
+const totalCustomers =
+document.getElementById(
+"totalCustomers"
+);
 
-        await loadRestaurant(
-            user.uid
-        );
+const totalRevenue =
+document.getElementById(
+"totalRevenue"
+);
 
-        await loadStatistics(
-            user.uid
-        );
+const cashRequests =
+document.getElementById(
+"cashRequests"
+);
 
-    }
+const cashAlert =
+document.getElementById(
+"cashAlert"
+);
+
+const cashAlertText =
+document.getElementById(
+"cashAlertText"
 );
 
 
-/* LOAD RESTAURANT */
+/* =========================================================
+   VARIABLES
+========================================================= */
 
-async function loadRestaurant(
-    restaurantId
-){
+let currentRestaurantId = "";
 
-    try{
+let orders = [];
 
-        const restaurantRef =
-            doc(
-                db,
-                "restaurants",
-                restaurantId
-            );
+let unsubscribeOrders = null;
 
+let initialOrdersLoaded = false;
 
-        const snapshot =
-            await getDoc(
-                restaurantRef
-            );
+let knownCashRequests =
+new Set();
 
 
-        if(snapshot.exists()){
+/* =========================================================
+   TAB SYSTEM
+========================================================= */
 
-            const data =
-                snapshot.data();
+function showTab(tab){
+
+console.log(
+"Switching tab:",
+tab
+);
 
 
-            document.getElementById(
-                "restaurantName"
-            ).textContent =
-                data.restaurantName ||
-                data.name ||
-                "Restaurant Admin";
+if(tab === "customers"){
 
-        }
+ordersTab.classList.remove(
+"active"
+);
 
-    }
-    catch(error){
+customersTab.classList.add(
+"active"
+);
 
-        console.error(
-            "Restaurant error:",
-            error
-        );
+ordersTabButton.classList.remove(
+"active"
+);
 
-    }
+customersTabButton.classList.add(
+"active"
+);
+
+}
+else{
+
+customersTab.classList.remove(
+"active"
+);
+
+ordersTab.classList.add(
+"active"
+);
+
+customersTabButton.classList.remove(
+"active"
+);
+
+ordersTabButton.classList.add(
+"active"
+);
+
+}
 
 }
 
 
-/* LOAD STATISTICS */
+ordersTabButton.addEventListener(
+"click",
+function(){
 
-async function loadStatistics(
-    restaurantId
-){
+showTab("orders");
 
-    try{
-
-        const ordersSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "orders"
-                )
-            );
+}
+);
 
 
-        document.getElementById(
-            "totalOrders"
-        ).textContent =
-            ordersSnapshot.size;
+customersTabButton.addEventListener(
+"click",
+function(){
+
+showTab("customers");
+
+}
+);
 
 
-        let revenue = 0;
+/* =========================================================
+   URL RESTAURANT ID
+========================================================= */
 
-        const customers =
-            new Set();
+const params =
+new URLSearchParams(
+window.location.search
+);
 
+const urlRestaurantId =
+params.get(
+"restaurantId"
+);
 
-        ordersSnapshot.forEach(
-            function(orderDoc){
+if(urlRestaurantId){
 
-                const order =
-                    orderDoc.data();
-
-
-                if(
-                    order.paymentStatus ===
-                    "paid"
-                ){
-
-                    revenue +=
-                        Number(
-                            order.billTotal ||
-                            order.total ||
-                            0
-                        );
-
-                }
-
-
-                const customer =
-                    order.customerUid ||
-                    order.userId ||
-                    order.uid ||
-                    order.customerPhone ||
-                    order.phone;
-
-
-                if(customer){
-
-                    customers.add(
-                        customer
-                    );
-
-                }
-
-            }
-        );
-
-
-        document.getElementById(
-            "totalCustomers"
-        ).textContent =
-            customers.size;
-
-
-        document.getElementById(
-            "totalRevenue"
-        ).textContent =
-            "₹" +
-            revenue.toFixed(2);
-
-
-        /* MENU ITEMS */
-
-        const itemsSnapshot =
-            await getDocs(
-                collection(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "items"
-                )
-            );
-
-
-        document.getElementById(
-            "totalItems"
-        ).textContent =
-            itemsSnapshot.size;
-
-    }
-    catch(error){
-
-        console.error(
-            "Statistics error:",
-            error
-        );
-
-    }
+restaurantInput.value =
+urlRestaurantId;
 
 }
 
 
-/* OPEN PAGE */
+/* =========================================================
+   AUTH
+========================================================= */
 
-window.openPage =
-    function(page){
+onAuthStateChanged(
+auth,
+async function(user){
 
-        const restaurantId =
-            auth.currentUser?.uid;
+if(!user){
 
+ordersContainer.innerHTML = `
 
-        if(!restaurantId){
+<div class="error">
 
-            alert(
-                "Please login first."
-            );
+❌ Login required.
 
-            return;
+<br><br>
 
-        }
+Please login again.
 
+</div>
 
-        window.location.href =
-            page +
-            (
-                page.includes("?")
-                ? "&"
-                : "?"
-            ) +
-            "restaurantId=" +
-            encodeURIComponent(
-                restaurantId
-            );
+`;
 
-    };
+return;
+
+}
 
 
-/* LOGOUT */
+/* ADMIN */
 
-window.logout =
-    async function(){
+adminName.textContent =
+user.displayName ||
+"Restaurant Admin";
 
-        try{
+adminEmail.textContent =
+user.email ||
+"No email";
 
-            await signOut(auth);
+adminUid.textContent =
+user.uid;
 
-            window.location.href =
-                "index.html";
 
-        }
-        catch(error){
+/* RESTAURANT */
 
-            console.error(
-                error
-            );
+if(!restaurantInput.value){
 
-            alert(
-                "Logout failed."
-            );
+restaurantInput.value =
+user.uid;
 
-        }
+}
 
-    };
+
+currentRestaurantId =
+restaurantInput.value.trim();
+
+
+adminRestaurantId.textContent =
+currentRestaurantId;
+
+
+await loadRestaurant();
+
+startOrdersListener();
+
+}
+);
+
+
+/* =========================================================
+   LOAD RESTAURANT
+========================================================= */
+
+async function loadRestaurant(){
+
+if(!currentRestaurantId){
+
+return;
+
+}
+
+
+try{
+
+const restaurantRef =
+doc(
+db,
+"restaurants",
+currentRestaurantId
+);
+
+
+const snapshot =
+await getDoc(
+restaurantRef
+);
+
+
+if(snapshot.exists()){
+
+const data =
+snapshot.data();
+
+
+restaurantName.textContent =
+data.restaurantName ||
+data.name ||
+"Restaurant Admin";
+
+}
+
+}
+catch(error){
+
+console.error(
+"Restaurant error:",
+error
+);
+
+}
+
+}
+
+
+/* =========================================================
+   LOAD ORDERS BUTTON
+========================================================= */
+
+document.getElementById(
+"loadOrdersButton"
+).addEventListener(
+"click",
+function(){
+
+loadOrders();
+
+}
+);
+
+
+async function loadOrders(){
+
+const user =
+auth.currentUser;
+
+
+if(!user){
+
+alert(
+"Please login first."
+);
+
+return;
+
+}
+
+
+currentRestaurantId =
+restaurantInput.value.trim();
+
+
+if(!currentRestaurantId){
+
+alert(
+"Enter restaurant ID."
+);
+
+return;
+
+}
+
+
+if(user.uid !== currentRestaurantId){
+
+ordersContainer.innerHTML = `
+
+<div class="error">
+
+❌ Access denied.
+
+<br><br>
+
+The restaurant ID must match
+the logged-in admin account.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+adminRestaurantId.textContent =
+currentRestaurantId;
+
+
+await loadRestaurant();
+
+startOrdersListener();
+
+}
+
+
+/* =========================================================
+   REAL TIME ORDERS
+========================================================= */
+
+function startOrdersListener(){
+
+if(unsubscribeOrders){
+
+unsubscribeOrders();
+
+unsubscribeOrders =
+null;
+
+}
+
+
+ordersContainer.innerHTML = `
+
+<div class="loading">
+⏳ Loading orders...
+</div>
+
+`;
+
+
+const ordersRef =
+collection(
+db,
+"restaurants",
+currentRestaurantId,
+"orders"
+);
+
+
+let ordersQuery;
+
+
+try{
+
+ordersQuery =
+query(
+ordersRef,
+orderBy(
+"createdAt",
+"desc"
+)
+);
+
+}
+catch(error){
+
+ordersQuery =
+ordersRef;
+
+}
+
+
+unsubscribeOrders =
+onSnapshot(
+
+ordersQuery,
+
+function(snapshot){
+
+const newOrders = [];
+
+
+snapshot.forEach(
+function(orderDoc){
+
+newOrders.push({
+
+id:
+orderDoc.id,
+
+...orderDoc.data()
+
+});
+
+}
+);
+
+
+newOrders.sort(
+function(a,b){
+
+return getTimestampMillis(
+b.createdAt
+)
+-
+getTimestampMillis(
+a.createdAt
+);
+
+}
+);
+
+
+/* NEW CASH REQUEST */
+
+if(initialOrdersLoaded){
+
+snapshot.docChanges()
+.forEach(
+function(change){
+
+if(
+change.type === "added" ||
+change.type === "modified"
+){
+
+const data =
+change.doc.data();
+
+const orderId =
+change.doc.id;
+
+
+const isCashRequest =
+data.cashPaymentRequested === true &&
+data.paymentMethod === "cash" &&
+data.paymentStatus !== "paid";
+
+
+if(
+isCashRequest &&
+!knownCashRequests.has(
+orderId
+)
+){
+
+knownCashRequests.add(
+orderId
+);
+
+showCashNotification(
+data,
+orderId
+);
+
+}
+
+}
+
+}
+);
+
+}
+
+
+/* SAVE */
+
+orders =
+newOrders;
+
+
+/* KNOWN CASH */
+
+orders.forEach(
+function(order){
+
+if(
+order.cashPaymentRequested === true &&
+order.paymentStatus !== "paid"
+){
+
+knownCashRequests.add(
+order.id
+);
+
+}
+
+}
+);
+
+
+/* RENDER */
+
+renderOrders();
+
+renderCustomers();
+
+updateStatistics();
+
+
+initialOrdersLoaded =
+true;
+
+},
+
+function(error){
+
+console.error(
+"Orders listener error:",
+error
+);
+
+
+ordersContainer.innerHTML = `
+
+<div class="error">
+
+❌ Unable to load orders.
+
+<br><br>
+
+${escapeHTML(
+error.message
+)}
+
+</div>
+
+`;
+
+}
+
+);
+
+}
+
+
+/* =========================================================
+   CASH NOTIFICATION
+========================================================= */
+
+function showCashNotification(
+order,
+orderId
+){
+
+cashAlert.classList.add(
+"show"
+);
+
+
+const customer =
+getCustomerName(
+order
+);
+
+
+cashAlertText.textContent =
+"💵 " +
+customer +
+" at Table " +
+(order.table || "-") +
+" has requested cash payment for Order " +
+orderId +
+".";
+
+
+alert(
+"💵 CASH PAYMENT REQUESTED\n\n" +
+"Table: " +
+(order.table || "-") +
+"\n" +
+"Customer: " +
+customer
+);
+
+}
+
+
+/* =========================================================
+   VIEW ORDERS
+========================================================= */
+
+document.getElementById(
+"viewOrdersButton"
+).addEventListener(
+"click",
+function(){
+
+showTab("orders");
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
+);
+
+
+/* =========================================================
+   REFRESH
+========================================================= */
+
+document.getElementById(
+"refreshButton"
+).addEventListener(
+"click",
+function(){
+
+location.reload();
+
+}
+);
+
+
+/* =========================================================
+   RENDER ORDERS
+========================================================= */
+
+function renderOrders(){
+
+ordersContainer.innerHTML = "";
+
+
+if(orders.length === 0){
+
+ordersContainer.innerHTML = `
+
+<div class="empty">
+
+🍽️ No orders found.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+orders.forEach(
+function(order){
+
+ordersContainer.appendChild(
+createOrderCard(
+order
+)
+);
+
+}
+);
+
+}
+
+
+/* =========================================================
+   CREATE ORDER CARD
+========================================================= */
+
+function createOrderCard(order){
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"order";
+
+
+const status =
+order.status ||
+"received";
+
+
+const paymentStatus =
+order.paymentStatus ||
+"unpaid";
+
+
+const paymentMethod =
+order.paymentMethod ||
+"";
+
+
+const waiterRequested =
+order.waiterRequested === true ||
+order.waiterCalled === true;
+
+
+const billRequested =
+order.billRequested === true;
+
+
+const billGenerated =
+order.billStatus === "generated" ||
+order.billGenerated === true;
+
+
+const cashRequested =
+order.cashPaymentRequested === true &&
+paymentStatus !== "paid";
+
+
+if(cashRequested){
+
+card.classList.add(
+"cash-requested"
+);
+
+}
+
+
+let itemsHTML = "";
+
+
+(
+Array.isArray(order.items)
+?
+order.items
+:
+[]
+)
+.forEach(
+function(item){
+
+const qty =
+Number(
+item.quantity || 1
+);
+
+const price =
+Number(
+item.price || 0
+);
+
+const lineTotal =
+qty * price;
+
+
+itemsHTML += `
+
+<div class="item">
+
+<div class="item-name">
+
+${escapeHTML(
+item.name ||
+item.foodName ||
+"Item"
+)}
+
+× ${qty}
+
+</div>
+
+<div class="item-detail">
+
+₹${price.toFixed(2)}
+each —
+₹${lineTotal.toFixed(2)}
+
+</div>
+
+${
+item.instruction
+?
+`
+
+<div class="instruction">
+
+📝
+${escapeHTML(
+item.instruction
+)}
+
+</div>
+
+`
+:
+""
+}
+
+</div>
+
+`;
+
+}
+);
+
+
+/* CUSTOMER */
+
+const customerName =
+getCustomerName(
+order
+);
+
+const customerPhone =
+order.customerPhone ||
+order.phone ||
+order.mobile ||
+order.customerMobile ||
+"Not provided";
+
+const customerEmail =
+order.customerEmail ||
+order.email ||
+"Not provided";
+
+const customerUid =
+order.customerUid ||
+order.userId ||
+order.uid ||
+"Not provided";
+
+
+/* PAYMENT */
+
+let paymentBox = "";
+
+
+if(cashRequested){
+
+paymentBox = `
+
+<div class="payment-alert cash">
+
+🚨 💵 CASH PAYMENT REQUESTED
+
+<br>
+
+<small>
+
+Customer is waiting for
+cash collection.
+
+</small>
+
+<button
+class="green cash-received"
+>
+✓ Cash Received
+</button>
+
+</div>
+
+`;
+
+}
+else if(paymentStatus === "paid"){
+
+paymentBox = `
+
+<div class="payment-alert paid">
+
+✅ PAYMENT RECEIVED
+
+<br>
+
+<small>
+
+Method:
+${paymentMethod === "cash"
+?
+"💵 Cash"
+:
+paymentMethod === "upi"
+?
+"📱 UPI"
+:
+escapeHTML(
+paymentMethod ||
+"Payment"
+)}
+
+</small>
+
+</div>
+
+`;
+
+}
+else if(
+paymentStatus === "payment_selected" &&
+paymentMethod === "upi"
+){
+
+paymentBox = `
+
+<div class="payment-alert upi">
+
+📱 UPI PAYMENT SELECTED
+
+<br>
+
+<small>
+
+Customer selected UPI payment.
+
+</small>
+
+<button
+class="green confirm-upi"
+>
+✓ Confirm UPI Payment
+</button>
+
+</div>
+
+`;
+
+}
+
+
+/* CARD */
+
+card.innerHTML = `
+
+<div class="order-head">
+
+<div>
+
+<div class="table">
+
+🪑 Table
+${escapeHTML(
+String(
+order.table || "-"
+)
+)}
+
+</div>
+
+<div class="order-id">
+
+Order ID:
+${escapeHTML(
+order.id
+)}
+
+</div>
+
+<div class="created">
+
+${escapeHTML(
+formatDate(
+order.createdAt
+)
+)}
+
+</div>
+
+</div>
+
+
+<div class="total">
+
+₹${Number(
+order.total || 0
+).toFixed(2)}
+
+</div>
+
+</div>
+
+
+<div class="customer-box">
+
+<h4>
+👤 Customer Details
+</h4>
+
+
+<div class="customer-row">
+
+<span>
+Name
+</span>
+
+<span>
+${escapeHTML(
+customerName
+)}
+</span>
+
+</div>
+
+
+<div class="customer-row">
+
+<span>
+Phone
+</span>
+
+<span>
+${escapeHTML(
+String(customerPhone)
+)}
+</span>
+
+</div>
+
+
+<div class="customer-row">
+
+<span>
+Email
+</span>
+
+<span>
+${escapeHTML(
+String(customerEmail)
+)}
+</span>
+
+</div>
+
+
+<div class="customer-row">
+
+<span>
+Customer UID
+</span>
+
+<span>
+${escapeHTML(
+String(customerUid)
+)}
+</span>
+
+</div>
+
+</div>
+
+
+<div class="badges">
+
+<span class="badge">
+
+${escapeHTML(
+status
+)}
+
+</span>
+
+
+${
+waiterRequested
+?
+`
+
+<span class="badge alert">
+🔔 Waiter Requested
+</span>
+
+`
+:
+""
+}
+
+
+${
+billRequested
+?
+`
+
+<span class="badge alert">
+🧾 Bill Requested
+</span>
+
+`
+:
+""
+}
+
+
+${
+billGenerated
+?
+`
+
+<span class="badge blue">
+🧾 Bill Generated
+</span>
+
+`
+:
+""
+}
+
+
+${
+cashRequested
+?
+`
+
+<span class="badge cash">
+🚨 CASH REQUESTED
+</span>
+
+`
+:
+""
+}
+
+
+${
+paymentStatus === "paid"
+?
+`
+
+<span class="badge paid">
+✓ PAID
+</span>
+
+`
+:
+""
+}
+
+
+${
+paymentMethod === "upi"
+?
+`
+
+<span class="badge upi">
+📱 UPI
+</span>
+
+`
+:
+""
+}
+
+</div>
+
+
+<div class="items-title">
+
+🍽️ Items Ordered
+
+</div>
+
+
+<div>
+
+${
+itemsHTML ||
+"<div class='item-detail'>No items</div>"
+}
+
+</div>
+
+
+<label
+style="
+display:block;
+margin-top:15px;
+font-weight:bold;
+"
+>
+
+Order Status
+
+</label>
+
+
+<select class="status-select">
+
+<option value="received">
+Received
+</option>
+
+<option value="accepted">
+Accepted
+</option>
+
+<option value="preparing">
+Preparing
+</option>
+
+<option value="ready">
+Ready
+</option>
+
+<option value="served">
+Served
+</option>
+
+<option value="completed">
+Completed
+</option>
+
+<option value="cancelled">
+Cancelled
+</option>
+
+</select>
+
+
+<button
+class="status-save"
+>
+Update Status
+</button>
+
+
+${
+waiterRequested
+?
+`
+
+<button
+class="secondary waiter-done"
+>
+✓ Mark Waiter Request Done
+</button>
+
+`
+:
+""
+}
+
+
+${
+billRequested && !billGenerated
+?
+`
+
+<button
+class="green generate-bill"
+>
+🧾 Generate Bill
+</button>
+
+`
+:
+""
+}
+
+
+${paymentBox}
+
+
+${
+billGenerated
+?
+`
+
+<div class="bill">
+
+<h4>
+🧾 Generated Bill
+</h4>
+
+
+<div class="bill-row">
+
+<span>
+Order Total
+</span>
+
+<b>
+₹${Number(
+order.total || 0
+).toFixed(2)}
+</b>
+
+</div>
+
+
+<div class="bill-row">
+
+<span>
+Bill Total
+</span>
+
+<b>
+₹${Number(
+order.billTotal ||
+order.total ||
+0
+).toFixed(2)}
+</b>
+
+</div>
+
+
+<div class="bill-row">
+
+<span>
+Payment
+</span>
+
+<b>
+
+${
+paymentMethod === "cash"
+?
+"💵 Cash"
+:
+paymentMethod === "upi"
+?
+"📱 UPI"
+:
+escapeHTML(
+paymentMethod ||
+"Not selected"
+)
+}
+
+</b>
+
+</div>
+
+
+<div class="bill-row">
+
+<span>
+Payment Status
+</span>
+
+<b>
+${escapeHTML(
+paymentStatus
+)}
+</b>
+
+</div>
+
+</div>
+
+`
+:
+""
+}
+
+
+${
+billGenerated &&
+paymentStatus !== "paid" &&
+!cashRequested &&
+paymentMethod !== "upi"
+?
+`
+
+<select class="payment-select">
+
+<option value="">
+Select payment method
+</option>
+
+<option value="cash">
+💵 Cash
+</option>
+
+<option value="upi">
+📱 UPI
+</option>
+
+</select>
+
+
+<button
+class="green confirm-payment"
+>
+✓ Confirm Payment Received
+</button>
+
+`
+:
+""
+}
+
+`;
+
+
+/* STATUS */
+
+const statusSelect =
+card.querySelector(
+".status-select"
+);
+
+statusSelect.value =
+status;
+
+
+card.querySelector(
+".status-save"
+).addEventListener(
+"click",
+async function(){
+
+await updateOrder(
+order.id,
+{
+
+status:
+statusSelect.value,
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+}
+);
+
+
+/* WAITER */
+
+const waiterButton =
+card.querySelector(
+".waiter-done"
+);
+
+if(waiterButton){
+
+waiterButton.addEventListener(
+"click",
+async function(){
+
+await updateOrder(
+order.id,
+{
+
+waiterRequested:false,
+
+waiterCalled:false,
+
+waiterHandled:true,
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+}
+);
+
+}
+
+
+/* BILL */
+
+const billButton =
+card.querySelector(
+".generate-bill"
+);
+
+if(billButton){
+
+billButton.addEventListener(
+"click",
+async function(){
+
+if(
+!confirm(
+"Generate bill for Table " +
+(order.table || "-") +
+"?"
+)
+){
+
+return;
+
+}
+
+
+await updateOrder(
+order.id,
+{
+
+billStatus:
+"generated",
+
+billGenerated:
+true,
+
+billTotal:
+Number(
+order.total || 0
+),
+
+billGeneratedAt:
+serverTimestamp(),
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+}
+);
+
+}
+
+
+/* CASH */
+
+const cashButton =
+card.querySelector(
+".cash-received"
+);
+
+if(cashButton){
+
+cashButton.addEventListener(
+"click",
+async function(){
+
+if(
+!confirm(
+"Confirm cash received from Table " +
+(order.table || "-") +
+"?")
+){
+
+return;
+
+}
+
+
+await updateOrder(
+order.id,
+{
+
+paymentMethod:
+"cash",
+
+paymentStatus:
+"paid",
+
+cashPaymentRequested:
+false,
+
+cashPaymentCollected:
+true,
+
+cashPaymentCollectedAt:
+serverTimestamp(),
+
+paidAt:
+serverTimestamp(),
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+
+knownCashRequests.delete(
+order.id
+);
+
+}
+);
+
+}
+
+
+/* UPI */
+
+const upiButton =
+card.querySelector(
+".confirm-upi"
+);
+
+if(upiButton){
+
+upiButton.addEventListener(
+"click",
+async function(){
+
+if(
+!confirm(
+"Confirm UPI payment received?"
+)
+){
+
+return;
+
+}
+
+
+await updateOrder(
+order.id,
+{
+
+paymentMethod:
+"upi",
+
+paymentStatus:
+"paid",
+
+upiPaymentVerified:
+true,
+
+upiPaymentVerifiedAt:
+serverTimestamp(),
+
+paidAt:
+serverTimestamp(),
+
+updatedAt:
+serverTimestamp()
+
+}
+);
+
+}
+);
+
+}
+
+
+/* PAYMENT */
+
+const paymentButton =
+card.querySelector(
+".confirm-payment"
+);
+
+if(paymentButton){
+
+paymentButton.addEventListener(
+"click",
+async function(){
+
+const select =
+card.querySelector(
+".payment-select"
+);
+
+const method =
+select.value;
+
+
+if(!method){
+
+alert(
+"Please select Cash or UPI."
+);
+
+return;
+
+}
+
+
+if(
+!confirm(
+"Confirm " +
+method.toUpperCase() +
+" payment received?"
+)
+){
+
+return;
+
+}
+
+
+const data = {
+
+paymentMethod:
+method,
+
+paymentStatus:
+"paid",
+
+paidAt:
+serverTimestamp(),
+
+updatedAt:
+serverTimestamp()
+
+};
+
+
+if(method === "cash"){
+
+data.cashPaymentRequested =
+false;
+
+data.cashPaymentCollected =
+true;
+
+data.cashPaymentCollectedAt =
+serverTimestamp();
+
+}
+
+
+await updateOrder(
+order.id,
+data
+);
+
+}
+);
+
+}
+
+
+return card;
+
+}
+
+
+/* =========================================================
+   UPDATE ORDER
+========================================================= */
+
+async function updateOrder(
+orderId,
+data
+){
+
+try{
+
+await updateDoc(
+
+doc(
+db,
+"restaurants",
+currentRestaurantId,
+"orders",
+orderId
+),
+
+data
+
+);
+
+}
+catch(error){
+
+console.error(
+"Update error:",
+error
+);
+
+alert(
+"Update failed:\n\n" +
+error.message
+);
+
+}
+
+}
+
+
+/* =========================================================
+   CUSTOMERS
+========================================================= */
+
+function renderCustomers(){
+
+customersContainer.innerHTML = "";
+
+
+if(orders.length === 0){
+
+customersContainer.innerHTML = `
+
+<div class="empty">
+
+👥 No customer information available.
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+const customers =
+new Map();
+
+
+orders.forEach(
+function(order){
+
+const uid =
+order.customerUid ||
+order.userId ||
+order.uid ||
+order.customerPhone ||
+order.phone ||
+order.customerEmail ||
+order.email ||
+"unknown-" +
+order.id;
+
+
+if(!customers.has(uid)){
+
+customers.set(
+uid,
+{
+
+uid:uid,
+
+name:
+getCustomerName(
+order
+),
+
+phone:
+order.customerPhone ||
+order.phone ||
+order.mobile ||
+order.customerMobile ||
+"",
+
+email:
+order.customerEmail ||
+order.email ||
+"",
+
+orders:[],
+
+totalSpent:0
+
+}
+);
+
+}
+
+
+const customer =
+customers.get(uid);
+
+
+customer.orders.push(
+order
+);
+
+
+if(
+order.paymentStatus === "paid"
+){
+
+customer.totalSpent +=
+Number(
+order.billTotal ||
+order.total ||
+0
+);
+
+}
+
+}
+);
+
+
+totalCustomers.textContent =
+customers.size;
+
+
+customers.forEach(
+function(customer){
+
+const card =
+document.createElement(
+"div"
+);
+
+card.className =
+"customer-card";
+
+
+let orderLines = "";
+
+
+customer.orders.forEach(
+function(order){
+
+const items =
+Array.isArray(
+order.items
+)
+?
+order.items
+:
+[];
+
+
+const itemText =
+items.map(
+function(item){
+
+return (
+(item.name ||
+item.foodName ||
+"Item") +
+" × " +
+(item.quantity || 1)
+);
+
+}
+).join(", ") ||
+"No items";
+
+
+orderLines += `
+
+<div class="customer-order-line">
+
+<b>
+Table ${escapeHTML(
+String(
+order.table || "-"
+)
+)}
+</b>
+
+—
+₹${Number(
+order.total || 0
+).toFixed(2)}
+
+<br>
+
+${escapeHTML(
+itemText
+)}
+
+<br>
+
+<span style="color:#777">
+
+${escapeHTML(
+order.paymentStatus ||
+"unpaid"
+)}
+
+</span>
+
+</div>
+
+`;
+
+}
+);
+
+
+card.innerHTML = `
+
+<h3>
+
+👤
+${escapeHTML(
+customer.name
+)}
+
+</h3>
+
+
+<div class="customer-stat">
+
+<span>
+📱 Phone
+</span>
+
+<b>
+${escapeHTML(
+customer.phone ||
+"Not provided"
+)}
+</b>
+
+</div>
+
+
+<div class="customer-stat">
+
+<span>
+📧 Email
+</span>
+
+<b style="word-break:break-all">
+
+${escapeHTML(
+customer.email ||
+"Not provided"
+)}
+
+</b>
+
+</div>
+
+
+<div class="customer-stat">
+
+<span>
+🆔 Customer UID
+</span>
+
+<b style="word-break:break-all">
+
+${escapeHTML(
+String(customer.uid)
+)}
+
+</b>
+
+</div>
+
+
+<div class="customer-stat">
+
+<span>
+📦 Orders
+</span>
+
+<b>
+${customer.orders.length}
+</b>
+
+</div>
+
+
+<div class="customer-stat">
+
+<span>
+💰 Paid Amount
+</span>
+
+<b style="color:#2e7d32">
+
+₹${customer.totalSpent.toFixed(2)}
+
+</b>
+
+</div>
+
+
+<div class="customer-orders">
+
+<b>
+🍽️ Orders & Items
+</b>
+
+${orderLines}
+
+</div>
+
+`;
+
+
+customersContainer.appendChild(
+card
+);
+
+}
+);
+
+}
+
+
+/* =========================================================
+   STATISTICS
+========================================================= */
+
+function updateStatistics(){
+
+totalOrders.textContent =
+orders.length;
+
+
+let revenue = 0;
+
+let cashCount = 0;
+
+
+const customerSet =
+new Set();
+
+
+orders.forEach(
+function(order){
+
+const customerId =
+order.customerUid ||
+order.userId ||
+order.uid ||
+order.customerPhone ||
+order.phone ||
+order.customerEmail ||
+order.email;
+
+
+if(customerId){
+
+customerSet.add(
+customerId
+);
+
+}
+
+
+if(
+order.paymentStatus === "paid"
+){
+
+revenue +=
+Number(
+order.billTotal ||
+order.total ||
+0
+);
+
+}
+
+
+if(
+order.cashPaymentRequested === true &&
+order.paymentStatus !== "paid"
+){
+
+cashCount++;
+
+}
+
+}
+);
+
+
+totalCustomers.textContent =
+customerSet.size;
+
+
+totalRevenue.textContent =
+"₹" +
+revenue.toFixed(2);
+
+
+cashRequests.textContent =
+cashCount;
+
+
+if(cashCount === 0){
+
+cashAlert.classList.remove(
+"show"
+);
+
+}
+
+}
+
+
+/* =========================================================
+   CUSTOMER NAME
+========================================================= */
+
+function getCustomerName(
+order
+){
+
+return (
+order.customerName ||
+order.customerDisplayName ||
+order.name ||
+order.userName ||
+"Customer"
+);
+
+}
+
+
+/* =========================================================
+   DATE
+========================================================= */
+
+function formatDate(
+timestamp
+){
+
+if(!timestamp){
+
+return "Time unavailable";
+
+}
+
+
+try{
+
+let date;
+
+
+if(
+typeof timestamp.toDate ===
+"function"
+){
+
+date =
+timestamp.toDate();
+
+}
+else{
+
+date =
+new Date(timestamp);
+
+}
+
+
+if(
+Number.isNaN(
+date.getTime()
+)
+){
+
+return "Time unavailable";
+
+}
+
+
+return date.toLocaleString();
+
+}
+catch(error){
+
+return "Time unavailable";
+
+}
+
+}
+
+
+/* =========================================================
+   TIMESTAMP
+========================================================= */
+
+function getTimestampMillis(
+value
+){
+
+if(!value){
+
+return 0;
+
+}
+
+
+if(
+typeof value.toMillis ===
+"function"
+){
+
+return value.toMillis();
+
+}
+
+
+if(
+typeof value.toDate ===
+"function"
+){
+
+return value.toDate().getTime();
+
+}
+
+
+if(
+value.seconds !== undefined
+){
+
+return Number(
+value.seconds
+) * 1000;
+
+}
+
+
+if(value instanceof Date){
+
+return value.getTime();
+
+}
+
+
+if(typeof value === "string"){
+
+const parsed =
+Date.parse(value);
+
+return Number.isNaN(parsed)
+?
+0
+:
+parsed;
+
+}
+
+
+return 0;
+
+}
+
+
+/* =========================================================
+   ESCAPE HTML
+========================================================= */
+
+function escapeHTML(
+value
+){
+
+return String(value)
+
+.replaceAll(
+"&",
+"&amp;"
+)
+
+.replaceAll(
+"<",
+"&lt;"
+)
+
+.replaceAll(
+">",
+"&gt;"
+)
+
+.replaceAll(
+'"',
+"&quot;"
+)
+
+.replaceAll(
+"'",
+"&#039;"
+);
+
+}
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+document.getElementById(
+"logoutBtn"
+).addEventListener(
+"click",
+async function(){
+
+try{
+
+if(unsubscribeOrders){
+
+unsubscribeOrders();
+
+}
+
+
+await signOut(auth);
+
+
+window.location.href =
+"./index.html";
+
+}
+catch(error){
+
+console.error(
+"Logout error:",
+error
+);
+
+alert(
+"Logout failed:\n\n" +
+error.message
+);
+
+}
+
+});
+
+
+/* =========================================================
+   MANAGE UPI
+========================================================= */
+
+document.getElementById(
+"manageUpiCard"
+).addEventListener(
+"click",
+function(){
+
+/*
+ * You don't currently have a manage-upi.html
+ * in the files you showed me.
+ *
+ * For now we display a message instead of
+ * sending the user to a missing page.
+ */
+
+alert(
+"Manage UPI page will be connected here next."
+);
+
+});
+
+
+console.log(
+"Restaurant Dashboard Loaded Successfully"
+);
 
 </script>
 
