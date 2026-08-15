@@ -627,563 +627,821 @@
             }
         }
 
-        async function loadOrders() {
+       async function loadOrders() {
 
-            if (!currentUser) return;
+    if (!currentUser) {
+        return;
+    }
 
-            const restaurantId = currentUser.uid;
+    const restaurantId = currentUser.uid;
 
-            const ordersCollection = collection(
-                db,
-                "restaurants",
-                restaurantId,
-                "orders"
+    console.log(
+        "Admin UID:",
+        currentUser.uid
+    );
+
+    console.log(
+        "Loading orders from:",
+        "restaurants/" +
+        restaurantId +
+        "/orders"
+    );
+
+    const ordersCollection =
+        collection(
+            db,
+            "restaurants",
+            restaurantId,
+            "orders"
+        );
+
+    try {
+
+        /*
+         * IMPORTANT:
+         * Do NOT use orderBy here.
+         * We load all orders first and sort them
+         * in JavaScript.
+         */
+
+        const snapshot =
+            await getDocs(
+                ordersCollection
             );
 
-            try {
+        console.log(
+            "Orders found:",
+            snapshot.size
+        );
 
-                const ordersQuery = query(
-                    ordersCollection,
-                    orderBy("createdAt", "desc")
-                );
+        const ordersList =
+            document.getElementById(
+                "ordersList"
+            );
 
-                const snapshot = await getDocs(ordersQuery);
+        const statusElement =
+            document.getElementById(
+                "status"
+            );
 
-                const ordersList = document.getElementById("ordersList");
+        ordersList.innerHTML = "";
 
-                ordersList.innerHTML = "";
+        if (snapshot.empty) {
 
-                if (snapshot.empty) {
+            statusElement.textContent =
+                "No orders yet.";
 
-                    document.getElementById("status").textContent =
-                        "No orders yet.";
+            ordersList.innerHTML = `
 
-                    ordersList.innerHTML = `
-                        <div class="empty">
-                            <h3>📦 No Orders Yet</h3>
-                            <p>Customer orders will appear here.</p>
-                        </div>
-                    `;
+                <div class="empty">
 
-                    return;
-                }
+                    <h3>
+                        📦 No Orders Yet
+                    </h3>
 
-                document.getElementById("status").textContent =
-                    `${snapshot.size} order(s)`;
+                    <p>
+                        Customer orders will appear here.
+                    </p>
 
-                snapshot.forEach((orderDoc) => {
+                </div>
 
-                    const order = orderDoc.data();
-                    const orderId = orderDoc.id;
+            `;
 
-                    const card = document.createElement("div");
-                    card.className = "order-card";
+            return;
 
-                    if (order.preparingStartedAt) {
-                        const preparingMillis =
-                            order.preparingStartedAt.toMillis
-                                ? order.preparingStartedAt.toMillis()
-                                : Date.parse(order.preparingStartedAt);
+        }
 
-                        if (preparingMillis) {
-                            card.dataset.preparingStartedAt =
-                                preparingMillis;
-                        }
+        const orders = [];
+
+        snapshot.forEach(
+            orderDoc => {
+
+                orders.push({
+
+                    id:
+                        orderDoc.id,
+
+                    ...orderDoc.data()
+
+                });
+
+            }
+        );
+
+
+        /*
+         * Sort newest orders first.
+         */
+
+        orders.sort(
+            (a, b) => {
+
+                const aTime =
+                    a.createdAt &&
+                    typeof a.createdAt.toMillis === "function"
+                        ? a.createdAt.toMillis()
+                        : 0;
+
+                const bTime =
+                    b.createdAt &&
+                    typeof b.createdAt.toMillis === "function"
+                        ? b.createdAt.toMillis()
+                        : 0;
+
+                return bTime - aTime;
+
+            }
+        );
+
+
+        statusElement.textContent =
+            `${orders.length} order(s)`;
+
+
+        /*
+         * Render every order
+         */
+
+        orders.forEach(
+            order => {
+
+                const orderId =
+                    order.id;
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.className =
+                    "order-card";
+
+
+                /*
+                 * Preparation timer
+                 */
+
+                if (
+                    order.preparingStartedAt
+                ) {
+
+                    const preparingMillis =
+                        typeof order.preparingStartedAt.toMillis ===
+                        "function"
+
+                            ?
+
+                        order.preparingStartedAt
+                            .toMillis()
+
+                            :
+
+                        Date.parse(
+                            order.preparingStartedAt
+                        );
+
+
+                    if (preparingMillis) {
+
+                        card.dataset.preparingStartedAt =
+                            preparingMillis;
+
                     }
 
-                    const status = order.status || "new";
-                    const statusClass = getStatusClass(status);
+                }
 
-                    const items = Array.isArray(order.items)
-                        ? order.items
-                        : [];
 
-                    let itemsHTML = "";
+                const status =
+                    order.status ||
+                    "new";
 
-                    items.forEach((item) => {
+
+                const statusClass =
+                    getStatusClass(
+                        status
+                    );
+
+
+                const items =
+                    Array.isArray(
+                        order.items
+                    )
+                        ?
+                    order.items
+                        :
+                    [];
+
+
+                let itemsHTML = "";
+
+
+                items.forEach(
+                    item => {
 
                         const quantity =
-                            Number(item.quantity || 1);
+                            Number(
+                                item.quantity || 1
+                            );
 
                         const price =
-                            Number(item.price || 0);
+                            Number(
+                                item.price || 0
+                            );
+
 
                         itemsHTML += `
+
                             <div class="item-row">
+
                                 <div>
+
                                     <span class="item-name">
+
                                         ${escapeHTML(
                                             item.name ||
                                             item.foodName ||
                                             ""
                                         )}
+
                                     </span>
 
                                     <span class="item-quantity">
+
                                         × ${quantity}
+
                                     </span>
+
                                 </div>
 
                                 <div>
+
                                     ₹${(
-                                        price * quantity
+                                        price *
+                                        quantity
                                     ).toFixed(2)}
+
                                 </div>
+
                             </div>
+
                         `;
-                    });
 
-                    const subtotal =
-                        Number(
-                            order.subtotal ??
-                            order.total ??
-                            0
-                        );
+                    }
+                );
 
-                    const discountAmount =
-                        Number(
-                            order.discountAmount || 0
-                        );
 
-                    const discountPercent =
-                        Number(
-                            order.discountPercent || 0
-                        );
+                const subtotal =
+                    Number(
+                        order.subtotal ??
+                        order.total ??
+                        0
+                    );
 
-                    const finalTotal =
-                        Number(
-                            order.finalTotal ??
-                            order.total ??
-                            Math.max(
-                                0,
-                                subtotal - discountAmount
-                            )
-                        );
 
-                    const paymentStatus =
-                        order.paymentStatus ||
-                        "pending";
+                const discountAmount =
+                    Number(
+                        order.discountAmount ||
+                        0
+                    );
 
-                    const paymentClass =
-                        getPaymentClass(
-                            paymentStatus,
-                            status
-                        );
 
-                    const paymentText =
-                        getPaymentText(
-                            paymentStatus,
-                            status
-                        );
+                const discountPercent =
+                    Number(
+                        order.discountPercent ||
+                        0
+                    );
 
-                    card.innerHTML = `
 
-                        <div class="order-header">
+                const finalTotal =
+                    Number(
+                        order.finalTotal ??
+                        order.total ??
+                        Math.max(
+                            0,
+                            subtotal -
+                            discountAmount
+                        )
+                    );
 
-                            <div class="order-number">
-                                📦 Order #${escapeHTML(
-                                    order.orderNumber ||
-                                    orderId.substring(0, 6)
-                                )}
-                            </div>
 
-                            <div class="table-number">
-                                🪑 Table ${
-                                    escapeHTML(
-                                        String(
-                                            order.tableNumber ||
-                                            "N/A"
-                                        )
+                const paymentStatus =
+                    order.paymentStatus ||
+                    "pending";
+
+
+                /*
+                 * NOTIFICATIONS
+                 */
+
+                let notificationHTML = "";
+
+
+                if (
+                    order.waiterCalled === true
+                ) {
+
+                    notificationHTML += `
+
+                        <div style="
+                            background:#fff3cd;
+                            color:#856404;
+                            padding:14px;
+                            border-radius:10px;
+                            margin-bottom:12px;
+                            font-weight:bold;
+                            border:1px solid #ffe08a;
+                        ">
+
+                            🔔 WAITER REQUEST
+
+                            <br>
+
+                            <small style="
+                                font-weight:normal;
+                            ">
+
+                                Customer at Table
+                                ${escapeHTML(
+                                    String(
+                                        order.table ||
+                                        order.tableNumber ||
+                                        "N/A"
                                     )
-                                }
-                            </div>
+                                )}
+                                has called a waiter.
 
-                        </div>
-
-                        <div
-                            class="status-badge ${statusClass}"
-                        >
-                            ${getStatusText(status)}
-                        </div>
-
-                        <div class="items">
-
-                            ${
-                                itemsHTML ||
-                                "<p>No items found.</p>"
-                            }
-
-                        </div>
-
-                        ${
-                            order.instructions
-                            ? `
-                                <div class="instructions">
-
-                                    <strong>
-                                        📝 Customer Instructions
-                                    </strong>
-
-                                    ${escapeHTML(
-                                        order.instructions
-                                    )}
-
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        <div class="summary">
-
-                            <div class="summary-row">
-                                <span>Subtotal</span>
-                                <span>
-                                    ₹${subtotal.toFixed(2)}
-                                </span>
-                            </div>
-
-                            ${
-                                discountAmount > 0
-                                ? `
-                                    <div class="summary-row discount">
-                                        <span>
-                                            Discount ${
-                                                discountPercent > 0
-                                                ? `(${discountPercent}%)`
-                                                : ""
-                                            }
-                                        </span>
-
-                                        <span>
-                                            -₹${discountAmount.toFixed(2)}
-                                        </span>
-                                    </div>
-                                `
-                                : ""
-                            }
-
-                            <div class="summary-row total">
-                                <span>Total</span>
-
-                                <span>
-                                    ₹${finalTotal.toFixed(2)}
-                                </span>
-                            </div>
-
-                        </div>
-
-                        ${
-                            status === "preparing"
-                            ? `
-                                <div class="prep-timer">
-                                    👨‍🍳 Preparing
-                                    <span id="prepTimer-${orderId}">
-                                        Calculating...
-                                    </span>
-                                    <small>
-                                        Preparation timer is running from the time preparation started.
-                                    </small>
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        ${
-                            status === "ready" && order.preparationTimeMinutes != null
-                            ? `
-                                <div class="prep-timer">
-                                    ⏱️ Preparation Time:
-                                    ${Number(order.preparationTimeMinutes).toFixed(1)} minutes
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        <div
-                            class="payment-badge ${paymentClass}"
-                        >
-                            ${paymentText}
-                        </div>
-
-                        ${
-                            order.billGenerated
-                            ? `
-                                <div class="payment-info">
-                                    <strong>🧾 Bill Generated</strong>
-                                    Customer can view the generated bill.
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        <div class="payment-info">
-
-                            <strong>
-                                💳 Payment
-                            </strong>
-
-                            ${
-                                paymentStatus === "paid"
-                                ? `
-                                    Payment received:
-                                    ₹${finalTotal.toFixed(2)}
-                                `
-                                : status === "completed"
-                                ? `
-                                    Customer can now pay
-                                    ₹${finalTotal.toFixed(2)}
-                                    via UPI.
-                                `
-                                : `
-                                    Payment will be available
-                                    after the order is completed.
-                                `
-                            }
-
-                            ${
-                                order.upiId
-                                ? `
-                                    <br>
-                                    UPI:
-                                    ${escapeHTML(
-                                        order.upiId
-                                    )}
-                                `
-                                : ""
-                            }
-
-                        </div>
-
-                        ${
-                            order.billGenerated
-                            ? `
-                                <div class="payment-info">
-                                    <strong>💳 Payment Method</strong>
-
-                                    ${
-                                        paymentStatus === "paid"
-                                        ? `
-                                            <div style="
-                                                background:#e8f5e9;
-                                                color:#2e7d32;
-                                                padding:10px;
-                                                border-radius:8px;
-                                                font-weight:bold;
-                                            ">
-                                                ✅ Payment Done
-                                                ${
-                                                    order.paymentMethod
-                                                    ? " • " + escapeHTML(
-                                                        String(order.paymentMethod).toUpperCase()
-                                                    )
-                                                    : ""
-                                                }
-                                            </div>
-                                        `
-                                        : `
-                                            <div class="payment-tabs">
-                                                <button
-                                                    type="button"
-                                                    class="payment-tab active"
-                                                    onclick="showPaymentTab('${orderId}', 'cash')"
-                                                    id="cash-tab-${orderId}"
-                                                >
-                                                    💵 Cash
-                                                </button>
-
-                                                <button
-                                                    type="button"
-                                                    class="payment-tab"
-                                                    onclick="showPaymentTab('${orderId}', 'upi')"
-                                                    id="upi-tab-${orderId}"
-                                                >
-                                                    💳 UPI
-                                                </button>
-                                            </div>
-
-                                            <div
-                                                id="cash-panel-${orderId}"
-                                                class="payment-method-panel"
-                                            >
-                                                <strong>💵 Cash Payment</strong>
-                                                <div>
-                                                    Customer can pay
-                                                    ₹${finalTotal.toFixed(2)}
-                                                    in cash at the restaurant.
-                                                </div>
-
-                                                <button
-                                                    type="button"
-                                                    class="cash-paid-btn"
-                                                    onclick="markCashPaymentDone('${orderId}')"
-                                                >
-                                                    ✅ Mark Cash Payment Done
-                                                </button>
-                                            </div>
-
-                                            <div
-                                                id="upi-panel-${orderId}"
-                                                class="payment-method-panel"
-                                                style="display:none;"
-                                            >
-                                                <strong>💳 UPI Payment</strong>
-                                                <div>
-                                                    Customer can pay
-                                                    ₹${finalTotal.toFixed(2)}
-                                                    through UPI.
-                                                </div>
-
-                                                ${
-                                                    order.restaurantUpiId || order.upiId
-                                                    ? `
-                                                        <div style="
-                                                            margin-top:8px;
-                                                            font-weight:bold;
-                                                        ">
-                                                            UPI:
-                                                            ${escapeHTML(
-                                                                order.restaurantUpiId ||
-                                                                order.upiId
-                                                            )}
-                                                        </div>
-                                                    `
-                                                    : `
-                                                        <div style="
-                                                            margin-top:8px;
-                                                            color:#856404;
-                                                        ">
-                                                            ⚠️ Restaurant UPI ID is not configured.
-                                                        </div>
-                                                    `
-                                                }
-                                            </div>
-                                        `
-                                    }
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        ${
-                            status === "completed" &&
-                            order.billRequested &&
-                            !order.billGenerated
-                            ? `
-                                <div style="margin-bottom:12px;">
-                                    <button
-                                        class="complete-btn"
-                                        style="width:100%;"
-                                        onclick="generateBill('${orderId}')"
-                                    >
-                                        🧾 Generate Bill
-                                    </button>
-                                </div>
-                            `
-                            : ""
-                        }
-
-                        <div class="action-buttons">
-
-                            ${
-                                status === "new"
-                                ? `
-                                    <button
-                                        class="accept-btn"
-                                        onclick="updateOrderStatus(
-                                            '${orderId}',
-                                            'accepted'
-                                        )"
-                                    >
-                                        ✅ Accept
-                                    </button>
-
-                                    <button
-                                        class="cancel-btn"
-                                        onclick="updateOrderStatus(
-                                            '${orderId}',
-                                            'cancelled'
-                                        )"
-                                    >
-                                        ❌ Cancel
-                                    </button>
-                                `
-                                : ""
-                            }
-
-                            ${
-                                status === "accepted"
-                                ? `
-                                    <button
-                                        class="prepare-btn"
-                                        onclick="updateOrderStatus(
-                                            '${orderId}',
-                                            'preparing'
-                                        )"
-                                    >
-                                        👨‍🍳 Start Preparing
-                                    </button>
-                                `
-                                : ""
-                            }
-
-                            ${
-                                status === "preparing"
-                                ? `
-                                    <button
-                                        class="ready-btn"
-                                        onclick="updateOrderStatus(
-                                            '${orderId}',
-                                            'ready'
-                                        )"
-                                    >
-                                        🍽️ Mark Ready
-                                    </button>
-                                `
-                                : ""
-                            }
-
-                            ${
-                                status === "ready"
-                                ? `
-                                    <button
-                                        class="complete-btn"
-                                        onclick="updateOrderStatus(
-                                            '${orderId}',
-                                            'completed'
-                                        )"
-                                    >
-                                        ✅ Complete Order
-                                    </button>
-                                `
-                                : ""
-                            }
+                            </small>
 
                         </div>
 
                     `;
 
-                    ordersList.appendChild(card);
-                });
+                }
 
-                startPreparationTimers();
 
-            } catch (error) {
+                if (
+                    order.billRequested === true &&
+                    !order.billGenerated
+                ) {
 
-                console.error(
-                    "Error loading orders:",
-                    error
+                    notificationHTML += `
+
+                        <div style="
+                            background:#e3f2fd;
+                            color:#1565c0;
+                            padding:14px;
+                            border-radius:10px;
+                            margin-bottom:12px;
+                            font-weight:bold;
+                            border:1px solid #90caf9;
+                        ">
+
+                            🧾 BILL REQUEST
+
+                            <br>
+
+                            <small style="
+                                font-weight:normal;
+                            ">
+
+                                Customer has requested
+                                the bill.
+
+                            </small>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                if (
+                    order.cashPaymentRequested === true &&
+                    paymentStatus !== "paid"
+                ) {
+
+                    notificationHTML += `
+
+                        <div style="
+                            background:#fff3e0;
+                            color:#e65100;
+                            padding:14px;
+                            border-radius:10px;
+                            margin-bottom:12px;
+                            font-weight:bold;
+                            border:1px solid #ffcc80;
+                        ">
+
+                            💵 CASH PAYMENT REQUEST
+
+                            <br>
+
+                            <small style="
+                                font-weight:normal;
+                            ">
+
+                                Customer is ready to
+                                pay cash.
+
+                            </small>
+
+                        </div>
+
+                    `;
+
+                }
+
+
+                /*
+                 * Main order card
+                 */
+
+                card.innerHTML = `
+
+                    ${notificationHTML}
+
+
+                    <div class="order-header">
+
+                        <div class="order-number">
+
+                            Order #
+                            ${escapeHTML(
+                                order.orderNumber ||
+                                orderId.substring(0,6)
+                            )}
+
+                        </div>
+
+
+                        <div class="table-number">
+
+                            🪑 Table
+                            ${escapeHTML(
+                                String(
+                                    order.table ||
+                                    order.tableNumber ||
+                                    "N/A"
+                                )
+                            )}
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="status-badge ${statusClass}">
+
+                        ${getStatusText(
+                            status
+                        )}
+
+                    </div>
+
+
+                    <div class="items">
+
+                        ${
+                            itemsHTML ||
+                            "<p>No items found.</p>"
+                        }
+
+                    </div>
+
+
+                    <div class="summary">
+
+                        <div class="summary-row">
+
+                            <span>
+                                Subtotal
+                            </span>
+
+                            <span>
+                                ₹${subtotal.toFixed(2)}
+                            </span>
+
+                        </div>
+
+
+                        ${
+                            discountAmount > 0
+
+                            ?
+
+                            `
+
+                            <div class="summary-row discount">
+
+                                <span>
+                                    Discount
+                                    ${
+                                        discountPercent > 0
+                                        ?
+                                        `(${discountPercent}%)`
+                                        :
+                                        ""
+                                    }
+                                </span>
+
+                                <span>
+                                    -₹${discountAmount.toFixed(2)}
+                                </span>
+
+                            </div>
+
+                            `
+
+                            :
+
+                            ""
+
+                        }
+
+
+                        <div class="summary-row total">
+
+                            <span>
+                                Total
+                            </span>
+
+                            <span>
+                                ₹${finalTotal.toFixed(2)}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="payment-badge ${
+                        getPaymentClass(
+                            paymentStatus,
+                            status
+                        )
+                    }">
+
+                        ${
+                            getPaymentText(
+                                paymentStatus,
+                                status
+                            )
+                        }
+
+                    </div>
+
+
+                    ${
+                        order.billGenerated
+
+                        ?
+
+                        `
+
+                        <div class="payment-info">
+
+                            <strong>
+                                🧾 Bill Generated
+                            </strong>
+
+                            Customer can now
+                            view the bill and pay.
+
+                        </div>
+
+                        `
+
+                        :
+
+                        ""
+
+                    }
+
+
+                    ${
+                        status === "completed" &&
+                        order.billRequested &&
+                        !order.billGenerated
+
+                        ?
+
+                        `
+
+                        <div style="
+                            margin-bottom:12px;
+                        ">
+
+                            <button
+                                class="complete-btn"
+                                style="width:100%;"
+                                onclick="generateBill(
+                                    '${orderId}'
+                                )"
+                            >
+
+                                🧾 Generate Bill
+
+                            </button>
+
+                        </div>
+
+                        `
+
+                        :
+
+                        ""
+
+                    }
+
+
+                    <div class="action-buttons">
+
+
+                        ${
+                            status === "new"
+
+                            ?
+
+                            `
+
+                            <button
+                                class="accept-btn"
+                                onclick="updateOrderStatus(
+                                    '${orderId}',
+                                    'accepted'
+                                )"
+                            >
+
+                                ✅ Accept
+
+                            </button>
+
+
+                            <button
+                                class="cancel-btn"
+                                onclick="updateOrderStatus(
+                                    '${orderId}',
+                                    'cancelled'
+                                )"
+                            >
+
+                                ❌ Cancel
+
+                            </button>
+
+                            `
+
+                            :
+
+                            ""
+
+                        }
+
+
+                        ${
+                            status === "accepted"
+
+                            ?
+
+                            `
+
+                            <button
+                                class="prepare-btn"
+                                onclick="updateOrderStatus(
+                                    '${orderId}',
+                                    'preparing'
+                                )"
+                            >
+
+                                👨‍🍳 Start Preparing
+
+                            </button>
+
+                            `
+
+                            :
+
+                            ""
+
+                        }
+
+
+                        ${
+                            status === "preparing"
+
+                            ?
+
+                            `
+
+                            <button
+                                class="ready-btn"
+                                onclick="updateOrderStatus(
+                                    '${orderId}',
+                                    'ready'
+                                )"
+                            >
+
+                                🍽️ Mark Ready
+
+                            </button>
+
+                            `
+
+                            :
+
+                            ""
+
+                        }
+
+
+                        ${
+                            status === "ready"
+
+                            ?
+
+                            `
+
+                            <button
+                                class="complete-btn"
+                                onclick="updateOrderStatus(
+                                    '${orderId}',
+                                    'completed'
+                                )"
+                            >
+
+                                ✅ Complete Order
+
+                            </button>
+
+                            `
+
+                            :
+
+                            ""
+
+                        }
+
+                    </div>
+
+                `;
+
+
+                ordersList.appendChild(
+                    card
                 );
 
-                document.getElementById("status").textContent =
-                    "Error loading orders.";
-
-                alert(
-                    "Error loading orders:\n\n" +
-                    error.message
-                );
             }
-        }
+        );
 
+
+        startPreparationTimers();
+
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "🔥 ERROR LOADING ORDERS:",
+            error
+        );
+
+
+        document.getElementById(
+            "status"
+        ).innerHTML = `
+
+            ❌ Unable to load orders.
+
+            <br><br>
+
+            <small>
+
+                ${escapeHTML(
+                    error.message
+                )}
+
+            </small>
+
+        `;
+
+
+        /*
+         * This is useful for testing.
+         * It will show the actual Firebase
+         * error instead of staying at
+         * "Loading orders..."
+         */
+
+        console.error(
+            "Admin UID:",
+            currentUser.uid
+        );
+
+    }
+
+}
         window.generateBill = async function (orderId) {
 
             if (!currentUser) {
