@@ -1,180 +1,1366 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1.0"
+>
+
 <title>Customer Login - OTP</title>
+
 <style>
-*{box-sizing:border-box;font-family:Arial,sans-serif}
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#fff7f2,#ffe5d8)}
-.card{width:100%;max-width:430px;background:#fff;padding:28px 24px;border-radius:18px;box-shadow:0 8px 30px #0002}
-.logo{text-align:center;font-size:45px}
-h1{text-align:center;margin:8px 0;color:#222}
-.sub{text-align:center;color:#666;font-size:14px;line-height:1.5;margin-bottom:20px}
-.table{background:#fff3ec;color:#d84315;text-align:center;padding:10px;border-radius:10px;margin-bottom:18px;font-weight:bold}
-label{display:block;font-weight:bold;margin:12px 0 7px}
-.row{display:flex;gap:8px}
-.code{width:75px;padding:13px 8px;border:1px solid #ccc;border-radius:10px;background:#f7f7f7;text-align:center}
-input{width:100%;padding:13px;border:1px solid #ccc;border-radius:10px;font-size:16px;outline:none}
-input:focus{border-color:#ff5722}
-button{width:100%;padding:13px;border:0;border-radius:10px;background:#ff5722;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin-top:15px}
-button:disabled{background:#aaa}
-.secondary{background:#eee;color:#333;margin-top:10px}
-#otpSection{display:none}
-.otp{text-align:center;letter-spacing:8px;font-size:22px;font-weight:bold}
-.status{min-height:22px;text-align:center;margin-top:14px;font-size:14px;line-height:1.4}
-.error{color:#c62828} .success{color:#2e7d32} .info{color:#666}
-#recaptcha-container{display:flex;justify-content:center}
+
+*{
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    background:linear-gradient(
+        135deg,
+        #fff7f2,
+        #ffe5d8
+    );
+}
+
+.card{
+    width:100%;
+    max-width:430px;
+    background:#fff;
+    padding:28px 24px;
+    border-radius:18px;
+    box-shadow:0 8px 30px #0002;
+}
+
+.logo{
+    text-align:center;
+    font-size:45px;
+}
+
+h1{
+    text-align:center;
+    margin:8px 0;
+    color:#222;
+}
+
+.sub{
+    text-align:center;
+    color:#666;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:20px;
+}
+
+.table{
+    background:#fff3ec;
+    color:#d84315;
+    text-align:center;
+    padding:10px;
+    border-radius:10px;
+    margin-bottom:18px;
+    font-weight:bold;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin:12px 0 7px;
+}
+
+.row{
+    display:flex;
+    gap:8px;
+}
+
+.code{
+    width:75px;
+    padding:13px 8px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    background:#f7f7f7;
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+    outline:none;
+}
+
+input:focus{
+    border-color:#ff5722;
+}
+
+button{
+    width:100%;
+    padding:13px;
+    border:0;
+    border-radius:10px;
+    background:#ff5722;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+button:disabled{
+    background:#aaa;
+    cursor:not-allowed;
+}
+
+.secondary{
+    background:#eee;
+    color:#333;
+    margin-top:10px;
+}
+
+#otpSection,
+#profileSection{
+    display:none;
+}
+
+.otp{
+    text-align:center;
+    letter-spacing:8px;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.status{
+    min-height:22px;
+    text-align:center;
+    margin-top:14px;
+    font-size:14px;
+    line-height:1.4;
+}
+
+.error{
+    color:#c62828;
+}
+
+.success{
+    color:#2e7d32;
+}
+
+.info{
+    color:#666;
+}
+
+.profile-box{
+    background:#fff8f4;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.profile-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#333;
+    margin-bottom:5px;
+}
+
+.profile-subtitle{
+    font-size:13px;
+    color:#777;
+    line-height:1.5;
+}
+
+.mobile-display{
+    margin-top:12px;
+    background:white;
+    border:1px solid #eee;
+    border-radius:9px;
+    padding:12px;
+    text-align:center;
+    font-weight:bold;
+    color:#555;
+}
+
+#recaptcha-container{
+    display:flex;
+    justify-content:center;
+}
+
 </style>
+
 </head>
+
+
 <body>
+
+
 <main class="card">
-<div class="logo">🍽️</div>
-<h1>Customer Login</h1>
-<p class="sub">Enter your mobile number to continue to the restaurant menu.</p>
-<div id="tableInfo" class="table">Checking QR...</div>
+
+
+<div class="logo">
+🍽️
+</div>
+
+
+<h1>
+Customer Login
+</h1>
+
+
+<p class="sub">
+Login with your mobile number to continue
+to the restaurant menu.
+</p>
+
+
+<div
+    id="tableInfo"
+    class="table"
+>
+    Checking QR...
+</div>
+
+
+
+<!-- =====================================================
+     MOBILE SECTION
+====================================================== -->
 
 <section id="mobileSection">
-<label for="mobile">Mobile Number</label>
-<div class="row"><div class="code">+91</div><input id="mobile" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit mobile number"></div>
-<button id="send">Send OTP</button>
+
+
+<label for="mobile">
+Mobile Number
+</label>
+
+
+<div class="row">
+
+<div class="code">
++91
+</div>
+
+<input
+    id="mobile"
+    type="tel"
+    inputmode="numeric"
+    maxlength="10"
+    autocomplete="tel"
+    placeholder="10-digit mobile number"
+>
+
+</div>
+
+
+<button id="send">
+📱 Send OTP
+</button>
+
+
 <div id="recaptcha-container"></div>
+
+
 </section>
+
+
+
+<!-- =====================================================
+     OTP SECTION
+====================================================== -->
 
 <section id="otpSection">
-<label for="otp">Enter OTP</label>
-<input id="otp" class="otp" type="tel" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••">
-<button id="verify">Verify OTP</button>
-<button id="change" class="secondary">Change Mobile Number</button>
+
+
+<label for="otp">
+Enter OTP
+</label>
+
+
+<input
+    id="otp"
+    class="otp"
+    type="tel"
+    inputmode="numeric"
+    maxlength="6"
+    autocomplete="one-time-code"
+    placeholder="••••••"
+>
+
+
+<button id="verify">
+✅ Verify OTP
+</button>
+
+
+<button
+    id="change"
+    class="secondary"
+>
+Change Mobile Number
+</button>
+
+
 </section>
 
-<div id="status" class="status info"></div>
+
+
+<!-- =====================================================
+     CUSTOMER PROFILE SECTION
+====================================================== -->
+
+<section id="profileSection">
+
+
+<div class="profile-box">
+
+<div class="profile-title">
+👤 Welcome!
+</div>
+
+<div class="profile-subtitle">
+
+Please enter your name.
+
+This information will be saved with
+your orders so the restaurant can
+identify your order.
+
+</div>
+
+
+<div
+    id="mobileDisplay"
+    class="mobile-display"
+>
+📱 Loading mobile number...
+</div>
+
+</div>
+
+
+<label for="customerName">
+Your Name
+</label>
+
+
+<input
+    id="customerName"
+    type="text"
+    maxlength="80"
+    autocomplete="name"
+    placeholder="Enter your name"
+>
+
+
+<button id="saveProfile">
+Continue to Menu →
+</button>
+
+
+</section>
+
+
+
+<div
+    id="status"
+    class="status info"
+></div>
+
+
 </main>
 
+
+
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+/* =====================================================
+   FIREBASE
+====================================================== */
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+    getAuth,
+    RecaptchaVerifier,
+    signInWithPhoneNumber
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    setDoc,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+
+/* =====================================================
+   FIREBASE CONFIG
+====================================================== */
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-    authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-    projectId: "restaurant-qr-ordering-fdf9b",
-    storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-    messagingSenderId: "907571024375",
-    appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
-    measurementId: "G-G3Q89BDFF9"
+
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
+
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
 };
-const app=initializeApp(firebaseConfig);
-const auth=getAuth(app);
 
-const params=new URLSearchParams(location.search);
-const restaurantId=params.get("restaurantId");
-const table=params.get("table");
 
-const tableInfo=document.getElementById("tableInfo");
-const mobileSection=document.getElementById("mobileSection");
-const otpSection=document.getElementById("otpSection");
-const mobile=document.getElementById("mobile");
-const otp=document.getElementById("otp");
-const send=document.getElementById("send");
-const verify=document.getElementById("verify");
-const change=document.getElementById("change");
-const status=document.getElementById("status");
 
-if(!restaurantId || !table) {
-    tableInfo.textContent="❌ Invalid QR code";
-    send.disabled=true;
-    setStatus("This QR code is missing restaurant or table information.","error");
-} else {
-    tableInfo.textContent="🪑 Table "+table;
+/* =====================================================
+   INITIALIZE
+====================================================== */
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getFirestore(app);
+
+
+
+/* =====================================================
+   URL PARAMETERS
+====================================================== */
+
+const params =
+    new URLSearchParams(
+        location.search
+    );
+
+
+const restaurantId =
+    params.get(
+        "restaurantId"
+    );
+
+
+const table =
+    params.get(
+        "table"
+    );
+
+
+
+/* =====================================================
+   ELEMENTS
+====================================================== */
+
+const tableInfo =
+    document.getElementById(
+        "tableInfo"
+    );
+
+
+const mobileSection =
+    document.getElementById(
+        "mobileSection"
+    );
+
+
+const otpSection =
+    document.getElementById(
+        "otpSection"
+    );
+
+
+const profileSection =
+    document.getElementById(
+        "profileSection"
+    );
+
+
+const mobile =
+    document.getElementById(
+        "mobile"
+    );
+
+
+const otp =
+    document.getElementById(
+        "otp"
+    );
+
+
+const send =
+    document.getElementById(
+        "send"
+    );
+
+
+const verify =
+    document.getElementById(
+        "verify"
+    );
+
+
+const change =
+    document.getElementById(
+        "change"
+    );
+
+
+const customerName =
+    document.getElementById(
+        "customerName"
+    );
+
+
+const saveProfile =
+    document.getElementById(
+        "saveProfile"
+    );
+
+
+const mobileDisplay =
+    document.getElementById(
+        "mobileDisplay"
+    );
+
+
+const status =
+    document.getElementById(
+        "status"
+    );
+
+
+
+/* =====================================================
+   CHECK QR
+====================================================== */
+
+if(
+    !restaurantId ||
+    !table
+){
+
+    tableInfo.textContent =
+        "❌ Invalid QR code";
+
+
+    send.disabled =
+        true;
+
+
+    setStatus(
+        "This QR code is missing restaurant or table information.",
+        "error"
+    );
+
+}
+else{
+
+    tableInfo.textContent =
+        "🪑 Table " + table;
+
 }
 
-function setStatus(msg,type="info") {
-    status.textContent=msg;
-    status.className="status "+type;
+
+
+/* =====================================================
+   STATUS
+====================================================== */
+
+function setStatus(
+    msg,
+    type="info"
+){
+
+    status.textContent =
+        msg;
+
+    status.className =
+        "status " + type;
+
 }
 
-let verifier=null;
-let confirmation=null;
 
-function createRecaptcha() {
-    if(verifier) return;
-    verifier=new RecaptchaVerifier(auth,"recaptcha-container",{
-        size:"invisible",
-        callback:()=>console.log("reCAPTCHA verified"),
-        "expired-callback":()=>setStatus("reCAPTCHA expired. Try again.","error")
-    });
-    verifier.render().catch(console.error);
-}
-if(restaurantId && table) createRecaptcha();
 
-send.onclick=async()=>{
-    const number=mobile.value.trim();
-    if(!/^[6-9]\d{9}$/.test(number)) {
-        setStatus("Enter a valid 10-digit Indian mobile number.","error"); return;
+/* =====================================================
+   VARIABLES
+====================================================== */
+
+let verifier =
+    null;
+
+
+let confirmation =
+    null;
+
+
+let verifiedUser =
+    null;
+
+
+
+/* =====================================================
+   RECAPTCHA
+====================================================== */
+
+function createRecaptcha(){
+
+    if(verifier){
+        return;
     }
-    send.disabled=true;
-    setStatus("Sending OTP...","info");
-    try {
+
+
+    verifier =
+        new RecaptchaVerifier(
+            auth,
+            "recaptcha-container",
+            {
+
+                size:
+                    "invisible",
+
+                callback:
+                    ()=>{
+                        console.log(
+                            "reCAPTCHA verified"
+                        );
+                    },
+
+                "expired-callback":
+                    ()=>{
+                        setStatus(
+                            "reCAPTCHA expired. Try again.",
+                            "error"
+                        );
+                    }
+
+            }
+        );
+
+
+    verifier
+        .render()
+        .catch(
+            console.error
+        );
+
+}
+
+
+
+/* =====================================================
+   CREATE RECAPTCHA
+====================================================== */
+
+if(
+    restaurantId &&
+    table
+){
+
+    createRecaptcha();
+
+}
+
+
+
+/* =====================================================
+   SEND OTP
+====================================================== */
+
+send.onclick =
+async function(){
+
+    const number =
+        mobile.value.trim();
+
+
+    if(
+        !/^[6-9]\d{9}$/.test(
+            number
+        )
+    ){
+
+        setStatus(
+            "Enter a valid 10-digit Indian mobile number.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    send.disabled =
+        true;
+
+
+    setStatus(
+        "Sending OTP...",
+        "info"
+    );
+
+
+    try{
+
         createRecaptcha();
-        confirmation=await signInWithPhoneNumber(auth,"+91"+number,verifier);
-        mobileSection.style.display="none";
-        otpSection.style.display="block";
+
+
+        confirmation =
+            await signInWithPhoneNumber(
+                auth,
+                "+91" + number,
+                verifier
+            );
+
+
+        mobileSection.style.display =
+            "none";
+
+
+        otpSection.style.display =
+            "block";
+
+
         otp.focus();
-        setStatus("OTP sent successfully. Enter the 6-digit OTP.","success");
-    } catch(e) {
+
+
+        setStatus(
+            "OTP sent successfully. Enter the 6-digit OTP.",
+            "success"
+        );
+
+    }
+    catch(e){
+
         console.error(e);
-        send.disabled=false;
-        if(verifier) { try{verifier.clear()}catch(_){} verifier=null; }
+
+
+        send.disabled =
+            false;
+
+
+        if(verifier){
+
+            try{
+
+                verifier.clear();
+
+            }
+            catch(_){}
+
+            verifier =
+                null;
+
+        }
+
+
         createRecaptcha();
-        setStatus(firebaseError(e),"error");
+
+
+        setStatus(
+            firebaseError(e),
+            "error"
+        );
+
     }
+
 };
 
-verify.onclick=async()=>{
-    if(!/^\d{6}$/.test(otp.value.trim())) {
-        setStatus("Enter the 6-digit OTP.","error"); return;
+
+
+/* =====================================================
+   VERIFY OTP
+====================================================== */
+
+verify.onclick =
+async function(){
+
+    const code =
+        otp.value.trim();
+
+
+    if(
+        !/^\d{6}$/.test(
+            code
+        )
+    ){
+
+        setStatus(
+            "Enter the 6-digit OTP.",
+            "error"
+        );
+
+        return;
+
     }
-    if(!confirmation) { setStatus("Please request a new OTP.","error"); return; }
-    verify.disabled=true;
-    setStatus("Verifying OTP...","info");
-    try {
-        await confirmation.confirm(otp.value.trim());
-        setStatus("Login successful. Opening menu...","success");
-        const menuURL=new URL("customer-menu.html",location.href);
-        menuURL.searchParams.set("restaurantId",restaurantId);
-        menuURL.searchParams.set("table",table);
-        location.replace(menuURL.href);
-    } catch(e) {
+
+
+    if(!confirmation){
+
+        setStatus(
+            "Please request a new OTP.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    verify.disabled =
+        true;
+
+
+    setStatus(
+        "Verifying OTP...",
+        "info"
+    );
+
+
+    try{
+
+        const result =
+            await confirmation.confirm(
+                code
+            );
+
+
+        verifiedUser =
+            result.user;
+
+
+        console.log(
+            "Customer authenticated:",
+            verifiedUser.uid
+        );
+
+
+        /* ---------------------------------------------
+           SAVE BASIC LOGIN DATA
+        ---------------------------------------------- */
+
+        localStorage.setItem(
+            "customerUid",
+            verifiedUser.uid
+        );
+
+
+        localStorage.setItem(
+            "customerMobile",
+            verifiedUser.phoneNumber || ""
+        );
+
+
+        localStorage.setItem(
+            "customerRestaurantId",
+            restaurantId
+        );
+
+
+        localStorage.setItem(
+            "customerTable",
+            table
+        );
+
+
+        /* ---------------------------------------------
+           CHECK WHETHER PROFILE ALREADY EXISTS
+        ---------------------------------------------- */
+
+        const customerRef =
+            doc(
+                db,
+                "restaurants",
+                restaurantId,
+                "customers",
+                verifiedUser.uid
+            );
+
+
+        const customerSnapshot =
+            await getDoc(
+                customerRef
+            );
+
+
+        if(
+            customerSnapshot.exists()
+        ){
+
+            const customerData =
+                customerSnapshot.data();
+
+
+            const existingName =
+                customerData.name ||
+                customerData.customerName ||
+                "";
+
+
+            /* -----------------------------------------
+               EXISTING CUSTOMER
+            ------------------------------------------ */
+
+            if(existingName){
+
+                localStorage.setItem(
+                    "customerName",
+                    existingName
+                );
+
+
+                localStorage.setItem(
+                    "customerProfileComplete",
+                    "true"
+                );
+
+
+                setStatus(
+                    "Login successful. Opening menu...",
+                    "success"
+                );
+
+
+                openMenu();
+
+
+                return;
+
+            }
+
+        }
+
+
+        /* ---------------------------------------------
+           NEW CUSTOMER
+        ---------------------------------------------- */
+
+        mobileDisplay.textContent =
+            "📱 " +
+            (
+                verifiedUser.phoneNumber ||
+                "+91" + mobile.value.trim()
+            );
+
+
+        mobileSection.style.display =
+            "none";
+
+
+        otpSection.style.display =
+            "none";
+
+
+        profileSection.style.display =
+            "block";
+
+
+        customerName.focus();
+
+
+        setStatus(
+            "OTP verified. Please enter your name.",
+            "success"
+        );
+
+    }
+    catch(e){
+
         console.error(e);
-        verify.disabled=false;
-        setStatus(firebaseError(e),"error");
+
+
+        verify.disabled =
+            false;
+
+
+        setStatus(
+            firebaseError(e),
+            "error"
+        );
+
     }
+
 };
 
-change.onclick=()=>{
-    confirmation=null; otp.value="";
-    otpSection.style.display="none";
-    mobileSection.style.display="block";
-    send.disabled=false;
-    setStatus("");
-    mobile.focus();
+
+
+/* =====================================================
+   SAVE CUSTOMER PROFILE
+====================================================== */
+
+saveProfile.onclick =
+async function(){
+
+    if(!verifiedUser){
+
+        setStatus(
+            "Please verify your mobile number first.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const name =
+        customerName.value.trim();
+
+
+    if(
+        name.length < 2
+    ){
+
+        setStatus(
+            "Please enter your name.",
+            "error"
+        );
+
+
+        customerName.focus();
+
+
+        return;
+
+    }
+
+
+    if(
+        name.length > 80
+    ){
+
+        setStatus(
+            "Name is too long.",
+            "error"
+        );
+
+
+        return;
+
+    }
+
+
+    saveProfile.disabled =
+        true;
+
+
+    setStatus(
+        "Saving your details...",
+        "info"
+    );
+
+
+    try{
+
+        const customerRef =
+            doc(
+                db,
+                "restaurants",
+                restaurantId,
+                "customers",
+                verifiedUser.uid
+            );
+
+
+        const customerData = {
+
+            uid:
+                verifiedUser.uid,
+
+            name:
+                name,
+
+            customerName:
+                name,
+
+            mobile:
+                verifiedUser.phoneNumber ||
+                "+91" + mobile.value.trim(),
+
+            phoneNumber:
+                verifiedUser.phoneNumber ||
+                "+91" + mobile.value.trim(),
+
+            restaurantId:
+                restaurantId,
+
+            lastTable:
+                table,
+
+            updatedAt:
+                serverTimestamp(),
+
+            profileCompleted:
+                true
+
+        };
+
+
+        /* ---------------------------------------------
+           CREATE / UPDATE CUSTOMER PROFILE
+        ---------------------------------------------- */
+
+        await setDoc(
+            customerRef,
+            customerData,
+            {
+                merge:true
+            }
+        );
+
+
+        /* ---------------------------------------------
+           SAVE LOCAL CUSTOMER DATA
+        ---------------------------------------------- */
+
+        localStorage.setItem(
+            "customerUid",
+            verifiedUser.uid
+        );
+
+
+        localStorage.setItem(
+            "customerName",
+            name
+        );
+
+
+        localStorage.setItem(
+            "customerMobile",
+            verifiedUser.phoneNumber ||
+            "+91" + mobile.value.trim()
+        );
+
+
+        localStorage.setItem(
+            "customerRestaurantId",
+            restaurantId
+        );
+
+
+        localStorage.setItem(
+            "customerTable",
+            table
+        );
+
+
+        localStorage.setItem(
+            "customerProfileComplete",
+            "true"
+        );
+
+
+        setStatus(
+            "✅ Details saved. Opening menu...",
+            "success"
+        );
+
+
+        setTimeout(
+            function(){
+
+                openMenu();
+
+            },
+            500
+        );
+
+    }
+    catch(error){
+
+        console.error(
+            "Customer profile save error:",
+            error
+        );
+
+
+        saveProfile.disabled =
+            false;
+
+
+        setStatus(
+            "❌ Unable to save your details.\n" +
+            error.message,
+            "error"
+        );
+
+    }
+
 };
 
-function firebaseError(e) {
-    const c=e?.code||"";
-    const messages={
-        "auth/invalid-phone-number":"Invalid mobile number.",
-        "auth/too-many-requests":"Too many attempts. Please wait and try again.",
-        "auth/quota-exceeded":"SMS quota exceeded. Please try later.",
-        "auth/billing-not-enabled":"Firebase billing is not enabled for Phone Authentication.",
-        "auth/invalid-verification-code":"Incorrect OTP.",
-        "auth/code-expired":"OTP expired. Request a new OTP.",
-        "auth/captcha-check-failed":"reCAPTCHA failed. Refresh and try again.",
-        "auth/operation-not-allowed":"Phone Authentication is not enabled in Firebase.",
-    };
-    return messages[c] || e?.message || "Unable to continue.";
+
+
+/* =====================================================
+   OPEN CUSTOMER MENU
+====================================================== */
+
+function openMenu(){
+
+    const menuURL =
+        new URL(
+            "customer-menu.html",
+            location.href
+        );
+
+
+    menuURL.searchParams.set(
+        "restaurantId",
+        restaurantId
+    );
+
+
+    menuURL.searchParams.set(
+        "table",
+        table
+    );
+
+
+    location.replace(
+        menuURL.href
+    );
+
 }
+
+
+
+/* =====================================================
+   CHANGE MOBILE
+====================================================== */
+
+change.onclick =
+function(){
+
+    confirmation =
+        null;
+
+
+    verifiedUser =
+        null;
+
+
+    otp.value =
+        "";
+
+
+    otpSection.style.display =
+        "none";
+
+
+    mobileSection.style.display =
+        "block";
+
+
+    profileSection.style.display =
+        "none";
+
+
+    send.disabled =
+        false;
+
+
+    setStatus(
+        ""
+    );
+
+
+    mobile.focus();
+
+};
+
+
+
+/* =====================================================
+   FIREBASE ERRORS
+====================================================== */
+
+function firebaseError(e){
+
+    const c =
+        e?.code || "";
+
+
+    const messages = {
+
+        "auth/invalid-phone-number":
+            "Invalid mobile number.",
+
+        "auth/too-many-requests":
+            "Too many attempts. Please wait and try again.",
+
+        "auth/quota-exceeded":
+            "SMS quota exceeded. Please try later.",
+
+        "auth/billing-not-enabled":
+            "Firebase billing is not enabled for Phone Authentication.",
+
+        "auth/invalid-verification-code":
+            "Incorrect OTP.",
+
+        "auth/code-expired":
+            "OTP expired. Request a new OTP.",
+
+        "auth/captcha-check-failed":
+            "reCAPTCHA failed. Refresh and try again.",
+
+        "auth/operation-not-allowed":
+            "Phone Authentication is not enabled in Firebase.",
+
+        "permission-denied":
+            "You do not have permission to save customer details."
+
+    };
+
+
+    return (
+        messages[c] ||
+        e?.message ||
+        "Unable to continue."
+    );
+
+}
+
 </script>
+
 </body>
 </html>
