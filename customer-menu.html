@@ -28,6 +28,11 @@
             padding-bottom: 90px;
         }
 
+        /* Keep the menu hidden until Firebase confirms customer login. */
+        body.auth-locked > * {
+            visibility: hidden;
+        }
+
 
         /* ================================
            HEADER
@@ -742,14 +747,6 @@
             display: none !important;
         }
 
-        /*
-         * Customer menu is hidden until Firebase authentication succeeds.
-         * JavaScript reveals it after the authenticated initialization.
-         */
-        .customer-auth-hidden {
-            display: none !important;
-        }
-
         /* ================================
            MOBILE
         ================================= */
@@ -792,7 +789,7 @@
 </head>
 
 
-<body>
+<body class="auth-locked">
 
 
     <!-- ================================
@@ -987,7 +984,7 @@
          MENU
     ================================= -->
 
-    <div id="menuContent" class="container customer-auth-hidden">
+    <div id="menuContent" class="container">
 
         <div
             id="menuList"
@@ -1002,7 +999,7 @@
          CART BAR
     ================================= -->
 
-    <div id="customerCartBar" class="cart-bar customer-auth-hidden">
+    <div class="cart-bar">
 
         <div class="cart-inner">
 
@@ -1187,27 +1184,66 @@
            CUSTOMER AUTHENTICATION
         ===================================== */
 
+        let authCheckFinished = false;
+
+        function redirectToCustomerLogin() {
+
+            const loginParams = new URLSearchParams();
+
+            loginParams.set(
+                "restaurant",
+                restaurantId
+            );
+
+            if (tableNumber) {
+                loginParams.set(
+                    "table",
+                    tableNumber
+                );
+            }
+
+            loginParams.set(
+                "return",
+                "customer-menu.html"
+            );
+
+            window.location.replace(
+                "customer-login.html?" +
+                loginParams.toString()
+            );
+        }
+
+        function showAuthenticatedPage() {
+
+            document.body.classList.remove(
+                "auth-locked"
+            );
+
+            authCheckFinished = true;
+
+            loadRestaurant();
+            loadMenu();
+            updateCartDisplay();
+        }
+
         onAuthStateChanged(
             auth,
             (user) => {
 
                 if (!user) {
 
-                    /*
-                     * QR customers must login before using the menu.
-                     * Preserve the restaurant + table parameters so that
-                     * customer-login.html can return to this exact table.
-                     */
-                    const loginUrl =
-                        "customer-login.html" +
-                        window.location.search;
+                    currentCustomer = null;
 
-                    window.location.replace(loginUrl);
+                    if (!authCheckFinished) {
+                        redirectToCustomerLogin();
+                    }
 
                     return;
                 }
 
                 currentCustomer = user;
+
+                showAuthenticatedPage();
 
                 loadPastOrders();
 
@@ -1217,7 +1253,7 @@
             }
         );
 
-        /* =====================================
+                /* =====================================
            READ QR PARAMETERS
         ===================================== */
 
@@ -3194,43 +3230,8 @@
 
         /* =====================================
            INITIAL LOAD
+           Controlled by Firebase authentication above.
         ===================================== */
-
-        /*
-         * Firebase authentication controls the customer entry flow.
-         * Once the user is authenticated, load the restaurant/menu.
-         */
-        onAuthStateChanged(
-            auth,
-            async (user) => {
-
-                if (!user) {
-                    return;
-                }
-
-                try {
-                    await loadRestaurant();
-                    await loadMenu();
-                    updateCartDisplay();
-
-                    document
-                        .getElementById("menuContent")
-                        .classList.remove("customer-auth-hidden");
-
-                    document
-                        .getElementById("customerCartBar")
-                        .classList.remove("customer-auth-hidden");
-                } catch (error) {
-                    console.error(
-                        "Customer page initialization error:",
-                        error
-                    );
-
-                    document.getElementById("status").textContent =
-                        "Unable to load restaurant menu.";
-                }
-            }
-        );
 
 
     </script>
