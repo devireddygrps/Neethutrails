@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Order Status - Restaurant</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f5f5;
+    padding-bottom: 30px;
+}
+
+header {
+    background: #ff5722;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 14px;
+}
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px;
+}
+
+.table-info,
+.order-card,
+.action-card,
+.bill-card {
+    background: white;
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.table-info {
+    text-align: center;
+    font-weight: bold;
+    color: #ff5722;
+}
+
+.order-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 12px;
+}
+
+.order-id {
+    color: #777;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.status-box {
+    margin-top: 15px;
+    padding: 16px;
+    border-radius: 10px;
+    background: #fff3e0;
+    color: #e65100;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.status-message {
+    text-align: center;
+    color: #777;
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.action-card h3,
+.bill-card h3 {
+    margin-bottom: 12px;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.waiter-btn {
+    background: #ff5722;
+}
+
+.bill-btn {
+    background: #333;
+}
+
+.action-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+.requested {
+    background: #43a047 !important;
+}
+
+.bill-status {
+    padding: 13px;
+    border-radius: 8px;
+    background: #f5f5f5;
+    text-align: center;
+    color: #555;
+}
+
+.bill-total {
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.bill-price {
+    color: #ff5722;
+}
+
+.payment-box {
+    margin-top: 15px;
+}
+
+.payment-btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 9px;
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: #ff5722;
+    color: white;
+}
+
+.payment-btn:disabled {
+    background: #aaa;
+}
+
+.hidden {
+    display: none;
+}
+
+.loading,
+.error,
+.empty {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+}
+
+.loading,
+.empty {
+    color: #777;
+}
+
+.error {
+    color: #c62828;
+}
+
+.back-btn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 13px;
+    border: none;
+    border-radius: 9px;
+    background: #333;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1 id="restaurantName">
+        Restaurant
+    </h1>
+
+    <p>
+        Order Status
+    </p>
+
+</header>
+
+
+<div class="container">
+
+    <div
+        id="tableInfo"
+        class="table-info"
+    >
+        Loading table...
+    </div>
+
+
+    <div id="statusContainer">
+
+        <div class="loading">
+            Loading order...
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    updateDoc,
+    onSnapshot,
+    serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
+
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getFirestore(app);
+
+
+const auth =
+    getAuth(app);
+
+
+/* =====================================================
+   URL PARAMETERS
+===================================================== */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const restaurantId =
+    params.get("restaurantId");
+
+
+const table =
+    params.get("table");
+
+
+const orderId =
+    params.get("orderId") ||
+    localStorage.getItem(
+        "currentOrderId"
+    );
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const restaurantName =
+    document.getElementById(
+        "restaurantName"
+    );
+
+
+const tableInfo =
+    document.getElementById(
+        "tableInfo"
+    );
+
+
+const statusContainer =
+    document.getElementById(
+        "statusContainer"
+    );
+
+
+let currentUser = null;
+
+let orderData = null;
+
+
+/* =====================================================
+   CHECK PARAMETERS
+===================================================== */
+
+if (
+    !restaurantId ||
+    !table ||
+    !orderId
+) {
+
+    statusContainer.innerHTML = `
+
+        <div class="error">
+
+            ❌ Order information is missing.
+
+            <br><br>
+
+            Please open your order status
+            from the order confirmation page.
+
+            <button
+                class="back-btn"
+                onclick="goBackToMenu()"
+            >
+                ← Back to Menu
+            </button>
+
+        </div>
+
+    `;
+
+}
+else {
+
+    tableInfo.textContent =
+        "🪑 Table " + table;
+
+    loadRestaurant();
+
+    waitForLogin();
+
+}
+
+
+/* =====================================================
+   LOAD RESTAURANT
+===================================================== */
+
+async function loadRestaurant() {
+
+    try {
+
+        const restaurantRef =
+            doc(
+                db,
+                "restaurants",
+                restaurantId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                restaurantRef
+            );
+
+
+        if (
+            snapshot.exists()
+        ) {
+
+            const data =
+                snapshot.data();
+
+
+            restaurantName.textContent =
+                data.restaurantName ||
+                data.name ||
+                "Restaurant";
+
+        }
+
+    }
+    catch(error) {
+
+        console.error(
+            "Restaurant loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   WAIT FOR LOGIN
+===================================================== */
+
+function waitForLogin() {
+
+    onAuthStateChanged(
+        auth,
+        function(user) {
+
+            if (!user) {
+
+                statusContainer.innerHTML = `
+
+                    <div class="error">
+
+                        ❌ Please login to view
+                        your order status.
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            currentUser =
+                user;
+
+
+            loadOrder();
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   LOAD ORDER
+===================================================== */
+
+function loadOrder() {
+
+    const orderRef =
+        doc(
+            db,
+            "restaurants",
+            restaurantId,
+            "orders",
+            orderId
+        );
+
+
+    onSnapshot(
+        orderRef,
+        function(snapshot) {
+
+            if (
+                !snapshot.exists()
+            ) {
+
+                statusContainer.innerHTML = `
+
+                    <div class="error">
+
+                        ❌ Order not found.
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            orderData =
+                snapshot.data();
+
+
+            /*
+             * Extra safety:
+             * only display this order to its owner.
+             */
+
+            if (
+                orderData.customerUid &&
+                currentUser &&
+                orderData.customerUid !==
+                currentUser.uid
+            ) {
+
+                statusContainer.innerHTML = `
+
+                    <div class="error">
+
+                        ❌ You are not authorized
+                        to view this order.
+
+                    </div>
+
+                `;
+
+                return;
+
+            }
+
+
+            renderOrder();
+
+        },
+        function(error) {
+
+            console.error(
+                "Order listener error:",
+                error
+            );
+
+
+            statusContainer.innerHTML = `
+
+                <div class="error">
+
+                    ❌ Unable to load order.
+
+                    <br><br>
+
+                    ${escapeHTML(
+                        error.message
+                    )}
+
+                </div>
+
+            `;
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   RENDER ORDER
+===================================================== */
+
+function renderOrder() {
+
+    const status =
+        orderData.status ||
+        "received";
+
+
+    const statusInfo =
+        getStatusInfo(status);
+
+
+    const waiterCalled =
+        orderData.waiterCalled === true;
+
+
+    const billRequested =
+        orderData.billRequested === true;
+
+
+    const billGenerated =
+        orderData.billStatus ===
+        "generated";
+
+
+    const paymentStatus =
+        orderData.paymentStatus ||
+        "unpaid";
+
+
+    statusContainer.innerHTML = `
+
+        <div class="order-card">
+
+            <div class="order-title">
+
+                📋 Order Status
+
+            </div>
+
+
+            <div class="order-id">
+
+                Order ID: ${escapeHTML(orderId)}
+
+            </div>
+
+
+            <div class="status-box">
+
+                ${statusInfo.icon}
+                ${statusInfo.text}
+
+            </div>
+
+
+            <div class="status-message">
+
+                ${statusInfo.message}
+
+            </div>
+
+        </div>
+
+
+        <div class="action-card">
+
+            <h3>
+                👨‍🍳 Need Assistance?
+            </h3>
+
+
+            <p
+                style="
+                    color:#777;
+                    font-size:14px;
+                "
+            >
+
+                Call a waiter whenever you need
+                assistance at your table.
+
+            </p>
+
+
+            <button
+                id="waiterBtn"
+                class="action-btn waiter-btn
+                ${waiterCalled ? "requested" : ""}"
+                ${waiterCalled ? "disabled" : ""}
+                onclick="callWaiter()"
+            >
+
+                ${
+                    waiterCalled
+                    ?
+                    "✅ Waiter Requested"
+                    :
+                    "🔔 Call Waiter"
+                }
+
+            </button>
+
+        </div>
+
+
+        <div class="action-card">
+
+            <h3>
+                🧾 Bill
+            </h3>
+
+
+            <p
+                style="
+                    color:#777;
+                    font-size:14px;
+                "
+            >
+
+                When you are ready to pay,
+                request your bill.
+
+            </p>
+
+
+            <button
+                id="billBtn"
+                class="action-btn bill-btn
+                ${billRequested ? "requested" : ""}"
+                ${billRequested ? "disabled" : ""}
+                onclick="requestBill()"
+            >
+
+                ${
+                    billRequested
+                    ?
+                    "✅ Bill Requested"
+                    :
+                    "🧾 Request Bill"
+                }
+
+            </button>
+
+        </div>
+
+
+        <div class="bill-card">
+
+            <h3>
+                💳 Payment
+            </h3>
+
+
+            <div class="bill-status">
+
+                ${
+                    billGenerated
+                    ?
+                    "✅ Bill generated by restaurant"
+                    :
+                    "⏳ Bill has not been generated yet"
+                }
+
+            </div>
+
+
+            ${
+                billGenerated
+                ?
+                renderBill(
+                    paymentStatus
+                )
+                :
+                ""
+            }
+
+        </div>
+
+
+        <button
+            class="back-btn"
+            onclick="goBackToMenu()"
+        >
+
+            ← Back to Menu
+
+        </button>
+
+    `;
+
+}
+
+
+/* =====================================================
+   STATUS INFORMATION
+===================================================== */
+
+function getStatusInfo(status) {
+
+    switch(status) {
+
+        case "received":
+
+            return {
+
+                icon: "📥",
+
+                text: "Order Received",
+
+                message:
+                    "Your order has been received by the restaurant."
+
+            };
+
+
+        case "preparing":
+
+            return {
+
+                icon: "👨‍🍳",
+
+                text: "Preparing",
+
+                message:
+                    "The kitchen is preparing your order."
+
+            };
+
+
+        case "ready":
+
+            return {
+
+                icon: "🍽️",
+
+                text: "Ready",
+
+                message:
+                    "Your order is ready."
+
+            };
+
+
+        case "served":
+
+            return {
+
+                icon: "✅",
+
+                text: "Served",
+
+                message:
+                    "Your order has been served."
+
+            };
+
+
+        case "completed":
+
+            return {
+
+                icon: "🎉",
+
+                text: "Completed",
+
+                message:
+                    "Your order is completed."
+
+            };
+
+
+        default:
+
+            return {
+
+                icon: "📋",
+
+                text:
+                    String(status),
+
+                message:
+                    "Your order status has been updated."
+
+            };
+
+    }
+
+}
+
+
+/* =====================================================
+   CALL WAITER
+===================================================== */
+
+window.callWaiter =
+    async function() {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !orderData
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            orderData.waiterCalled === true
+        ) {
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "waiterBtn"
+            );
+
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "⏳ Calling Waiter...";
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    waiterCalled:
+                        true,
+
+                    waiterRequestedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            alert(
+                "🔔 Waiter has been requested."
+            );
+
+        }
+        catch(error) {
+
+            console.error(
+                "Waiter request error:",
+                error
+            );
+
+
+            alert(
+                "❌ Unable to call waiter.\n\n" +
+                error.message
+            );
+
+
+            if (button) {
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "🔔 Call Waiter";
+
+            }
+
+        }
+
+    };
+
+
+/* =====================================================
+   REQUEST BILL
+===================================================== */
+
+window.requestBill =
+    async function() {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !orderData
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            orderData.billRequested === true
+        ) {
+
+            return;
+
+        }
+
+
+        const button =
+            document.getElementById(
+                "billBtn"
+            );
+
+
+        if (button) {
+
+            button.disabled =
+                true;
+
+            button.textContent =
+                "⏳ Requesting Bill...";
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    billRequested:
+                        true,
+
+                    billRequestedAt:
+                        serverTimestamp(),
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            alert(
+                "🧾 Bill requested. Please wait for the restaurant to generate it."
+            );
+
+        }
+        catch(error) {
+
+            console.error(
+                "Bill request error:",
+                error
+            );
+
+
+            alert(
+                "❌ Unable to request bill.\n\n" +
+                error.message
+            );
+
+
+            if (button) {
+
+                button.disabled =
+                    false;
+
+                button.textContent =
+                    "🧾 Request Bill";
+
+            }
+
+        }
+
+    };
+
+
+/* =====================================================
+   RENDER BILL
+===================================================== */
+
+function renderBill(paymentStatus) {
+
+    const billAmount =
+        Number(
+            orderData.billTotal ??
+            orderData.total ??
+            0
+        );
+
+
+    let paymentMessage =
+        "";
+
+
+    if (
+        paymentStatus ===
+        "paid"
+    ) {
+
+        paymentMessage = `
+
+            <div
+                style="
+                    margin-top:15px;
+                    padding:13px;
+                    border-radius:8px;
+                    background:#e8f5e9;
+                    color:#2e7d32;
+                    text-align:center;
+                    font-weight:bold;
+                "
+            >
+
+                ✅ Payment completed
+
+            </div>
+
+        `;
+
+    }
+    else {
+
+        paymentMessage = `
+
+            <div class="payment-box">
+
+                <p
+                    style="
+                        text-align:center;
+                        color:#777;
+                        font-size:14px;
+                    "
+                >
+
+                    Select your payment method
+
+                </p>
+
+
+                <button
+                    class="payment-btn"
+                    onclick="selectPayment('cash')"
+                >
+
+                    💵 Pay by Cash
+
+                </button>
+
+
+                <button
+                    class="payment-btn"
+                    onclick="selectPayment('upi')"
+                >
+
+                    📱 Pay by UPI
+
+                </button>
+
+            </div>
+
+        `;
+
+    }
+
+
+    return `
+
+        <div class="bill-total">
+
+            <span>
+                Bill Total
+            </span>
+
+            <span class="bill-price">
+                ₹${billAmount}
+            </span>
+
+        </div>
+
+
+        ${paymentMessage}
+
+    `;
+
+}
+
+
+/* =====================================================
+   PAYMENT SELECTION
+===================================================== */
+
+window.selectPayment =
+    async function(method) {
+
+        if (!currentUser) {
+
+            alert(
+                "Please login first."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            !orderData
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            orderData.billStatus !==
+            "generated"
+        ) {
+
+            alert(
+                "The bill has not been generated yet."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            orderData.paymentStatus ===
+            "paid"
+        ) {
+
+            return;
+
+        }
+
+
+        const methodName =
+            method === "upi"
+            ?
+            "UPI"
+            :
+            "Cash";
+
+
+        const confirmed =
+            confirm(
+                "Select " +
+                methodName +
+                " as your payment method?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const orderRef =
+                doc(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders",
+                    orderId
+                );
+
+
+            /*
+             * For now this records the customer's
+             * selected payment method.
+             *
+             * The restaurant/admin will confirm
+             * the actual payment and set
+             * paymentStatus = "paid".
+             */
+
+            await updateDoc(
+                orderRef,
+                {
+
+                    paymentMethod:
+                        method,
+
+                    paymentStatus:
+                        "payment_selected",
+
+                    updatedAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            alert(
+                "✅ " +
+                methodName +
+                " selected.\n\n" +
+                "Please wait for the restaurant to confirm the payment."
+            );
+
+        }
+        catch(error) {
+
+            console.error(
+                "Payment selection error:",
+                error
+            );
+
+
+            alert(
+                "❌ Unable to select payment method.\n\n" +
+                error.message
+            );
+
+        }
+
+    };
+
+
+/* =====================================================
+   BACK TO MENU
+===================================================== */
+
+window.goBackToMenu =
+    function() {
+
+        window.location.href =
+            "customer-menu.html" +
+            "?restaurantId=" +
+            encodeURIComponent(
+                restaurantId
+            ) +
+            "&table=" +
+            encodeURIComponent(
+                table
+            );
+
+    };
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(value)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+</script>
+
+</body>
+</html>
