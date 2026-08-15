@@ -1,224 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
 <title>Cart - Restaurant</title>
 
 <style>
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
 }
 
-body {
-    background: #f5f5f5;
-    padding-bottom: 30px;
+body{
+    background:#f5f5f5;
+    padding-bottom:30px;
 }
 
-header {
-    background: #ff5722;
-    color: white;
-    padding: 20px;
-    text-align: center;
+header{
+    background:#ff5722;
+    color:white;
+    padding:20px;
+    text-align:center;
 }
 
-header h1 {
-    margin-bottom: 5px;
+header h1{
+    margin-bottom:5px;
 }
 
-header p {
-    font-size: 14px;
+header p{
+    font-size:14px;
 }
 
-.container {
-    max-width: 600px;
-    margin: auto;
-    padding: 15px;
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:15px;
 }
 
-.table-info {
-    background: white;
-    padding: 14px;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    color: #ff5722;
-    margin-bottom: 15px;
+.table-info{
+    background:white;
+    padding:14px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+    color:#ff5722;
+    margin-bottom:15px;
 }
 
-.cart-card {
-    background: white;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.customer-card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.item-top {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
+.customer-title{
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:10px;
 }
 
-.item-name {
-    font-size: 18px;
-    font-weight: bold;
+.customer-row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:6px 0;
+    font-size:14px;
 }
 
-.item-category {
-    color: #777;
-    font-size: 13px;
-    margin-top: 4px;
+.customer-label{
+    color:#777;
 }
 
-.item-price {
-    color: #ff5722;
-    font-weight: bold;
-    white-space: nowrap;
+.customer-value{
+    font-weight:bold;
+    text-align:right;
 }
 
-.item-details {
-    margin-top: 12px;
-    color: #555;
-    font-size: 14px;
+.cart-card{
+    background:white;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.instruction {
-    margin-top: 8px;
-    background: #fff8f4;
-    padding: 8px;
-    border-radius: 7px;
-    font-size: 13px;
+.item-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
 }
 
-.total-card {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    margin-top: 15px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.item-name{
+    font-size:18px;
+    font-weight:bold;
 }
 
-.total-row {
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-    font-weight: bold;
+.item-category{
+    color:#777;
+    font-size:13px;
+    margin-top:4px;
 }
 
-.total-price {
-    color: #ff5722;
+.item-price{
+    color:#ff5722;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.item-details{
+    margin-top:12px;
+    color:#555;
+    font-size:14px;
+}
+
+.instruction{
+    margin-top:8px;
+    background:#fff8f4;
+    padding:8px;
+    border-radius:7px;
+    font-size:13px;
+}
+
+.total-card{
+    background:white;
+    padding:18px;
+    border-radius:12px;
+    margin-top:15px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.total-price{
+    color:#ff5722;
 }
 
 .place-btn,
-.status-btn {
-    width: 100%;
-    margin-top: 15px;
-    padding: 15px;
-    border: none;
-    border-radius: 9px;
-    background: #ff5722;
-    color: white;
-    font-size: 17px;
-    font-weight: bold;
-    cursor: pointer;
+.status-btn{
+    width:100%;
+    margin-top:15px;
+    padding:15px;
+    border:none;
+    border-radius:9px;
+    background:#ff5722;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
 .place-btn:hover,
-.status-btn:hover {
-    background: #e64a19;
+.status-btn:hover{
+    background:#e64a19;
 }
 
-.place-btn:disabled {
-    background: #aaa;
-    cursor: not-allowed;
+.place-btn:disabled{
+    background:#aaa;
+    cursor:not-allowed;
 }
 
-.back-btn {
-    width: 100%;
-    margin-top: 10px;
-    padding: 13px;
-    border: none;
-    border-radius: 9px;
-    background: #333;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
+.back-btn{
+    width:100%;
+    margin-top:10px;
+    padding:13px;
+    border:none;
+    border-radius:9px;
+    background:#333;
+    color:white;
+    font-size:16px;
+    cursor:pointer;
 }
 
-.empty {
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
-    color: #777;
+.empty{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    color:#777;
 }
 
-.success {
-    background: white;
-    padding: 25px;
-    border-radius: 12px;
-    text-align: center;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+.success{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
 }
 
-.success-icon {
-    font-size: 50px;
-    margin-bottom: 10px;
+.success-icon{
+    font-size:50px;
+    margin-bottom:10px;
 }
 
-.order-id {
-    margin-top: 15px;
-    background: #fff3e0;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: bold;
-    color: #e65100;
-    word-break: break-all;
-}
-
-.status-btn {
-    font-size: 16px;
+.order-id{
+    margin-top:15px;
+    background:#fff3e0;
+    padding:12px;
+    border-radius:8px;
+    font-weight:bold;
+    color:#e65100;
+    word-break:break-all;
 }
 
 </style>
+
 </head>
 
 <body>
 
 <header>
-    <h1 id="restaurantName">Restaurant</h1>
-    <p>Your Cart</p>
+
+<h1 id="restaurantName">
+Restaurant
+</h1>
+
+<p>
+Your Cart
+</p>
+
 </header>
+
 
 <div class="container">
 
-    <div id="tableInfo" class="table-info">
-        Loading table...
-    </div>
+<div id="tableInfo"
+class="table-info">
+Loading table...
+</div>
 
-    <div id="cartContainer">
-        <div class="empty">
-            Loading cart...
-        </div>
-    </div>
+
+<div id="customerContainer">
+</div>
+
+
+<div id="cartContainer">
+
+<div class="empty">
+Loading cart...
+</div>
 
 </div>
 
-<script type="module">
+</div>
 
-/* =====================================================
-   FIREBASE
-===================================================== */
+
+<script type="module">
 
 import {
     initializeApp
 }
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
 
 import {
     getFirestore,
@@ -231,6 +279,7 @@ import {
 from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
+
 import {
     getAuth
 }
@@ -238,7 +287,7 @@ from
 "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
 
-const firebaseConfig = {
+const firebaseConfig={
 
     apiKey:
         "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
@@ -260,131 +309,133 @@ const firebaseConfig = {
 
     measurementId:
         "G-G3Q89BDFF9"
+
 };
 
 
 const app =
     initializeApp(firebaseConfig);
 
-
 const db =
     getFirestore(app);
-
 
 const auth =
     getAuth(app);
 
 
-/* =====================================================
-   URL PARAMETERS
-===================================================== */
+/* ==========================================
+   URL
+========================================== */
 
 const params =
     new URLSearchParams(
         window.location.search
     );
 
-
 const restaurantId =
     params.get("restaurantId");
-
 
 const table =
     params.get("table");
 
 
-/* =====================================================
+/* ==========================================
    ELEMENTS
-===================================================== */
+========================================== */
 
 const restaurantName =
     document.getElementById(
         "restaurantName"
     );
 
-
 const tableInfo =
     document.getElementById(
         "tableInfo"
     );
-
 
 const cartContainer =
     document.getElementById(
         "cartContainer"
     );
 
-
-/* =====================================================
-   CART
-===================================================== */
-
-let cartItems = [];
+const customerContainer =
+    document.getElementById(
+        "customerContainer"
+    );
 
 
-/* =====================================================
-   CHECK INFORMATION
-===================================================== */
+/* ==========================================
+   DATA
+========================================== */
 
-if (
+let cartItems=[];
+
+let customerName="";
+
+let customerMobile="";
+
+let customerUid="";
+
+
+/* ==========================================
+   CHECK
+========================================== */
+
+if(
     !restaurantId ||
     !table
-) {
+){
 
-    cartContainer.innerHTML = `
+    cartContainer.innerHTML=`
 
         <div class="empty">
 
-            ❌ Invalid restaurant or table information.
+            ❌ Invalid restaurant
+            or table information.
 
         </div>
 
     `;
 
 }
-else {
+else{
 
-    tableInfo.textContent =
-        "🪑 Table " + table;
+    tableInfo.textContent=
+        "🪑 Table "+table;
 
     loadRestaurant();
+
+    loadCustomer();
 
     loadCart();
 
 }
 
 
-/* =====================================================
-   LOAD RESTAURANT
-===================================================== */
+/* ==========================================
+   RESTAURANT
+========================================== */
 
-async function loadRestaurant() {
+async function loadRestaurant(){
 
-    try {
+    try{
 
-        const restaurantRef =
+        const ref=
             doc(
                 db,
                 "restaurants",
                 restaurantId
             );
 
+        const snapshot=
+            await getDoc(ref);
 
-        const snapshot =
-            await getDoc(
-                restaurantRef
-            );
+        if(snapshot.exists()){
 
-
-        if (
-            snapshot.exists()
-        ) {
-
-            const data =
+            const data=
                 snapshot.data();
 
-
-            restaurantName.textContent =
+            restaurantName.textContent=
                 data.restaurantName ||
                 data.name ||
                 "Restaurant";
@@ -392,33 +443,256 @@ async function loadRestaurant() {
         }
 
     }
-    catch(error) {
+    catch(error){
 
-        console.error(
-            "Restaurant loading error:",
-            error
-        );
+        console.error(error);
 
     }
 
 }
 
 
-/* =====================================================
+/* ==========================================
+   CUSTOMER
+========================================== */
+
+async function loadCustomer(){
+
+    try{
+
+        const user=
+            auth.currentUser;
+
+        if(!user){
+
+            /*
+             Wait briefly for Firebase Auth
+             to restore the session.
+            */
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        1000
+                    )
+            );
+
+        }
+
+        const currentUser=
+            auth.currentUser;
+
+        if(!currentUser){
+
+            customerContainer.innerHTML=`
+
+                <div class="customer-card">
+
+                    <div class="customer-title">
+                        👤 Customer
+                    </div>
+
+                    <div style="color:#c62828;font-size:14px">
+
+                        Login session not found.
+                        Please login again.
+
+                    </div>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        customerUid=
+            currentUser.uid;
+
+
+        customerMobile=
+            currentUser.phoneNumber ||
+            localStorage.getItem(
+                "customerMobile"
+            ) ||
+            "";
+
+
+        const customerRef=
+            doc(
+                db,
+                "restaurants",
+                restaurantId,
+                "customers",
+                currentUser.uid
+            );
+
+
+        const snapshot=
+            await getDoc(
+                customerRef
+            );
+
+
+        if(snapshot.exists()){
+
+            const data=
+                snapshot.data();
+
+            customerName=
+                data.name ||
+                localStorage.getItem(
+                    "customerName"
+                ) ||
+                "";
+
+            customerMobile=
+                data.mobile ||
+                data.phoneNumber ||
+                customerMobile;
+
+        }
+        else{
+
+            customerName=
+                localStorage.getItem(
+                    "customerName"
+                ) ||
+                "";
+
+        }
+
+
+        renderCustomer();
+
+    }
+    catch(error){
+
+        console.error(
+            "Customer loading error:",
+            error
+        );
+
+        /*
+         Fallback to local storage.
+        */
+
+        customerName=
+            localStorage.getItem(
+                "customerName"
+            ) ||
+            "";
+
+        customerMobile=
+            localStorage.getItem(
+                "customerMobile"
+            ) ||
+            "";
+
+        customerUid=
+            localStorage.getItem(
+                "customerUid"
+            ) ||
+            "";
+
+        renderCustomer();
+
+    }
+
+}
+
+
+/* ==========================================
+   RENDER CUSTOMER
+========================================== */
+
+function renderCustomer(){
+
+    customerContainer.innerHTML=`
+
+        <div class="customer-card">
+
+            <div class="customer-title">
+
+                👤 Customer Details
+
+            </div>
+
+
+            <div class="customer-row">
+
+                <span class="customer-label">
+                    Name
+                </span>
+
+                <span class="customer-value">
+
+                    ${escapeHTML(
+                        customerName ||
+                        "Not available"
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="customer-row">
+
+                <span class="customer-label">
+                    Mobile
+                </span>
+
+                <span class="customer-value">
+
+                    ${escapeHTML(
+                        customerMobile ||
+                        "Not available"
+                    )}
+
+                </span>
+
+            </div>
+
+
+            <div class="customer-row">
+
+                <span class="customer-label">
+                    Table
+                </span>
+
+                <span class="customer-value">
+
+                    ${escapeHTML(table)}
+
+                </span>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ==========================================
    LOAD CART
-===================================================== */
+========================================== */
 
-function loadCart() {
+function loadCart(){
 
-    try {
+    try{
 
-        const savedCart =
+        const savedCart=
             localStorage.getItem(
                 "restaurantCart"
             );
 
-
-        if (!savedCart) {
+        if(!savedCart){
 
             showEmptyCart();
 
@@ -426,17 +700,15 @@ function loadCart() {
 
         }
 
-
-        cartItems =
+        cartItems=
             JSON.parse(
                 savedCart
             );
 
-
-        if (
+        if(
             !Array.isArray(cartItems) ||
-            cartItems.length === 0
-        ) {
+            cartItems.length===0
+        ){
 
             showEmptyCart();
 
@@ -444,16 +716,12 @@ function loadCart() {
 
         }
 
-
         renderCart();
 
     }
-    catch(error) {
+    catch(error){
 
-        console.error(
-            "Cart loading error:",
-            error
-        );
+        console.error(error);
 
         showEmptyCart();
 
@@ -462,13 +730,13 @@ function loadCart() {
 }
 
 
-/* =====================================================
-   EMPTY CART
-===================================================== */
+/* ==========================================
+   EMPTY
+========================================== */
 
-function showEmptyCart() {
+function showEmptyCart(){
 
-    cartContainer.innerHTML = `
+    cartContainer.innerHTML=`
 
         <div class="empty">
 
@@ -482,7 +750,9 @@ function showEmptyCart() {
                 class="back-btn"
                 onclick="goBack()"
             >
+
                 ← Back to Menu
+
             </button>
 
         </div>
@@ -492,50 +762,46 @@ function showEmptyCart() {
 }
 
 
-/* =====================================================
+/* ==========================================
    RENDER CART
-===================================================== */
+========================================== */
 
-function renderCart() {
+function renderCart(){
 
-    cartContainer.innerHTML = "";
+    cartContainer.innerHTML="";
 
-    let total = 0;
+    let total=0;
 
 
     cartItems.forEach(
-        item => {
+        item=>{
 
-            const quantity =
+            const quantity=
                 Number(
-                    item.quantity || 0
+                    item.quantity||0
                 );
 
-
-            const price =
+            const price=
                 Number(
-                    item.price || 0
+                    item.price||0
                 );
 
+            const itemTotal=
+                quantity*price;
 
-            const itemTotal =
-                quantity * price;
-
-
-            total += itemTotal;
+            total+=itemTotal;
 
 
-            const card =
+            const card=
                 document.createElement(
                     "div"
                 );
 
-
-            card.className =
+            card.className=
                 "cart-card";
 
 
-            card.innerHTML = `
+            card.innerHTML=`
 
                 <div class="item-top">
 
@@ -552,12 +818,13 @@ function renderCart() {
                         <div class="item-category">
 
                             ${escapeHTML(
-                                item.category || ""
+                                item.category||""
                             )}
 
                         </div>
 
                     </div>
+
 
                     <div class="item-price">
 
@@ -579,13 +846,16 @@ function renderCart() {
                     item.instruction
                     ?
                     `
+
                     <div class="instruction">
 
-                        📝 ${escapeHTML(
+                        📝
+                        ${escapeHTML(
                             item.instruction
                         )}
 
                     </div>
+
                     `
                     :
                     ""
@@ -602,17 +872,17 @@ function renderCart() {
     );
 
 
-    const totalCard =
+    const totalCard=
         document.createElement(
             "div"
         );
 
 
-    totalCard.className =
+    totalCard.className=
         "total-card";
 
 
-    totalCard.innerHTML = `
+    totalCard.innerHTML=`
 
         <div class="total-row">
 
@@ -660,29 +930,31 @@ function renderCart() {
         .getElementById(
             "placeOrderBtn"
         )
-        .onclick =
-            () => placeOrder(total);
+        .onclick=
+            ()=>{
+                placeOrder(total);
+            };
 
 }
 
 
-/* =====================================================
+/* ==========================================
    PLACE ORDER
-===================================================== */
+========================================== */
 
-async function placeOrder(total) {
+async function placeOrder(total){
 
-    const placeButton =
+    const placeButton=
         document.getElementById(
             "placeOrderBtn"
         );
 
 
-    if (
+    if(
         !restaurantId ||
         !table ||
         !cartItems.length
-    ) {
+    ){
 
         alert(
             "Unable to place order."
@@ -693,15 +965,11 @@ async function placeOrder(total) {
     }
 
 
-    /* ---------------------------------------------
-       CHECK LOGIN
-    --------------------------------------------- */
-
-    const user =
+    const user=
         auth.currentUser;
 
 
-    if (!user) {
+    if(!user){
 
         alert(
             "Please login before placing your order."
@@ -712,47 +980,85 @@ async function placeOrder(total) {
     }
 
 
-    const confirmOrder =
-        confirm(
-            "Are you sure you want to place this order?"
+    /*
+     Make sure customer name exists.
+    */
+
+    if(!customerName){
+
+        alert(
+            "Customer name is missing. Please login again."
         );
-
-
-    if (!confirmOrder) {
 
         return;
 
     }
 
 
-    try {
+    const confirmOrder=
+        confirm(
+            "Are you sure you want to place this order?"
+        );
 
-        placeButton.disabled =
+
+    if(!confirmOrder)
+        return;
+
+
+    try{
+
+        placeButton.disabled=
             true;
 
-
-        placeButton.textContent =
+        placeButton.textContent=
             "⏳ Placing Order...";
 
 
-        /* -----------------------------------------
-           ORDER DATA
-        ----------------------------------------- */
+        /*
+         Get verified phone from Firebase.
+        */
 
-        const orderData = {
+        const phone=
+            user.phoneNumber ||
+            customerMobile ||
+            "";
+
+
+        /*
+         IMPORTANT:
+         Customer information is now
+         stored directly in the order.
+        */
+
+        const orderData={
 
             restaurantId:
                 restaurantId,
 
+
             customerUid:
                 user.uid,
+
+
+            customerName:
+                customerName,
+
+
+            customerMobile:
+                phone,
+
+
+            customerPhone:
+                phone,
+
 
             table:
                 table,
 
+
             items:
                 cartItems.map(
-                    item => ({
+                    item=>({
 
                         itemId:
                             item.id || "",
@@ -779,35 +1085,66 @@ async function placeOrder(total) {
                     })
                 ),
 
+
             total:
                 Number(total),
+
 
             status:
                 "received",
 
+
             paymentStatus:
                 "unpaid",
+
 
             paymentMethod:
                 "",
 
+
             billStatus:
                 "not_generated",
+
+
+            billTotal:
+                0,
+
 
             waiterRequested:
                 false,
 
+
+            waiterCalled:
+                false,
+
+
+            waiterHandled:
+                false,
+
+
             waiterRequestedAt:
                 null,
+
 
             billRequested:
                 false,
 
+
             billRequestedAt:
                 null,
 
+
+            billGeneratedAt:
+                null,
+
+
+            paidAt:
+                null,
+
+
             createdAt:
                 serverTimestamp(),
+
 
             updatedAt:
                 serverTimestamp()
@@ -815,11 +1152,11 @@ async function placeOrder(total) {
         };
 
 
-        /* -----------------------------------------
-           SAVE ORDER
-        ----------------------------------------- */
+        /*
+         Save order.
+        */
 
-        const ordersRef =
+        const ordersRef=
             collection(
                 db,
                 "restaurants",
@@ -828,14 +1165,14 @@ async function placeOrder(total) {
             );
 
 
-        const orderReference =
+        const orderReference=
             await addDoc(
                 ordersRef,
                 orderData
             );
 
 
-        const orderId =
+        const orderId=
             orderReference.id;
 
 
@@ -845,21 +1182,19 @@ async function placeOrder(total) {
         );
 
 
-        /* -----------------------------------------
-           SAVE ORDER INFORMATION
-        ----------------------------------------- */
+        /*
+         Save current order.
+        */
 
         localStorage.setItem(
             "currentOrderId",
             orderId
         );
 
-
         localStorage.setItem(
             "currentRestaurantId",
             restaurantId
         );
-
 
         localStorage.setItem(
             "currentTable",
@@ -867,25 +1202,21 @@ async function placeOrder(total) {
         );
 
 
-        /* -----------------------------------------
-           CLEAR CART
-        ----------------------------------------- */
+        /*
+         Clear cart.
+        */
 
         localStorage.removeItem(
             "restaurantCart"
         );
 
 
-        /* -----------------------------------------
-           SUCCESS
-        ----------------------------------------- */
-
         showOrderSuccess(
             orderId
         );
 
     }
-    catch(error) {
+    catch(error){
 
         console.error(
             "Order error:",
@@ -894,16 +1225,15 @@ async function placeOrder(total) {
 
 
         alert(
-            "❌ Unable to place order.\n\n" +
+            "❌ Unable to place order.\n\n"+
             error.message
         );
 
 
-        placeButton.disabled =
+        placeButton.disabled=
             false;
 
-
-        placeButton.textContent =
+        placeButton.textContent=
             "🍽️ Place Order";
 
     }
@@ -911,13 +1241,13 @@ async function placeOrder(total) {
 }
 
 
-/* =====================================================
-   ORDER SUCCESS
-===================================================== */
+/* ==========================================
+   SUCCESS
+========================================== */
 
-function showOrderSuccess(orderId) {
+function showOrderSuccess(orderId){
 
-    cartContainer.innerHTML = `
+    cartContainer.innerHTML=`
 
         <div class="success">
 
@@ -950,9 +1280,7 @@ function showOrderSuccess(orderId) {
 
                 <br><br>
 
-                ${escapeHTML(
-                    orderId
-                )}
+                ${escapeHTML(orderId)}
 
             </div>
 
@@ -965,7 +1293,13 @@ function showOrderSuccess(orderId) {
                 "
             >
 
-                Table ${escapeHTML(table)}
+                Customer:
+                ${escapeHTML(customerName)}
+
+                <br>
+
+                Table:
+                ${escapeHTML(table)}
 
             </p>
 
@@ -986,67 +1320,67 @@ function showOrderSuccess(orderId) {
 }
 
 
-/* =====================================================
-   OPEN ORDER STATUS
-===================================================== */
+/* ==========================================
+   ORDER STATUS
+========================================== */
 
-window.openOrderStatus =
-    function() {
+window.openOrderStatus=
+function(){
 
-        const savedOrderId =
-            localStorage.getItem(
-                "currentOrderId"
-            );
-
-
-        const url =
-            "order-status.html" +
-            "?restaurantId=" +
-            encodeURIComponent(
-                restaurantId
-            ) +
-            "&table=" +
-            encodeURIComponent(
-                table
-            ) +
-            "&orderId=" +
-            encodeURIComponent(
-                savedOrderId
-            );
+    const savedOrderId=
+        localStorage.getItem(
+            "currentOrderId"
+        );
 
 
-        window.location.href =
-            url;
-
-    };
-
-
-/* =====================================================
-   BACK TO MENU
-===================================================== */
-
-window.goBack =
-    function() {
-
-        window.location.href =
-            "customer-menu.html" +
-            "?restaurantId=" +
-            encodeURIComponent(
-                restaurantId
-            ) +
-            "&table=" +
-            encodeURIComponent(
-                table
-            );
-
-    };
+    const url=
+        "order-status.html"+
+        "?restaurantId="+
+        encodeURIComponent(
+            restaurantId
+        )+
+        "&table="+
+        encodeURIComponent(
+            table
+        )+
+        "&orderId="+
+        encodeURIComponent(
+            savedOrderId
+        );
 
 
-/* =====================================================
-   ESCAPE HTML
-===================================================== */
+    window.location.href=
+        url;
 
-function escapeHTML(value) {
+};
+
+
+/* ==========================================
+   BACK
+========================================== */
+
+window.goBack=
+function(){
+
+    window.location.href=
+        "customer-menu.html"+
+        "?restaurantId="+
+        encodeURIComponent(
+            restaurantId
+        )+
+        "&table="+
+        encodeURIComponent(
+            table
+        );
+
+};
+
+
+/* ==========================================
+   ESCAPE
+========================================== */
+
+function escapeHTML(value){
 
     return String(value)
 
