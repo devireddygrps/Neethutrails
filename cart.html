@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>Your Cart</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    background: #f5f5f5;
+    padding-bottom: 30px;
+}
+
+/* HEADER */
+
+header {
+    background: #ff5722;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin-bottom: 5px;
+}
+
+header p {
+    font-size: 14px;
+}
+
+/* CONTAINER */
+
+.container {
+    max-width: 600px;
+    margin: auto;
+    padding: 15px;
+}
+
+/* TABLE */
+
+.table-info {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: bold;
+    color: #ff5722;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* CART ITEM */
+
+.cart-item {
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.item-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #222;
+}
+
+.item-price {
+    color: #ff5722;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+.item-subtotal {
+    margin-top: 8px;
+    font-size: 15px;
+    color: #555;
+}
+
+/* QUANTITY */
+
+.quantity-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+}
+
+.quantity-row button {
+    width: 35px;
+    height: 35px;
+    border: none;
+    border-radius: 50%;
+    background: #ff5722;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.quantity {
+    min-width: 25px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* INSTRUCTIONS */
+
+.instruction {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    resize: none;
+    font-size: 14px;
+}
+
+/* SUMMARY */
+
+.summary {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 16px;
+}
+
+.total-row {
+    border-top: 1px solid #ddd;
+    padding-top: 15px;
+    margin-top: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.total-price {
+    color: #ff5722;
+}
+
+/* BUTTONS */
+
+.place-order {
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    background: #ff5722;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 17px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.place-order:hover {
+    background: #e64a19;
+}
+
+.back-menu {
+    width: 100%;
+    padding: 14px;
+    margin-top: 10px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* EMPTY CART */
+
+.empty {
+    background: white;
+    padding: 40px 20px;
+    border-radius: 12px;
+    text-align: center;
+    color: #777;
+}
+
+.empty-icon {
+    font-size: 50px;
+    margin-bottom: 15px;
+}
+
+/* STATUS */
+
+.status {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <h1>🛒 Your Cart</h1>
+
+    <p>
+        Review your order
+    </p>
+
+</header>
+
+
+<div class="container">
+
+
+    <!-- TABLE -->
+
+    <div
+        id="tableInfo"
+        class="table-info"
+    >
+        Loading table...
+    </div>
+
+
+    <!-- CART ITEMS -->
+
+    <div
+        id="cartContainer"
+    >
+
+        <div class="empty">
+
+            <div class="empty-icon">
+                🛒
+            </div>
+
+            <h3>
+                Your cart is empty
+            </h3>
+
+            <p style="margin-top:8px;">
+                Please add some items from the menu.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUMMARY -->
+
+    <div
+        id="summary"
+        class="summary"
+        style="display:none;"
+    >
+
+        <div class="summary-row">
+
+            <span>
+                Items
+            </span>
+
+            <span id="itemCount">
+                0
+            </span>
+
+        </div>
+
+
+        <div class="summary-row total-row">
+
+            <span>
+                Total
+            </span>
+
+            <span class="total-price">
+                ₹<span id="total">0</span>
+            </span>
+
+        </div>
+
+
+        <button
+            class="place-order"
+            onclick="placeOrder()"
+        >
+            🍽️ Place Order
+        </button>
+
+
+        <button
+            class="back-menu"
+            onclick="backToMenu()"
+        >
+            ← Back to Menu
+        </button>
+
+    </div>
+
+
+    <div
+        id="status"
+        class="status"
+    ></div>
+
+
+</div>
+
+
+<script>
+
+
+/* ==========================================
+   READ URL PARAMETERS
+========================================== */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const restaurantId =
+    params.get("restaurantId");
+
+
+const table =
+    params.get("table");
+
+
+/* ==========================================
+   CART STORAGE
+========================================== */
+
+let cart = [];
+
+
+/* ==========================================
+   LOAD CART
+========================================== */
+
+try {
+
+    const savedCart =
+        localStorage.getItem(
+            "restaurantCart"
+        );
+
+
+    if (savedCart) {
+
+        cart =
+            JSON.parse(
+                savedCart
+            );
+
+    }
+
+}
+
+catch(error) {
+
+    console.error(
+        "Cart loading error:",
+        error
+    );
+
+    cart = [];
+
+}
+
+
+/* ==========================================
+   DISPLAY TABLE
+========================================== */
+
+const tableInfo =
+    document.getElementById(
+        "tableInfo"
+    );
+
+
+if (table) {
+
+    tableInfo.textContent =
+        "🪑 Table " + table;
+
+}
+
+else {
+
+    tableInfo.textContent =
+        "🪑 Table information unavailable";
+
+}
+
+
+/* ==========================================
+   SAVE CART
+========================================== */
+
+function saveCart() {
+
+    localStorage.setItem(
+        "restaurantCart",
+        JSON.stringify(cart)
+    );
+
+}
+
+
+/* ==========================================
+   RENDER CART
+========================================== */
+
+function renderCart() {
+
+    const container =
+        document.getElementById(
+            "cartContainer"
+        );
+
+
+    const summary =
+        document.getElementById(
+            "summary"
+        );
+
+
+    const itemCount =
+        document.getElementById(
+            "itemCount"
+        );
+
+
+    const totalElement =
+        document.getElementById(
+            "total"
+        );
+
+
+    if (
+        !cart ||
+        cart.length === 0
+    ) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    🛒
+                </div>
+
+                <h3>
+                    Your cart is empty
+                </h3>
+
+                <p style="margin-top:8px;">
+                    Please add some items from the menu.
+                </p>
+
+            </div>
+
+        `;
+
+
+        summary.style.display =
+            "none";
+
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    let total = 0;
+
+    let count = 0;
+
+
+    cart.forEach(
+        (item, index) => {
+
+            const quantity =
+                Number(
+                    item.quantity || 0
+                );
+
+
+            const price =
+                Number(
+                    item.price || 0
+                );
+
+
+            const subtotal =
+                quantity * price;
+
+
+            total += subtotal;
+
+            count += quantity;
+
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+
+            card.className =
+                "cart-item";
+
+
+            card.innerHTML = `
+
+                <div class="item-top">
+
+                    <div>
+
+                        <div class="item-name">
+
+                            ${escapeHTML(
+                                item.name
+                            )}
+
+                        </div>
+
+                        <div class="item-subtotal">
+
+                            ₹${price} × ${quantity}
+
+                            =
+                            <b>
+                                ₹${subtotal}
+                            </b>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="item-price">
+
+                        ₹${price}
+
+                    </div>
+
+                </div>
+
+
+                <div class="quantity-row">
+
+                    <button
+                        onclick="changeQuantity(${index}, -1)"
+                    >
+                        −
+                    </button>
+
+
+                    <span class="quantity">
+
+                        ${quantity}
+
+                    </span>
+
+
+                    <button
+                        onclick="changeQuantity(${index}, 1)"
+                    >
+                        +
+                    </button>
+
+                </div>
+
+
+                <textarea
+                    class="instruction"
+                    id="instruction-${index}"
+                    placeholder="Special instructions..."
+                >${escapeHTML(
+                    item.instruction || ""
+                )}</textarea>
+
+            `;
+
+
+            const instruction =
+                card.querySelector(
+                    "#instruction-" + index
+                );
+
+
+            instruction.addEventListener(
+                "input",
+                function() {
+
+                    cart[index].instruction =
+                        this.value;
+
+                    saveCart();
+
+                }
+            );
+
+
+            container.appendChild(
+                card
+            );
+
+        }
+    );
+
+
+    itemCount.textContent =
+        count;
+
+
+    totalElement.textContent =
+        total;
+
+
+    summary.style.display =
+        "block";
+
+}
+
+
+/* ==========================================
+   CHANGE QUANTITY
+========================================== */
+
+window.changeQuantity =
+    function(
+        index,
+        change
+    ) {
+
+        if (
+            !cart[index]
+        ) {
+
+            return;
+
+        }
+
+
+        cart[index].quantity +=
+            change;
+
+
+        if (
+            cart[index].quantity <= 0
+        ) {
+
+            cart.splice(
+                index,
+                1
+            );
+
+        }
+
+
+        saveCart();
+
+        renderCart();
+
+    };
+
+
+/* ==========================================
+   BACK TO MENU
+========================================== */
+
+window.backToMenu =
+    function() {
+
+        let url =
+            "customer-menu.html";
+
+
+        if (restaurantId) {
+
+            url +=
+                "?restaurantId=" +
+                encodeURIComponent(
+                    restaurantId
+                );
+
+        }
+
+
+        if (table) {
+
+            url +=
+                (url.includes("?")
+                    ? "&"
+                    : "?") +
+                "table=" +
+                encodeURIComponent(
+                    table
+                );
+
+        }
+
+
+        window.location.href =
+            url;
+
+    };
+
+
+/* ==========================================
+   PLACE ORDER
+========================================== */
+
+window.placeOrder =
+    function() {
+
+        if (
+            !cart ||
+            cart.length === 0
+        ) {
+
+            alert(
+                "Your cart is empty."
+            );
+
+            return;
+
+        }
+
+
+        let total = 0;
+
+
+        cart.forEach(
+            item => {
+
+                total +=
+                    Number(
+                        item.price || 0
+                    ) *
+                    Number(
+                        item.quantity || 0
+                    );
+
+            }
+        );
+
+
+        /*
+         * FOR NOW:
+         * We are only showing confirmation.
+         *
+         * In the next step we will connect
+         * this button to Firebase and send
+         * the order to the restaurant admin.
+         */
+
+
+        const confirmed =
+            confirm(
+
+                "Place this order?\n\n" +
+
+                "Table: " +
+                table +
+
+                "\nItems: " +
+                cart.reduce(
+                    (
+                        sum,
+                        item
+                    ) =>
+                        sum +
+                        Number(
+                            item.quantity || 0
+                        ),
+                    0
+                ) +
+
+                "\nTotal: ₹" +
+                total
+
+            );
+
+
+        if (
+            confirmed
+        ) {
+
+            document.getElementById(
+                "status"
+            ).textContent =
+                "✅ Order confirmation ready. Firebase order saving will be connected next.";
+
+        }
+
+    };
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value
+    )
+
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
+
+}
+
+
+/* ==========================================
+   INITIAL RENDER
+========================================== */
+
+renderCart();
+
+</script>
+
+
+</body>
+
+</html>
