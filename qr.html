@@ -1,602 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant QR Codes</title>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            background: #f5f5f5;
-        }
-
-        .header {
-            background: #ff5722;
-            color: white;
-            padding: 18px;
-            text-align: center;
-        }
-
-        .header h2 {
-            margin-bottom: 5px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 25px auto;
-            padding: 20px;
-        }
-
-        .status {
-            text-align: center;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .qr-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .qr-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
-            text-align: center;
-        }
-
-        .qr-card h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .qr-image {
-            width: 220px;
-            height: 220px;
-            max-width: 100%;
-            margin: 10px auto 15px;
-            display: block;
-        }
-
-        .qr-url {
-            font-size: 12px;
-            color: #777;
-            word-break: break-all;
-            margin-bottom: 15px;
-        }
-
-        .download-btn {
-            width: 100%;
-            padding: 11px;
-            background: #4caf50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 15px;
-        }
-
-        .download-btn:hover {
-            background: #388e3c;
-        }
-
-        .back-btn {
-            width: 100%;
-            margin-top: 20px;
-            padding: 13px;
-            background: #333;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        .back-btn:hover {
-            background: #111;
-        }
-
-        .restaurant-name {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .error {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            text-align: center;
-            color: #d32f2f;
-        }
-
-        .info-box {
-            background: #fff3e0;
-            border: 1px solid #ffcc80;
-            color: #6d4c41;
-            padding: 12px 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            text-align: center;
-            line-height: 1.5;
-            font-size: 14px;
-        }
-
-        @media (max-width: 600px) {
-            .container {
-                padding: 15px;
-            }
-
-            .qr-card {
-                padding: 20px;
-            }
-
-            .qr-image {
-                width: 200px;
-                height: 200px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Restaurant QR Codes</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif;margin:0;padding:0}
+body{background:#f5f5f5;color:#333}
+.header{background:#ff5722;color:#fff;padding:20px;text-align:center}
+.container{max-width:1000px;margin:25px auto;padding:20px}
+.status,.restaurant{text-align:center;margin-bottom:15px}
+.restaurant{font-size:22px;font-weight:bold}
+.notice{background:#fff3e0;padding:12px;border-radius:10px;text-align:center;margin-bottom:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
+.card{background:#fff;padding:20px;border-radius:15px;box-shadow:0 3px 12px #0002;text-align:center}
+.qr{width:220px;height:220px;max-width:100%;display:block;margin:10px auto 15px}
+.url{font-size:12px;color:#666;word-break:break-all;margin-bottom:12px}
+button{width:100%;padding:12px;border:0;border-radius:8px;background:#4caf50;color:#fff;font-size:15px;cursor:pointer}
+.back{margin-top:20px;background:#333}
+.error{background:#fff;padding:20px;border-radius:10px;color:#c62828;text-align:center}
+</style>
 </head>
-
 <body>
+<div class="header"><h2>📱 Restaurant QR Codes</h2><p>Customer Login + OTP + Menu</p></div>
+<div class="container">
+<div id="status" class="status">Checking restaurant login...</div>
+<div id="restaurant" class="restaurant"></div>
+<div class="notice">Each new QR opens <b>customer-login.html</b>, then OTP verification, then the correct restaurant/table menu.</div>
+<div id="grid" class="grid"></div>
+<button class="back" onclick="location.href='dashboard.html'">← Back to Dashboard</button>
+</div>
 
-    <div class="header">
-        <h2>📱 Restaurant QR Codes</h2>
-        <p>Generate QR codes for your tables</p>
-    </div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-    <div class="container">
+const firebaseConfig = {
+    apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+    authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+    projectId: "restaurant-qr-ordering-fdf9b",
+    storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+    messagingSenderId: "907571024375",
+    appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
+    measurementId: "G-G3Q89BDFF9"
+};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const TOTAL_TABLES=10;
 
-        <div id="status" class="status">
-            Loading restaurant...
-        </div>
+onAuthStateChanged(auth, async user => {
+    if(!user) {
+        document.getElementById("status").textContent="Please login first. Redirecting...";
+        setTimeout(()=>location.href="index.html",800);
+        return;
+    }
+    await loadRestaurant(user.uid);
+});
 
-        <div id="restaurantName" class="restaurant-name"></div>
-
-        <div class="info-box">
-            Scan a QR code to open <b>Customer Login</b>.
-            The customer will enter their mobile number, verify OTP,
-            and then be taken to the correct restaurant menu and table.
-        </div>
-
-        <div id="qrGrid" class="qr-grid"></div>
-
-        <button
-            class="back-btn"
-            type="button"
-            onclick="goBack()"
-        >
-            ← Back to Dashboard
-        </button>
-
-    </div>
-
-    <script type="module">
-
-        /* =================================
-           FIREBASE IMPORTS
-        ================================= */
-
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-        import {
-            getAuth,
-            onAuthStateChanged
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-        import {
-            getFirestore,
-            doc,
-            getDoc
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
-
-
-        /* =================================
-           FIREBASE CONFIG
-        ================================= */
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-            authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-            projectId: "restaurant-qr-ordering-fdf9b",
-            storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-            messagingSenderId: "907571024375",
-            appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
-            measurementId: "G-G3Q89BDFF9"
-        };
-
-
-        /* =================================
-           INITIALIZE FIREBASE
-        ================================= */
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const db = getFirestore(app);
-
-
-        /* =================================
-           SETTINGS
-        ================================= */
-
-        const TOTAL_TABLES = 10;
-
-        /*
-         * IMPORTANT:
-         * QR codes are generated from the same
-         * folder as this qr.html file.
-         *
-         * This prevents GitHub Pages path errors.
-         */
-        const CUSTOMER_LOGIN_FILE =
-            "customer-login.html";
-
-
-        /* =================================
-           CHECK RESTAURANT LOGIN
-        ================================= */
-
-        onAuthStateChanged(
-            auth,
-            async (user) => {
-
-                if (user) {
-
-                    await loadRestaurant(user.uid);
-
-                } else {
-
-                    document.getElementById(
-                        "status"
-                    ).textContent =
-                        "Please login first.";
-
-                    setTimeout(() => {
-                        window.location.href =
-                            "index.html";
-                    }, 800);
-                }
-            }
-        );
-
-
-        /* =================================
-           LOAD RESTAURANT
-        ================================= */
-
-        async function loadRestaurant(
-            restaurantId
-        ) {
-
-            try {
-
-                const restaurantRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        restaurantId
-                    );
-
-                const restaurantSnap =
-                    await getDoc(
-                        restaurantRef
-                    );
-
-                let restaurantName =
-                    "My Restaurant";
-
-                if (
-                    restaurantSnap.exists()
-                ) {
-
-                    const data =
-                        restaurantSnap.data();
-
-                    restaurantName =
-                        data.restaurantName ||
-                        data.name ||
-                        "My Restaurant";
-                }
-
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "QR codes ready";
-
-                document.getElementById(
-                    "restaurantName"
-                ).textContent =
-                    "🏪 " + restaurantName;
-
-                generateQRCodes(
-                    restaurantId
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "Error loading restaurant:",
-                    error
-                );
-
-                document.getElementById(
-                    "status"
-                ).textContent =
-                    "Could not load restaurant.";
-
-                document.getElementById(
-                    "qrGrid"
-                ).innerHTML = `
-                    <div class="error">
-                        <h3>❌ Error</h3>
-                        <p>${escapeHTML(error.message)}</p>
-                    </div>
-                `;
-            }
+async function loadRestaurant(restaurantId) {
+    try {
+        const snap=await getDoc(doc(db,"restaurants",restaurantId));
+        let name="My Restaurant";
+        if(snap.exists()) {
+            const data=snap.data();
+            name=data.restaurantName || data.name || name;
         }
+        document.getElementById("restaurant").textContent="🏪 "+name;
+        document.getElementById("status").textContent="QR codes ready";
+        generateQRCodes(restaurantId);
+    } catch(e) {
+        console.error(e);
+        document.getElementById("status").textContent="Could not load restaurant.";
+        document.getElementById("grid").innerHTML='<div class="error">'+escapeHTML(e.message)+'</div>';
+    }
+}
 
+function generateQRCodes(restaurantId) {
+    const grid=document.getElementById("grid");
+    grid.innerHTML="";
+    const loginURL=new URL("customer-login.html",window.location.href).href;
 
-        /* =================================
-           GENERATE QR CODES
-        ================================= */
+    for(let table=1; table<=TOTAL_TABLES; table++) {
+        const customerURL=loginURL+
+            "?restaurantId="+encodeURIComponent(restaurantId)+
+            "&table="+encodeURIComponent(table);
 
-        function generateQRCodes(
-            restaurantId
-        ) {
+        const qrURL="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data="+
+            encodeURIComponent(customerURL);
 
-            const qrGrid =
-                document.getElementById(
-                    "qrGrid"
-                );
+        const card=document.createElement("div");
+        card.className="card";
+        card.innerHTML=`
+            <h3>🪑 Table ${table}</h3>
+            <img class="qr" src="${qrURL}" alt="Table ${table} QR">
+            <div class="url">${escapeHTML(customerURL)}</div>
+            <button>⬇️ Download QR</button>`;
+        card.querySelector("button").onclick=()=>downloadQR(qrURL,table);
+        grid.appendChild(card);
+    }
+}
 
-            qrGrid.innerHTML = "";
+async function downloadQR(url,table) {
+    try {
+        const response=await fetch(url);
+        const blob=await response.blob();
+        const objectURL=URL.createObjectURL(blob);
+        const a=document.createElement("a");
+        a.href=objectURL;
+        a.download=`table-${table}-customer-login-qr.png`;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(objectURL);
+    } catch(e) {
+        alert("Download failed. Right-click the QR image and save it instead.");
+    }
+}
 
-
-            /*
-             * Build customer-login.html from
-             * the current GitHub Pages folder.
-             *
-             * Example:
-             * https://devireddygrps.github.io/Neethutrails/customer-login.html
-             */
-            const customerLoginURL =
-                new URL(
-                    CUSTOMER_LOGIN_FILE,
-                    window.location.href
-                ).href;
-
-
-            for (
-                let table = 1;
-                table <= TOTAL_TABLES;
-                table++
-            ) {
-
-                /*
-                 * THIS is the URL stored inside
-                 * the QR code.
-                 *
-                 * Example:
-                 * customer-login.html
-                 * ?restaurantId=ABC123
-                 * &table=1
-                 */
-                const customerURL =
-                    customerLoginURL +
-                    "?restaurantId=" +
-                    encodeURIComponent(
-                        restaurantId
-                    ) +
-                    "&table=" +
-                    encodeURIComponent(
-                        table
-                    );
-
-
-                /*
-                 * QR image URL
-                 */
-                const qrURL =
-                    "https://api.qrserver.com/v1/create-qr-code/" +
-                    "?size=300x300&data=" +
-                    encodeURIComponent(
-                        customerURL
-                    );
-
-
-                /*
-                 * Card
-                 */
-                const card =
-                    document.createElement(
-                        "div"
-                    );
-
-                card.className =
-                    "qr-card";
-
-
-                card.innerHTML = `
-                    <h3>
-                        🪑 Table ${table}
-                    </h3>
-
-                    <img
-                        class="qr-image"
-                        src="${qrURL}"
-                        alt="QR Code for Table ${table}"
-                    >
-
-                    <div class="qr-url">
-                        ${escapeHTML(customerURL)}
-                    </div>
-
-                    <button
-                        class="download-btn"
-                        type="button"
-                        data-qr-url="${escapeHTML(qrURL)}"
-                        data-table="${table}"
-                    >
-                        ⬇️ Download QR
-                    </button>
-                `;
-
-
-                /*
-                 * Download button event
-                 */
-                const downloadButton =
-                    card.querySelector(
-                        ".download-btn"
-                    );
-
-                downloadButton.addEventListener(
-                    "click",
-                    () => {
-
-                        downloadQR(
-                            qrURL,
-                            table
-                        );
-
-                    }
-                );
-
-
-                qrGrid.appendChild(card);
-            }
-        }
-
-
-        /* =================================
-           DOWNLOAD QR
-        ================================= */
-
-        async function downloadQR(
-            qrURL,
-            tableNumber
-        ) {
-
-            try {
-
-                const response =
-                    await fetch(qrURL);
-
-                if (!response.ok) {
-                    throw new Error(
-                        "QR image could not be downloaded."
-                    );
-                }
-
-                const blob =
-                    await response.blob();
-
-                const imageURL =
-                    URL.createObjectURL(
-                        blob
-                    );
-
-                const link =
-                    document.createElement(
-                        "a"
-                    );
-
-                link.href =
-                    imageURL;
-
-                link.download =
-                    "table-" +
-                    tableNumber +
-                    "-customer-login-qr.png";
-
-                document.body.appendChild(
-                    link
-                );
-
-                link.click();
-
-                document.body.removeChild(
-                    link
-                );
-
-                URL.revokeObjectURL(
-                    imageURL
-                );
-
-            } catch (error) {
-
-                console.error(
-                    "QR download error:",
-                    error
-                );
-
-                alert(
-                    "Could not download QR code. " +
-                    "You can right-click the QR image " +
-                    "and save it instead."
-                );
-            }
-        }
-
-
-        /* =================================
-           SECURITY
-        ================================= */
-
-        function escapeHTML(
-            value
-        ) {
-
-            return String(value)
-                .replace(
-                    /&/g,
-                    "&amp;"
-                )
-                .replace(
-                    /</g,
-                    "&lt;"
-                )
-                .replace(
-                    />/g,
-                    "&gt;"
-                )
-                .replace(
-                    /"/g,
-                    "&quot;"
-                )
-                .replace(
-                    /'/g,
-                    "&#039;"
-                );
-        }
-
-
-        /* =================================
-           BACK TO DASHBOARD
-        ================================= */
-
-        window.goBack =
-            function () {
-
-                window.location.href =
-                    "dashboard.html";
-            };
-
-    </script>
-
+function escapeHTML(v) {
+    return String(v).replaceAll("&","&amp;").replaceAll("<","&lt;")
+        .replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+}
+</script>
 </body>
 </html>
