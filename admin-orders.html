@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Orders</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}
+body{background:#f5f5f5;padding-bottom:30px}
+header{background:#ff5722;color:white;padding:20px;text-align:center}
+header h1{margin-bottom:5px}
+.container{max-width:800px;margin:auto;padding:15px}
+.info{background:white;padding:15px;border-radius:10px;margin-bottom:15px}
+.order{background:white;border-radius:12px;padding:16px;margin-bottom:15px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.order-head{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid #eee;padding-bottom:12px}
+.table{font-size:20px;font-weight:bold}
+.order-id{font-size:12px;color:#777;margin-top:5px;word-break:break-all}
+.total{font-size:18px;font-weight:bold;color:#ff5722}
+.item{padding:10px 0;border-bottom:1px solid #eee}
+.item:last-child{border-bottom:none}
+.item-name{font-weight:bold}
+.item-detail{font-size:14px;color:#666;margin-top:4px}
+.instruction{background:#fff8f4;padding:7px;border-radius:6px;font-size:13px;margin-top:5px}
+.badges{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}
+.badge{padding:6px 9px;border-radius:15px;font-size:12px;font-weight:bold;background:#eee}
+.badge.alert{background:#ffe0b2;color:#e65100}
+.badge.paid{background:#dcedc8;color:#33691e}
+select,button{width:100%;padding:11px;border-radius:8px;font-size:15px}
+select{border:1px solid #ddd;background:white;margin-top:8px}
+button{border:none;background:#ff5722;color:white;font-weight:bold;cursor:pointer;margin-top:8px}
+button.secondary{background:#333}
+button.green{background:#388e3c}
+button:disabled{background:#aaa;cursor:not-allowed}
+.bill{background:#f7f7f7;border:1px dashed #bbb;padding:12px;border-radius:8px;margin-top:12px}
+.bill-row{display:flex;justify-content:space-between;margin:6px 0}
+.loading,.empty,.error{background:white;padding:30px;border-radius:12px;text-align:center;color:#777}
+.error{color:#c62828}
+.small{font-size:12px;color:#777;margin-top:8px}
+</style>
+</head>
+<body>
+
+<header>
+<h1 id="restaurantName">Admin Orders</h1>
+<p>Order Management</p>
+</header>
+
+<div class="container">
+
+<div class="info">
+<label><b>Restaurant ID</b></label>
+<input id="restaurantId" type="text"
+style="width:100%;padding:11px;margin-top:7px;border:1px solid #ddd;border-radius:8px"
+placeholder="Enter restaurant ID">
+
+<button onclick="loadOrders()">Load Orders</button>
+<button class="secondary" onclick="location.reload()">Refresh</button>
+</div>
+
+<div id="ordersContainer">
+<div class="empty">Enter Restaurant ID and load orders.</div>
+</div>
+
+</div>
+
+<script type="module">
+
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+doc,
+getDoc,
+updateDoc,
+serverTimestamp,
+query,
+orderBy
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+getAuth,
+onAuthStateChanged
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+const firebaseConfig = {
+apiKey:"AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+authDomain:"restaurant-qr-ordering-fdf9b.firebaseapp.com",
+projectId:"restaurant-qr-ordering-fdf9b",
+storageBucket:"restaurant-qr-ordering-fdf9b.firebasestorage.app",
+messagingSenderId:"907571024375",
+appId:"1:907571024375:web:796894f82f2cae4d7b9ef2",
+measurementId:"G-G3Q89BDFF9"
+};
+
+const app=initializeApp(firebaseConfig);
+const db=getFirestore(app);
+const auth=getAuth(app);
+
+const ordersContainer=document.getElementById("ordersContainer");
+const restaurantName=document.getElementById("restaurantName");
+const restaurantInput=document.getElementById("restaurantId");
+
+let currentRestaurantId="";
+let orders=[];
+
+const params=new URLSearchParams(window.location.search);
+const urlRestaurantId=params.get("restaurantId");
+
+if(urlRestaurantId){
+restaurantInput.value=urlRestaurantId;
+}
+
+onAuthStateChanged(auth,async(user)=>{
+if(!user){
+ordersContainer.innerHTML=`
+<div class="error">
+❌ Admin login required.
+<br><br>
+Please login with the restaurant owner's account.
+</div>`;
+return;
+}
+
+if(!restaurantInput.value){
+restaurantInput.value=user.uid;
+}
+
+currentRestaurantId=restaurantInput.value;
+loadRestaurant();
+});
+
+window.loadOrders=loadOrders;
+
+async function loadRestaurant(){
+try{
+if(!currentRestaurantId) currentRestaurantId=restaurantInput.value;
+
+const ref=doc(db,"restaurants",currentRestaurantId);
+const snap=await getDoc(ref);
+
+if(snap.exists()){
+const data=snap.data();
+restaurantName.textContent=
+data.restaurantName || data.name || "Admin Orders";
+}
+}catch(error){
+console.error(error);
+}
+}
+
+async function loadOrders(){
+
+const user=auth.currentUser;
+
+if(!user){
+alert("Please login first.");
+return;
+}
+
+currentRestaurantId=restaurantInput.value.trim();
+
+if(!currentRestaurantId){
+alert("Enter restaurant ID.");
+return;
+}
+
+/*
+ IMPORTANT:
+ Firestore rules allow restaurant owners to read
+ their own restaurant orders. Therefore the logged-in
+ admin UID must equal restaurantId.
+*/
+if(user.uid!==currentRestaurantId){
+ordersContainer.innerHTML=`
+<div class="error">
+❌ Access denied.
+<br><br>
+Login with the restaurant owner's account.
+</div>`;
+return;
+}
+
+ordersContainer.innerHTML=`
+<div class="loading">⏳ Loading orders...</div>
+`;
+
+try{
+
+await loadRestaurant();
+
+const ordersRef=collection(
+db,
+"restaurants",
+currentRestaurantId,
+"orders"
+);
+
+let snapshot;
+
+try{
+const orderedQuery=query(
+ordersRef,
+orderBy("createdAt","desc")
+);
+snapshot=await getDocs(orderedQuery);
+}catch(orderError){
+console.warn("Ordered query failed, loading without orderBy.",orderError);
+snapshot=await getDocs(ordersRef);
+}
+
+orders=[];
+
+snapshot.forEach(orderDoc=>{
+orders.push({
+id:orderDoc.id,
+...orderDoc.data()
+});
+});
+
+orders.sort((a,b)=>{
+const aTime=a.createdAt?.toMillis ? a.createdAt.toMillis() : 0;
+const bTime=b.createdAt?.toMillis ? b.createdAt.toMillis() : 0;
+return bTime-aTime;
+});
+
+renderOrders();
+
+}catch(error){
+
+console.error(error);
+
+ordersContainer.innerHTML=`
+<div class="error">
+❌ Unable to load orders.
+<br><br>
+${escapeHTML(error.message)}
+</div>
+`;
+}
+}
+
+function renderOrders(){
+
+ordersContainer.innerHTML="";
+
+if(orders.length===0){
+ordersContainer.innerHTML=`
+<div class="empty">
+🍽️ No orders found.
+</div>`;
+return;
+}
+
+orders.forEach(order=>{
+ordersContainer.appendChild(createOrderCard(order));
+});
+}
+
+function createOrderCard(order){
+
+const card=document.createElement("div");
+card.className="order";
+
+const status=order.status || "received";
+const paymentStatus=order.paymentStatus || "unpaid";
+const paymentMethod=order.paymentMethod || "";
+
+const waiterRequested=
+order.waiterRequested===true ||
+order.waiterCalled===true;
+
+const billRequested=
+order.billRequested===true;
+
+const billGenerated=
+order.billStatus==="generated" ||
+Number(order.billTotal||0)>0;
+
+const createdText=formatDate(order.createdAt);
+
+let itemsHTML="";
+
+(order.items||[]).forEach(item=>{
+
+const qty=Number(item.quantity||0);
+const price=Number(item.price||0);
+const lineTotal=qty*price;
+
+itemsHTML+=`
+<div class="item">
+<div class="item-name">
+${escapeHTML(item.name||"Item")} × ${qty}
+</div>
+<div class="item-detail">
+₹${price} each — ₹${lineTotal}
+</div>
+${item.instruction ? `
+<div class="instruction">
+📝 ${escapeHTML(item.instruction)}
+</div>` : ""}
+</div>
+`;
+});
+
+card.innerHTML=`
+
+<div class="order-head">
+
+<div>
+<div class="table">🪑 Table ${escapeHTML(order.table||"-")}</div>
+<div class="order-id">Order ID: ${escapeHTML(order.id)}</div>
+<div class="small">${createdText}</div>
+</div>
+
+<div class="total">
+₹${Number(order.total||0)}
+</div>
+
+</div>
+
+<div class="badges">
+
+<span class="badge">${escapeHTML(status)}</span>
+
+${waiterRequested ?
+`<span class="badge alert">🔔 Waiter Requested</span>` : ""}
+
+${billRequested ?
+`<span class="badge alert">🧾 Bill Requested</span>` : ""}
+
+${billGenerated ?
+`<span class="badge">🧾 Bill Generated</span>` : "" : ""}
+
+${paymentStatus==="paid" ?
+`<span class="badge paid">✓ PAID</span>` : ""}
+
+</div>
+
+<div>
+${itemsHTML || "<div class='item-detail'>No items</div>"}
+</div>
+
+<label><b>Order Status</b></label>
+
+<select class="status-select">
+<option value="received">Received</option>
+<option value="preparing">Preparing</option>
+<option value="ready">Ready</option>
+<option value="served">Served</option>
+<option value="cancelled">Cancelled</option>
+</select>
+
+<button class="status-save">Update Status</button>
+
+${waiterRequested ? `
+<button class="secondary waiter-done">
+✓ Mark Waiter Request Done
+</button>` : ""}
+
+${billRequested && !billGenerated ? `
+<button class="green generate-bill">
+🧾 Generate Bill
+</button>` : ""}
+
+${billGenerated ? `
+<div class="bill">
+
+<b>Generated Bill</b>
+
+<div class="bill-row">
+<span>Order Total</span>
+<b>₹${Number(order.total||0)}</b>
+</div>
+
+<div class="bill-row">
+<span>Bill Total</span>
+<b>₹${Number(order.billTotal||order.total||0)}</b>
+</div>
+
+<div class="bill-row">
+<span>Payment</span>
+<b>${escapeHTML(paymentMethod||"Not selected")}</b>
+</div>
+
+<div class="bill-row">
+<span>Status</span>
+<b>${escapeHTML(paymentStatus)}</b>
+</div>
+
+</div>
+` : ""}
+
+${billGenerated && paymentStatus!=="paid" ? `
+<select class="payment-select">
+<option value="">Select payment method</option>
+<option value="cash">Cash</option>
+<option value="upi">UPI</option>
+</select>
+
+<button class="green confirm-payment">
+✓ Confirm Payment Received
+</button>
+` : ""}
+
+`;
+
+const select=card.querySelector(".status-select");
+select.value=status;
+
+card.querySelector(".status-save").onclick=async()=>{
+await updateOrder(order.id,{
+status:select.value,
+updatedAt:serverTimestamp()
+});
+};
+
+const waiterButton=card.querySelector(".waiter-done");
+
+if(waiterButton){
+waiterButton.onclick=async()=>{
+await updateOrder(order.id,{
+waiterRequested:false,
+waiterCalled:false,
+waiterHandled:true,
+updatedAt:serverTimestamp()
+});
+};
+}
+
+const billButton=card.querySelector(".generate-bill");
+
+if(billButton){
+billButton.onclick=async()=>{
+
+const confirmBill=confirm(
+"Generate bill for Table "+(order.table||"")+"?"
+);
+
+if(!confirmBill) return;
+
+await updateOrder(order.id,{
+billStatus:"generated",
+billTotal:Number(order.total||0),
+billGeneratedAt:serverTimestamp(),
+updatedAt:serverTimestamp()
+});
+};
+}
+
+const paymentButton=card.querySelector(".confirm-payment");
+
+if(paymentButton){
+paymentButton.onclick=async()=>{
+
+const paymentSelect=card.querySelector(".payment-select");
+const method=paymentSelect.value;
+
+if(!method){
+alert("Please select Cash or UPI.");
+return;
+}
+
+const confirmPayment=confirm(
+"Confirm "+method.toUpperCase()+" payment received?"
+);
+
+if(!confirmPayment) return;
+
+await updateOrder(order.id,{
+paymentMethod:method,
+paymentStatus:"paid",
+paidAt:serverTimestamp(),
+updatedAt:serverTimestamp()
+});
+};
+}
+
+return card;
+}
+
+async function updateOrder(orderId,data){
+
+try{
+
+const button=document.activeElement;
+
+if(button) button.disabled=true;
+
+await updateDoc(
+doc(
+db,
+"restaurants",
+currentRestaurantId,
+"orders",
+orderId
+),
+data
+);
+
+await loadOrders();
+
+}catch(error){
+
+console.error(error);
+
+alert(
+"❌ Update failed.\n\n"+
+error.message
+);
+
+}
+}
+
+function formatDate(timestamp){
+
+if(!timestamp) return "Time unavailable";
+
+try{
+
+const date=timestamp.toDate
+? timestamp.toDate()
+: new Date(timestamp);
+
+return date.toLocaleString();
+
+}catch(error){
+return "Time unavailable";
+}
+}
+
+function escapeHTML(value){
+
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
+}
+
+</script>
+
+</body>
+</html>
