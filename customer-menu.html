@@ -249,4 +249,1157 @@ header p {
     right: 0;
     background: white;
     padding: 14px 15px;
-    box-shadow: 0 -2px 10px rgba(
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 30;
+}
+
+.cart-total {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.order-btn {
+    background: #ff5722;
+    color: white;
+    border: none;
+    padding: 13px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+    <h1 id="restaurantName">
+        Restaurant Menu
+    </h1>
+
+    <p>
+        Digital Menu
+    </p>
+
+</header>
+
+
+<div
+    id="tableInfo"
+    class="table-info"
+>
+    Loading table...
+</div>
+
+
+<!-- ==============================
+     CATEGORY TABS
+============================== -->
+
+<div
+    id="tabs"
+    class="tabs"
+>
+
+    <button
+        class="tab active"
+        data-category="ALL"
+    >
+        All
+    </button>
+
+    <button
+        class="tab"
+        data-category="Starters"
+    >
+        Starters
+    </button>
+
+    <button
+        class="tab"
+        data-category="Signature Items"
+    >
+        Signature
+    </button>
+
+    <button
+        class="tab"
+        data-category="Fast Food"
+    >
+        Fast Food
+    </button>
+
+    <button
+        class="tab"
+        data-category="Main Course"
+    >
+        Main Course
+    </button>
+
+    <button
+        class="tab"
+        data-category="Chinese"
+    >
+        Chinese
+    </button>
+
+    <button
+        class="tab"
+        data-category="Biryanis"
+    >
+        Biryanis
+    </button>
+
+    <button
+        class="tab"
+        data-category="Desserts"
+    >
+        Desserts
+    </button>
+
+    <button
+        class="tab"
+        data-category="Beverages"
+    >
+        Drinks
+    </button>
+
+    <button
+        class="tab"
+        data-category="Others"
+    >
+        Others
+    </button>
+
+    <button
+        class="tab"
+        data-category="ORDER_STATUS"
+    >
+        Order Status
+    </button>
+
+</div>
+
+
+<div class="container">
+
+    <div id="menuContainer">
+
+        <div class="loading">
+            🍽️ Loading menu...
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==============================
+     CART
+============================== -->
+
+<div class="cart">
+
+    <div class="cart-total">
+
+        Total:
+        ₹<span id="total">0</span>
+
+    </div>
+
+    <button
+        class="order-btn"
+        onclick="viewCart()"
+    >
+        View Cart
+    </button>
+
+</div>
+
+
+<script type="module">
+
+
+/* ==========================================
+   FIREBASE
+========================================== */
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+
+import {
+    getFirestore,
+    collection,
+    getDocs,
+    doc,
+    getDoc
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
+
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const db =
+    getFirestore(app);
+
+
+/* ==========================================
+   QR PARAMETERS
+========================================== */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+
+const restaurantId =
+    params.get("restaurantId");
+
+
+const table =
+    params.get("table");
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const restaurantName =
+    document.getElementById(
+        "restaurantName"
+    );
+
+
+const tableInfo =
+    document.getElementById(
+        "tableInfo"
+    );
+
+
+const menuContainer =
+    document.getElementById(
+        "menuContainer"
+    );
+
+
+const totalElement =
+    document.getElementById(
+        "total"
+    );
+
+
+/* ==========================================
+   MENU DATA
+========================================== */
+
+let items = [];
+
+let selectedCategory = "ALL";
+
+
+/* ==========================================
+   CHECK QR
+========================================== */
+
+if (
+    !restaurantId ||
+    !table
+) {
+
+    tableInfo.textContent =
+        "❌ Invalid QR information.";
+
+
+    menuContainer.innerHTML = `
+
+        <div class="error">
+
+            ❌ Invalid QR code.
+
+            <br><br>
+
+            Restaurant or table information
+            is missing.
+
+        </div>
+
+    `;
+
+}
+
+else {
+
+    tableInfo.textContent =
+        "🪑 Table " + table;
+
+
+    loadRestaurant();
+
+    loadMenu();
+
+}
+
+
+/* ==========================================
+   LOAD RESTAURANT
+========================================== */
+
+async function loadRestaurant() {
+
+    try {
+
+        const restaurantRef =
+            doc(
+                db,
+                "restaurants",
+                restaurantId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                restaurantRef
+            );
+
+
+        if (
+            snapshot.exists()
+        ) {
+
+            const data =
+                snapshot.data();
+
+
+            restaurantName.textContent =
+                data.restaurantName ||
+                data.name ||
+                "Restaurant Menu";
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Restaurant loading error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   LOAD MENU
+========================================== */
+
+async function loadMenu() {
+
+    try {
+
+        console.log(
+            "Loading menu for restaurant:",
+            restaurantId
+        );
+
+
+        const menuRef =
+            collection(
+                db,
+                "restaurants",
+                restaurantId,
+                "menu"
+            );
+
+
+        const snapshot =
+            await getDocs(
+                menuRef
+            );
+
+
+        items = [];
+
+
+        snapshot.forEach(
+            menuDocument => {
+
+                const data =
+                    menuDocument.data();
+
+
+                console.log(
+                    "Menu item:",
+                    data
+                );
+
+
+                items.push({
+
+                    id:
+                        menuDocument.id,
+
+                    name:
+                        data.foodName ||
+                        "Unnamed Item",
+
+                    category:
+                        data.category ||
+                        "Others",
+
+                    description:
+                        data.description ||
+                        "",
+
+                    price:
+                        Number(
+                            data.price || 0
+                        ),
+
+                    availability:
+                        data.availability ||
+                        "available",
+
+                    quantity:
+                        0,
+
+                    instruction:
+                        ""
+
+                });
+
+            }
+        );
+
+
+        console.log(
+            "Total menu items:",
+            items.length
+        );
+
+
+        if (
+            items.length === 0
+        ) {
+
+            menuContainer.innerHTML = `
+
+                <div class="empty">
+
+                    🍽️ No menu items added yet.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        createTabs();
+
+        renderMenu();
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Firestore menu error:",
+            error
+        );
+
+
+        menuContainer.innerHTML = `
+
+            <div class="error">
+
+                ❌ Unable to load menu.
+
+                <br><br>
+
+                ${escapeHTML(error.message)}
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* ==========================================
+   CREATE CATEGORY TABS
+========================================== */
+
+function createTabs() {
+
+    const existingCategories =
+        [
+            ...new Set(
+                items.map(
+                    item =>
+                        item.category
+                )
+            )
+        ];
+
+
+    document
+        .querySelectorAll(
+            ".tab"
+        )
+        .forEach(
+            tab => {
+
+                const category =
+                    tab.dataset.category;
+
+
+                if (
+                    category === "ALL" ||
+                    category === "ORDER_STATUS"
+                ) {
+
+                    tab.style.display =
+                        "block";
+
+                    return;
+
+                }
+
+
+                if (
+                    existingCategories
+                    .includes(
+                        category
+                    )
+                ) {
+
+                    tab.style.display =
+                        "block";
+
+                }
+
+                else {
+
+                    tab.style.display =
+                        "none";
+
+                }
+
+            }
+        );
+
+}
+
+
+/* ==========================================
+   TAB CLICK
+========================================== */
+
+document
+    .querySelectorAll(
+        ".tab"
+    )
+    .forEach(
+        tab => {
+
+            tab.addEventListener(
+                "click",
+                function() {
+
+                    document
+                        .querySelectorAll(
+                            ".tab"
+                        )
+                        .forEach(
+                            t =>
+                                t.classList
+                                    .remove(
+                                        "active"
+                                    )
+                        );
+
+
+                    this.classList.add(
+                        "active"
+                    );
+
+
+                    selectedCategory =
+                        this.dataset.category;
+
+
+                    if (
+                        selectedCategory ===
+                        "ORDER_STATUS"
+                    ) {
+
+                        showOrderStatus();
+
+                    }
+
+                    else {
+
+                        renderMenu();
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+/* ==========================================
+   RENDER MENU
+========================================== */
+
+function renderMenu() {
+
+    menuContainer.innerHTML = "";
+
+
+    let filteredItems;
+
+
+    if (
+        selectedCategory ===
+        "ALL"
+    ) {
+
+        filteredItems =
+            items;
+
+    }
+
+    else {
+
+        filteredItems =
+            items.filter(
+                item =>
+                    item.category ===
+                    selectedCategory
+            );
+
+    }
+
+
+    if (
+        filteredItems.length === 0
+    ) {
+
+        menuContainer.innerHTML = `
+
+            <div class="empty">
+
+                🍽️ No items available
+                in this category.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    const categories = [];
+
+
+    filteredItems.forEach(
+        item => {
+
+            if (
+                !categories.includes(
+                    item.category
+                )
+            ) {
+
+                categories.push(
+                    item.category
+                );
+
+            }
+
+        }
+    );
+
+
+    categories.forEach(
+        category => {
+
+            const categoryItems =
+                filteredItems.filter(
+                    item =>
+                        item.category ===
+                        category
+                );
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+
+            title.className =
+                "category";
+
+
+            title.textContent =
+                category;
+
+
+            menuContainer.appendChild(
+                title
+            );
+
+
+            categoryItems.forEach(
+                item => {
+
+                    renderItem(
+                        item
+                    );
+
+                }
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   RENDER ITEM
+========================================== */
+
+function renderItem(item) {
+
+    const card =
+        document.createElement(
+            "div"
+        );
+
+
+    card.className =
+        "item";
+
+
+    const unavailable =
+        item.availability !==
+        "available";
+
+
+    card.innerHTML = `
+
+        <div class="item-top">
+
+            <div>
+
+                <div class="item-name">
+
+                    ${escapeHTML(
+                        item.name
+                    )}
+
+                </div>
+
+
+                <div class="description">
+
+                    ${escapeHTML(
+                        item.description
+                    )}
+
+                </div>
+
+
+                ${
+                    unavailable
+
+                    ?
+
+                    `
+                    <div class="unavailable">
+
+                        Currently unavailable
+
+                    </div>
+                    `
+
+                    :
+
+                    ""
+                }
+
+            </div>
+
+
+            <div class="price">
+
+                ₹${item.price}
+
+            </div>
+
+        </div>
+
+
+        <div class="controls">
+
+            <button
+                class="minus"
+                ${unavailable ? "disabled" : ""}
+            >
+
+                −
+
+            </button>
+
+
+            <span class="quantity">
+
+                ${item.quantity}
+
+            </span>
+
+
+            <button
+                class="plus"
+                ${unavailable ? "disabled" : ""}
+            >
+
+                +
+
+            </button>
+
+        </div>
+
+
+        <textarea
+            class="instructions"
+            placeholder="Special instructions..."
+            ${unavailable ? "disabled" : ""}
+        >${escapeHTML(
+            item.instruction
+        )}</textarea>
+
+    `;
+
+
+    const minus =
+        card.querySelector(
+            ".minus"
+        );
+
+
+    const plus =
+        card.querySelector(
+            ".plus"
+        );
+
+
+    const quantity =
+        card.querySelector(
+            ".quantity"
+        );
+
+
+    const instruction =
+        card.querySelector(
+            ".instructions"
+        );
+
+
+    minus.onclick =
+        function() {
+
+            if (
+                item.quantity > 0
+            ) {
+
+                item.quantity--;
+
+
+                quantity.textContent =
+                    item.quantity;
+
+
+                calculateTotal();
+
+            }
+
+        };
+
+
+    plus.onclick =
+        function() {
+
+            item.quantity++;
+
+
+            quantity.textContent =
+                item.quantity;
+
+
+            calculateTotal();
+
+        };
+
+
+    instruction.oninput =
+        function() {
+
+            item.instruction =
+                instruction.value;
+
+        };
+
+
+    menuContainer.appendChild(
+        card
+    );
+
+}
+
+
+/* ==========================================
+   ORDER STATUS
+========================================== */
+
+function showOrderStatus() {
+
+    menuContainer.innerHTML = `
+
+        <div class="order-status">
+
+            <div class="status-title">
+
+                📋 Order Status
+
+            </div>
+
+
+            <div class="status-box">
+
+                🛒 No order placed yet
+
+            </div>
+
+
+            <br>
+
+
+            <p
+                style="
+                    text-align:center;
+                    color:#777;
+                "
+            >
+
+                Your order status will appear
+                here after you place an order.
+
+            </p>
+
+        </div>
+
+    `;
+
+}
+
+
+/* ==========================================
+   CALCULATE TOTAL
+========================================== */
+
+function calculateTotal() {
+
+    let total = 0;
+
+
+    items.forEach(
+        item => {
+
+            total +=
+                item.price *
+                item.quantity;
+
+        }
+    );
+
+
+    totalElement.textContent =
+        total;
+
+}
+
+
+/* ==========================================
+   VIEW CART
+========================================== */
+
+window.viewCart =
+    function() {
+
+        const selectedItems =
+            items.filter(
+                item =>
+                    item.quantity > 0
+            );
+
+
+        if (
+            selectedItems.length === 0
+        ) {
+
+            alert(
+                "Please add at least one item."
+            );
+
+            return;
+
+        }
+
+
+        let message =
+            "Your Order:\n\n";
+
+
+        selectedItems.forEach(
+            item => {
+
+                message +=
+                    item.name +
+                    " x " +
+                    item.quantity;
+
+
+                if (
+                    item.instruction
+                ) {
+
+                    message +=
+                        "\nInstruction: " +
+                        item.instruction;
+
+                }
+
+
+                message +=
+                    "\n\n";
+
+            }
+        );
+
+
+        message +=
+            "Table: " +
+            table +
+            "\n";
+
+
+        message +=
+            "Total: ₹" +
+            totalElement.textContent;
+
+
+        alert(
+            message
+        );
+
+    };
+
+
+/* ==========================================
+   ESCAPE HTML
+========================================== */
+
+function escapeHTML(
+    value
+) {
+
+    return String(value)
+
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
+
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
+
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
+
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
+
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
+
+}
+
+</script>
+
+</body>
+
+</html>
