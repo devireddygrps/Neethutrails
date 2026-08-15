@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Checkout - Restaurant</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f5f5f5;
+    color:#222;
+}
+
+.container{
+    max-width:600px;
+    margin:30px auto;
+    padding:15px;
+}
+
+.card{
+    background:white;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.10);
+}
+
+h1{
+    color:#ff5722;
+    margin-bottom:5px;
+}
+
+h2{
+    margin-bottom:15px;
+}
+
+.subtitle{
+    color:#777;
+    margin-bottom:20px;
+}
+
+.customer-info input{
+    width:100%;
+    padding:13px;
+    margin-bottom:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+}
+
+.order-item{
+    display:flex;
+    justify-content:space-between;
+    padding:10px 0;
+    border-bottom:1px solid #eee;
+}
+
+.order-item:last-child{
+    border-bottom:none;
+}
+
+.total-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:20px;
+    font-weight:bold;
+    margin-top:15px;
+}
+
+.payment-option{
+    border:2px solid #ddd;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:12px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.payment-option:hover{
+    border-color:#ff5722;
+}
+
+.payment-option.selected{
+    border-color:#ff5722;
+    background:#fff7f3;
+}
+
+.payment-option strong{
+    display:block;
+    font-size:17px;
+    margin-bottom:5px;
+}
+
+.payment-option span{
+    color:#777;
+    font-size:14px;
+}
+
+.payment-option input{
+    margin-right:8px;
+}
+
+#upiSection{
+    display:none;
+    margin-top:15px;
+    padding:15px;
+    background:#f8f8f8;
+    border-radius:10px;
+    text-align:center;
+}
+
+#qrImage{
+    max-width:250px;
+    width:100%;
+    margin:15px auto;
+    display:none;
+}
+
+.upi-id{
+    font-weight:bold;
+    color:#333;
+    margin:10px 0;
+}
+
+.pay-btn{
+    width:100%;
+    padding:15px;
+    background:#ff5722;
+    color:white;
+    border:none;
+    border-radius:9px;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.pay-btn:hover{
+    background:#e64a19;
+}
+
+.pay-btn:disabled{
+    background:#aaa;
+    cursor:not-allowed;
+}
+
+.status{
+    display:none;
+    padding:14px;
+    border-radius:9px;
+    margin-top:15px;
+    text-align:center;
+}
+
+.status.success{
+    display:block;
+    background:#e8f5e9;
+    color:#2e7d32;
+}
+
+.status.error{
+    display:block;
+    background:#ffebee;
+    color:#c62828;
+}
+
+.status.info{
+    display:block;
+    background:#e3f2fd;
+    color:#1565c0;
+}
+
+.cash-info{
+    background:#fff8e1;
+    color:#795548;
+    padding:12px;
+    border-radius:8px;
+    margin-top:10px;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.success-screen{
+    display:none;
+    text-align:center;
+}
+
+.success-icon{
+    font-size:60px;
+    margin-bottom:15px;
+}
+
+.success-screen h2{
+    color:#2e7d32;
+}
+
+.order-number{
+    background:#f5f5f5;
+    padding:15px;
+    border-radius:10px;
+    margin:15px 0;
+    font-weight:bold;
+}
+
+@media(max-width:600px){
+
+    .container{
+        margin:10px auto;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- CHECKOUT -->
+
+    <div id="checkoutScreen">
+
+        <div class="card">
+
+            <h1>🍽️ Checkout</h1>
+
+            <div class="subtitle">
+                Complete your restaurant order
+            </div>
+
+        </div>
+
+
+        <!-- CUSTOMER -->
+
+        <div class="card customer-info">
+
+            <h2>Customer Details</h2>
+
+            <input
+                type="tel"
+                id="customerMobile"
+                placeholder="Mobile Number"
+                maxlength="10"
+            >
+
+            <input
+                type="text"
+                id="tableNumber"
+                placeholder="Table Number (optional)"
+            >
+
+        </div>
+
+
+        <!-- ORDER -->
+
+        <div class="card">
+
+            <h2>Your Order</h2>
+
+            <div id="orderItems"></div>
+
+            <div class="total-row">
+
+                <span>Total</span>
+
+                <span id="orderTotal">
+                    ₹0.00
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- PAYMENT -->
+
+        <div class="card">
+
+            <h2>Payment Method</h2>
+
+
+            <!-- UPI -->
+
+            <div
+                class="payment-option"
+                id="upiOption"
+                onclick="selectPayment('upi')"
+            >
+
+                <strong>
+                    📱 UPI / QR Payment
+                </strong>
+
+                <span>
+                    Pay using UPI
+                </span>
+
+            </div>
+
+
+            <!-- CASH -->
+
+            <div
+                class="payment-option"
+                id="cashOption"
+                onclick="selectPayment('cash')"
+            >
+
+                <strong>
+                    💵 Cash Payment
+                </strong>
+
+                <span>
+                    Pay cash to the waiter
+                </span>
+
+            </div>
+
+
+            <!-- UPI SECTION -->
+
+            <div id="upiSection">
+
+                <strong>
+                    Pay using UPI
+                </strong>
+
+                <div class="upi-id">
+                    UPI ID:
+                    <span id="restaurantUpi">
+                        Loading...
+                    </span>
+                </div>
+
+                <img
+                    id="qrImage"
+                    alt="UPI QR Code"
+                >
+
+                <div
+                    style="
+                        color:#777;
+                        font-size:13px;
+                    "
+                >
+                    Scan the QR code using your UPI app.
+                </div>
+
+            </div>
+
+
+            <!-- CASH SECTION -->
+
+            <div
+                id="cashSection"
+                style="display:none;"
+            >
+
+                <div class="cash-info">
+
+                    💵 <strong>Cash Payment</strong>
+
+                    <br><br>
+
+                    After placing the order, please give
+                    the cash to the waiter.
+
+                    <br>
+
+                    The restaurant will confirm the cash
+                    payment from the admin panel.
+
+                </div>
+
+            </div>
+
+
+            <button
+                id="placeOrderBtn"
+                class="pay-btn"
+                onclick="placeOrder()"
+                disabled
+            >
+
+                Select Payment Method
+
+            </button>
+
+
+            <div
+                id="status"
+                class="status"
+            ></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- SUCCESS -->
+
+    <div
+        id="successScreen"
+        class="card success-screen"
+    >
+
+        <div class="success-icon">
+            ✅
+        </div>
+
+        <h2>
+            Order Placed Successfully
+        </h2>
+
+        <div class="order-number">
+
+            Order ID:
+            <br>
+
+            <span id="successOrderId"></span>
+
+        </div>
+
+        <p id="successMessage">
+            Your order has been sent to the restaurant.
+        </p>
+
+        <br>
+
+        <button
+            class="pay-btn"
+            onclick="window.location.href='index.html'"
+        >
+            Back to Menu
+        </button>
+
+    </div>
+
+</div>
+
+
+<script type="module">
+
+/* =====================================================
+   FIREBASE
+===================================================== */
+
+import {
+    initializeApp
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+
+import {
+    getFirestore,
+    doc,
+    getDoc,
+    addDoc,
+    collection,
+    serverTimestamp
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+
+import {
+    getAuth
+}
+from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+
+/* =====================================================
+   FIREBASE CONFIG
+===================================================== */
+
+const firebaseConfig = {
+
+    apiKey:
+        "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+
+    authDomain:
+        "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+
+    projectId:
+        "restaurant-qr-ordering-fdf9b",
+
+    storageBucket:
+        "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+
+    messagingSenderId:
+        "907571024375",
+
+    appId:
+        "1:907571024375:web:796894f82f2cae4d7b9ef2",
+
+    measurementId:
+        "G-G3Q89BDFF9"
+
+};
+
+
+/* =====================================================
+   INITIALIZE
+===================================================== */
+
+const app =
+    initializeApp(
+        firebaseConfig
+    );
+
+const db =
+    getFirestore(app);
+
+const auth =
+    getAuth(app);
+
+
+/* =====================================================
+   RESTAURANT ID
+=====================================================
+
+   IMPORTANT:
+   The restaurant ID should normally come from
+   your QR/menu URL.
+
+   Example:
+
+   checkout.html?restaurantId=RESTAURANT_UID
+
+===================================================== */
+
+const params =
+    new URLSearchParams(
+        window.location.search
+    );
+
+let restaurantId =
+    params.get("restaurantId");
+
+
+/*
+ * Also support restaurantId saved locally.
+ */
+
+if (!restaurantId) {
+
+    restaurantId =
+        localStorage.getItem(
+            "restaurantId"
+        );
+
+}
+
+
+/* =====================================================
+   CURRENT STATE
+===================================================== */
+
+let restaurantUpiId = "";
+
+let selectedPayment = "";
+
+let cart = [];
+
+
+/* =====================================================
+   ELEMENTS
+===================================================== */
+
+const orderItems =
+    document.getElementById(
+        "orderItems"
+    );
+
+const orderTotal =
+    document.getElementById(
+        "orderTotal"
+    );
+
+const customerMobile =
+    document.getElementById(
+        "customerMobile"
+    );
+
+const tableNumber =
+    document.getElementById(
+        "tableNumber"
+    );
+
+const upiSection =
+    document.getElementById(
+        "upiSection"
+    );
+
+const cashSection =
+    document.getElementById(
+        "cashSection"
+    );
+
+const upiOption =
+    document.getElementById(
+        "upiOption"
+    );
+
+const cashOption =
+    document.getElementById(
+        "cashOption"
+    );
+
+const placeOrderBtn =
+    document.getElementById(
+        "placeOrderBtn"
+    );
+
+const statusBox =
+    document.getElementById(
+        "status"
+    );
+
+
+/* =====================================================
+   LOAD CART
+===================================================== */
+
+function loadCart() {
+
+    try {
+
+        const savedCart =
+            localStorage.getItem(
+                "cart"
+            );
+
+        if (savedCart) {
+
+            const parsed =
+                JSON.parse(
+                    savedCart
+                );
+
+            if (
+                Array.isArray(parsed)
+            ) {
+
+                cart =
+                    parsed;
+
+            }
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Cart loading error:",
+            error
+        );
+
+    }
+
+
+    /*
+     * Also support common alternative
+     * localStorage key.
+     */
+
+    if (
+        !cart.length
+    ) {
+
+        try {
+
+            const saved =
+                localStorage.getItem(
+                    "restaurantCart"
+                );
+
+            if (saved) {
+
+                const parsed =
+                    JSON.parse(
+                        saved
+                    );
+
+                if (
+                    Array.isArray(parsed)
+                ) {
+
+                    cart =
+                        parsed;
+
+                }
+
+            }
+
+        }
+
+        catch(error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+
+    renderCart();
+
+}
+
+
+/* =====================================================
+   RENDER CART
+===================================================== */
+
+function renderCart() {
+
+    if (!cart.length) {
+
+        orderItems.innerHTML =
+            `
+            <div
+                style="
+                    color:#777;
+                    text-align:center;
+                    padding:15px;
+                "
+            >
+                No items in cart.
+            </div>
+            `;
+
+        orderTotal.textContent =
+            "₹0.00";
+
+        return;
+
+    }
+
+
+    let total = 0;
+
+
+    orderItems.innerHTML =
+        cart.map(
+            item => {
+
+                const quantity =
+                    Number(
+                        item.quantity ||
+                        1
+                    );
+
+                const price =
+                    Number(
+                        item.price ||
+                        0
+                    );
+
+                const lineTotal =
+                    quantity *
+                    price;
+
+                total +=
+                    lineTotal;
+
+
+                return `
+
+                <div class="order-item">
+
+                    <div>
+
+                        <strong>
+                            ${escapeHTML(
+                                item.name ||
+                                item.foodName ||
+                                "Item"
+                            )}
+                        </strong>
+
+                        <br>
+
+                        <small>
+                            Qty: ${quantity}
+                        </small>
+
+                    </div>
+
+                    <strong>
+                        ₹${lineTotal.toFixed(2)}
+                    </strong>
+
+                </div>
+
+                `;
+
+            }
+        ).join("");
+
+
+    orderTotal.textContent =
+        "₹" +
+        total.toFixed(2);
+
+}
+
+
+/* =====================================================
+   TOTAL
+===================================================== */
+
+function calculateTotal() {
+
+    return cart.reduce(
+        (
+            total,
+            item
+        ) => {
+
+            const quantity =
+                Number(
+                    item.quantity ||
+                    1
+                );
+
+            const price =
+                Number(
+                    item.price ||
+                    0
+                );
+
+            return total +
+                quantity *
+                price;
+
+        },
+        0
+    );
+
+}
+
+
+/* =====================================================
+   LOAD RESTAURANT SETTINGS
+===================================================== */
+
+async function loadRestaurantSettings() {
+
+    if (!restaurantId) {
+
+        showStatus(
+            "Restaurant ID is missing from this page.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const restaurantRef =
+            doc(
+                db,
+                "restaurants",
+                restaurantId
+            );
+
+
+        const snapshot =
+            await getDoc(
+                restaurantRef
+            );
+
+
+        if (!snapshot.exists()) {
+
+            showStatus(
+                "Restaurant settings were not found.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const data =
+            snapshot.data();
+
+
+        restaurantUpiId =
+            String(
+                data.upiId ||
+                ""
+            ).trim();
+
+
+        document.getElementById(
+            "restaurantUpi"
+        ).textContent =
+            restaurantUpiId ||
+            "Not configured";
+
+
+        /*
+         * Generate QR from the UPI ID.
+         */
+
+        if (
+            restaurantUpiId
+        ) {
+
+            generateUPIQR();
+
+        }
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Restaurant settings error:",
+            error
+        );
+
+        showStatus(
+            "Could not load restaurant settings.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   GENERATE UPI QR
+===================================================== */
+
+function generateUPIQR() {
+
+    const amount =
+        calculateTotal();
+
+
+    const upiUrl =
+        "upi://pay?" +
+        "pa=" +
+        encodeURIComponent(
+            restaurantUpiId
+        ) +
+        "&pn=" +
+        encodeURIComponent(
+            "Restaurant"
+        ) +
+        "&am=" +
+        encodeURIComponent(
+            amount.toFixed(2)
+        ) +
+        "&cu=INR";
+
+
+    const qrImage =
+        document.getElementById(
+            "qrImage"
+        );
+
+
+    qrImage.src =
+        "https://api.qrserver.com/v1/create-qr-code/?" +
+        "size=300x300&data=" +
+        encodeURIComponent(
+            upiUrl
+        );
+
+
+    qrImage.style.display =
+        "block";
+
+}
+
+
+/* =====================================================
+   SELECT PAYMENT
+===================================================== */
+
+window.selectPayment =
+    function(method) {
+
+        selectedPayment =
+            method;
+
+
+        upiOption.classList.remove(
+            "selected"
+        );
+
+        cashOption.classList.remove(
+            "selected"
+        );
+
+
+        upiSection.style.display =
+            "none";
+
+        cashSection.style.display =
+            "none";
+
+
+        if (
+            method === "upi"
+        ) {
+
+            upiOption.classList.add(
+                "selected"
+            );
+
+            upiSection.style.display =
+                "block";
+
+
+            placeOrderBtn.textContent =
+                "Create UPI Order";
+
+        }
+
+
+        if (
+            method === "cash"
+        ) {
+
+            cashOption.classList.add(
+                "selected"
+            );
+
+            cashSection.style.display =
+                "block";
+
+
+            placeOrderBtn.textContent =
+                "💵 Place Cash Order";
+
+        }
+
+
+        placeOrderBtn.disabled =
+            false;
+
+    };
+
+
+/* =====================================================
+   PLACE ORDER
+===================================================== */
+
+window.placeOrder =
+    async function() {
+
+        if (!selectedPayment) {
+
+            showStatus(
+                "Please select a payment method.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!restaurantId) {
+
+            showStatus(
+                "Restaurant ID is missing.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!cart.length) {
+
+            showStatus(
+                "Your cart is empty.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const mobile =
+            customerMobile.value.trim();
+
+
+        /*
+         * Indian mobile validation.
+         */
+
+        if (
+            !/^[6-9][0-9]{9}$/.test(
+                mobile
+            )
+        ) {
+
+            showStatus(
+                "Please enter a valid 10-digit mobile number.",
+                "error"
+            );
+
+            customerMobile.focus();
+
+            return;
+
+        }
+
+
+        const table =
+            tableNumber.value.trim();
+
+
+        const total =
+            calculateTotal();
+
+
+        if (
+            total <= 0
+        ) {
+
+            showStatus(
+                "Order total must be greater than zero.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            placeOrderBtn.disabled =
+                true;
+
+            placeOrderBtn.textContent =
+                "Placing Order...";
+
+
+            /*
+             * Create a clean copy of the cart.
+             */
+
+            const orderItemsData =
+                cart.map(
+                    item => ({
+
+                        name:
+                            item.name ||
+                            item.foodName ||
+                            "Item",
+
+                        price:
+                            Number(
+                                item.price ||
+                                0
+                            ),
+
+                        quantity:
+                            Number(
+                                item.quantity ||
+                                1
+                            )
+
+                    })
+                );
+
+
+            /*
+             * -------------------------------------------------
+             * PAYMENT STATUS
+             * -------------------------------------------------
+             *
+             * CASH:
+             *
+             * pending
+             *
+             * Admin confirms after waiter collects cash.
+             *
+             * UPI:
+             *
+             * pending
+             *
+             * Your existing UPI flow can update it to paid
+             * after payment confirmation.
+             */
+
+            const paymentStatus =
+                "pending";
+
+
+            /*
+             * -------------------------------------------------
+             * ORDER STATUS
+             * -------------------------------------------------
+             */
+
+            const orderStatus =
+                selectedPayment === "cash"
+                    ? "cash_requested"
+                    : "payment_pending";
+
+
+            /*
+             * -------------------------------------------------
+             * CREATE ORDER
+             * -------------------------------------------------
+             */
+
+            const orderData = {
+
+                restaurantId:
+                    restaurantId,
+
+                customerMobile:
+                    mobile,
+
+                tableNumber:
+                    table || "",
+
+                items:
+                    orderItemsData,
+
+                total:
+                    total,
+
+                billTotal:
+                    total,
+
+                finalTotal:
+                    total,
+
+                paymentMethod:
+                    selectedPayment,
+
+                paymentStatus:
+                    paymentStatus,
+
+                status:
+                    orderStatus,
+
+                createdAt:
+                    serverTimestamp(),
+
+                updatedAt:
+                    serverTimestamp()
+
+            };
+
+
+            /*
+             * Add customer UID when available.
+             */
+
+            const currentUser =
+                auth.currentUser;
+
+
+            if (
+                currentUser
+            ) {
+
+                orderData.customerUid =
+                    currentUser.uid;
+
+            }
+
+
+            /*
+             * SAVE TO FIRESTORE
+             *
+             * restaurants
+             *    └── restaurantId
+             *         └── orders
+             *              └── orderId
+             */
+
+            const ordersRef =
+                collection(
+                    db,
+                    "restaurants",
+                    restaurantId,
+                    "orders"
+                );
+
+
+            const orderRef =
+                await addDoc(
+                    ordersRef,
+                    orderData
+                );
+
+
+            console.log(
+                "Order created:",
+                orderRef.id
+            );
+
+
+            /*
+             * Clear cart only after successful
+             * Firestore write.
+             */
+
+            localStorage.removeItem(
+                "cart"
+            );
+
+            localStorage.removeItem(
+                "restaurantCart"
+            );
+
+
+            /*
+             * Show success.
+             */
+
+            document.getElementById(
+                "checkoutScreen"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "successScreen"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "successOrderId"
+            ).textContent =
+                orderRef.id;
+
+
+            if (
+                selectedPayment ===
+                "cash"
+            ) {
+
+                document.getElementById(
+                    "successMessage"
+                ).textContent =
+                    "Your cash order has been sent to the restaurant. Please give the cash to the waiter.";
+
+            }
+
+            else {
+
+                document.getElementById(
+                    "successMessage"
+                ).textContent =
+                    "Your order has been sent to the restaurant. Complete your UPI payment.";
+
+            }
+
+        }
+
+        catch(error) {
+
+            console.error(
+                "Order creation error:",
+                error
+            );
+
+
+            showStatus(
+                "Could not place order: " +
+                error.message,
+                "error"
+            );
+
+
+            placeOrderBtn.disabled =
+                false;
+
+
+            placeOrderBtn.textContent =
+                selectedPayment ===
+                "cash"
+                    ? "💵 Place Cash Order"
+                    : "Create UPI Order";
+
+        }
+
+    };
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function showStatus(
+    message,
+    type
+) {
+
+    statusBox.textContent =
+        message;
+
+    statusBox.className =
+        "status " +
+        type;
+
+}
+
+
+/* =====================================================
+   ESCAPE HTML
+===================================================== */
+
+function escapeHTML(value) {
+
+    return String(
+        value ?? ""
+    )
+
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+
+        .replace(
+            /</g,
+            "&lt;"
+        )
+
+        .replace(
+            />/g,
+            "&gt;"
+        )
+
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadCart();
+
+loadRestaurantSettings();
+
+</script>
+
+</body>
+
+</html>
