@@ -3,3897 +3,2304 @@
 
 <head>
 
-    <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Order Status - Restaurant</title>
-
-
-    <!-- =====================================================
-         QR CODE LIBRARY
-    ====================================================== -->
-
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js">
-    </script>
-
-
-    <style>
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-
-        body {
-            background: #f5f5f5;
-            padding-bottom: 30px;
-        }
-
-
-        header {
-            background: #ff5722;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-
-
-        header h1 {
-            margin-bottom: 5px;
-        }
-
-
-        header p {
-            font-size: 14px;
-        }
-
-
-        .container {
-            max-width: 600px;
-            margin: auto;
-            padding: 15px;
-        }
-
-
-        .table-info,
-        .order-card,
-        .action-card,
-        .bill-card {
-            background: white;
-            border-radius: 12px;
-            padding: 18px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-        }
-
-
-        .table-info {
-            text-align: center;
-            font-weight: bold;
-            color: #ff5722;
-        }
-
-
-        .order-title {
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 12px;
-        }
-
-
-        .order-id {
-            color: #777;
-            font-size: 13px;
-            word-break: break-all;
-        }
-
-
-        .status-box {
-            margin-top: 15px;
-            padding: 16px;
-            border-radius: 10px;
-            background: #fff3e0;
-            color: #e65100;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-
-        .status-message {
-            text-align: center;
-            color: #777;
-            margin-top: 10px;
-            font-size: 14px;
-        }
-
-
-        .action-card h3,
-        .bill-card h3 {
-            margin-bottom: 12px;
-        }
-
-
-        .action-btn {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 9px;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-
-        .waiter-btn {
-            background: #ff5722;
-        }
-
-
-        .bill-btn {
-            background: #333;
-        }
-
-
-        .action-btn:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-
-        .requested {
-            background: #43a047 !important;
-        }
-
-
-        .bill-status {
-            padding: 13px;
-            border-radius: 8px;
-            background: #f5f5f5;
-            text-align: center;
-            color: #555;
-        }
-
-
-        .bill-generated {
-            background: #e8f5e9;
-            color: #2e7d32;
-            font-weight: bold;
-        }
-
-
-        .bill-requested {
-            background: #fff3e0;
-            color: #e65100;
-            font-weight: bold;
-        }
-
-
-        .bill-total {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #ddd;
-            display: flex;
-            justify-content: space-between;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-
-        .bill-price {
-            color: #ff5722;
-        }
-
-
-        .bill-breakdown {
-            background: #fafafa;
-            border-radius: 10px;
-            padding: 12px;
-            margin-top: 15px;
-        }
-
-
-        .bill-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            color: #555;
-        }
-
-
-        .bill-row.discount {
-            color: #2e7d32;
-        }
-
-
-        /* =====================================================
-           BILL ITEMS
-        ====================================================== */
-
-        .bill-items {
-            margin-top: 15px;
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 12px;
-        }
-
-
-        .bill-item-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 9px 0;
-            border-bottom: 1px solid #eee;
-        }
-
-
-        .bill-item-row:last-child {
-            border-bottom: none;
-        }
-
-
-        .bill-item-name {
-            font-weight: bold;
-            color: #333;
-        }
-
-
-        .bill-item-quantity {
-            color: #777;
-            font-size: 13px;
-        }
-
-
-        .bill-item-price {
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
-
-        /* =====================================================
-           PRINT
-        ====================================================== */
-
-        .bill-print-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-
-        .bill-print-btn,
-        .bill-pdf-btn {
-            flex: 1;
-            padding: 13px;
-            border: none;
-            border-radius: 9px;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-
-        .bill-print-btn {
-            background: #1976d2;
-        }
-
-
-        .bill-pdf-btn {
-            background: #6a1b9a;
-        }
-
-
-        .bill-print-btn:hover {
-            background: #1565c0;
-        }
-
-
-        .bill-pdf-btn:hover {
-            background: #4a148c;
-        }
-
-
-        /* =====================================================
-           BILL META
-        ====================================================== */
-
-        .bill-meta {
-            margin-top: 15px;
-            padding: 12px;
-            background: #fafafa;
-            border-radius: 9px;
-            font-size: 14px;
-            color: #555;
-        }
-
-
-        .bill-meta-row {
-            display: flex;
-            justify-content: space-between;
-            gap: 10px;
-            padding: 5px 0;
-        }
-
-
-        .bill-meta-row strong {
-            color: #333;
-        }
-
-
-        /* =====================================================
-           PAYMENT
-        ====================================================== */
-
-        .payment-box {
-            margin-top: 18px;
-        }
-
-
-        .payment-title {
-            font-size: 17px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-
-        .payment-help {
-            color: #777;
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-
-        .payment-tabs {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
-        }
-
-
-        .payment-tab {
-            flex: 1;
-            padding: 13px 8px;
-            border: 2px solid #ddd;
-            border-radius: 9px;
-            background: white;
-            color: #555;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-
-        .payment-tab.active {
-            background: #ff5722;
-            border-color: #ff5722;
-            color: white;
-        }
-
-
-        .payment-panel {
-            margin-top: 12px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #f8f8f8;
-            border: 1px solid #eee;
-        }
-
-
-        .payment-action-btn {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #ff5722;
-            color: white;
-            font-weight: bold;
-            font-size: 15px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-
-        .payment-selected {
-            margin-top: 15px;
-            padding: 14px;
-            border-radius: 9px;
-            background: #fff3cd;
-            color: #856404;
-            text-align: center;
-            font-weight: bold;
-        }
-
-
-        .payment-paid {
-            margin-top: 15px;
-            padding: 16px;
-            border-radius: 9px;
-            background: #e8f5e9;
-            color: #2e7d32;
-            text-align: center;
-            font-weight: bold;
-            font-size: 17px;
-        }
-
-
-        /* =====================================================
-           UPI
-        ====================================================== */
-
-        .upi-box {
-            text-align: center;
-        }
-
-
-        .upi-amount {
-            margin-top: 15px;
-            padding: 14px;
-            border-radius: 9px;
-            background: #fff3e0;
-            color: #e65100;
-            text-align: center;
-            font-size: 14px;
-        }
-
-
-        .upi-amount strong {
-            display: block;
-            font-size: 26px;
-            margin-top: 5px;
-            color: #ff5722;
-        }
-
-
-        .upi-qr {
-            width: 230px;
-            height: 230px;
-            margin: 18px auto;
-            padding: 10px;
-            background: white;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #ddd;
-        }
-
-
-        .upi-qr img {
-            max-width: 100%;
-            max-height: 100%;
-        }
-
-
-        .upi-details {
-            text-align: center;
-            padding: 14px;
-            background: white;
-            border-radius: 8px;
-            color: #555;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-
-        .upi-note {
-            margin-top: 12px;
-            color: #777;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-
-        /* =====================================================
-           GENERAL
-        ====================================================== */
-
-        .hidden {
-            display: none;
-        }
-
-
-        .loading,
-        .error,
-        .empty {
-            background: white;
-            border-radius: 12px;
-            padding: 25px;
-            text-align: center;
-        }
-
-
-        .loading,
-        .empty {
-            color: #777;
-        }
-
-
-        .error {
-            color: #c62828;
-        }
-
-
-        .back-btn {
-            width: 100%;
-            margin-top: 10px;
-            padding: 13px;
-            border: none;
-            border-radius: 9px;
-            background: #333;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-
-        /* =====================================================
-           PRINT ONLY
-        ====================================================== */
-
-        .print-bill {
-            display: none;
-        }
-
-
-        @media print {
-
-            body {
-                background: white;
-                padding: 0;
-            }
-
-
-            body > * {
-                display: none !important;
-            }
-
-
-            #printBillContainer {
-                display: block !important;
-            }
-
-
-            .print-bill {
-                display: block;
-                width: 100%;
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 30px;
-                color: #111;
-                background: white;
-            }
-
-
-            .print-header {
-                text-align: center;
-                border-bottom: 2px solid #222;
-                padding-bottom: 15px;
-                margin-bottom: 20px;
-            }
-
-
-            .print-header h1 {
-                font-size: 28px;
-                margin-bottom: 5px;
-            }
-
-
-            .print-header p {
-                color: #555;
-                font-size: 14px;
-            }
-
-
-            .print-info {
-                margin-bottom: 20px;
-            }
-
-
-            .print-info-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 5px 0;
-                font-size: 14px;
-            }
-
-
-            .print-items {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 15px;
-            }
-
-
-            .print-items th,
-            .print-items td {
-                border-bottom: 1px solid #ddd;
-                padding: 9px 5px;
-                text-align: left;
-            }
-
-
-            .print-items th:last-child,
-            .print-items td:last-child {
-                text-align: right;
-            }
-
-
-            .print-summary {
-                width: 100%;
-                margin-top: 20px;
-            }
-
-
-            .print-summary-row {
-                display: flex;
-                justify-content: space-between;
-                padding: 6px 0;
-            }
-
-
-            .print-summary-total {
-                border-top: 2px solid #222;
-                margin-top: 8px;
-                padding-top: 10px;
-                font-size: 20px;
-                font-weight: bold;
-            }
-
-
-            .print-payment {
-                margin-top: 25px;
-                padding: 12px;
-                border: 1px solid #ccc;
-                text-align: center;
-            }
-
-
-            .print-footer {
-                margin-top: 35px;
-                text-align: center;
-                color: #555;
-                font-size: 13px;
-                border-top: 1px solid #ddd;
-                padding-top: 15px;
-            }
-
-        }
-
-
-        @media (max-width: 500px) {
-
-            .bill-print-actions {
-                flex-direction: column;
-            }
-
-
-            .bill-item-row {
-                align-items: flex-start;
-            }
-
-
-            .upi-qr {
-                width: 220px;
-                height: 220px;
-            }
-
-        }
-
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Order Status - Restaurant</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f5f5f5;
+padding-bottom:30px;
+}
+
+header{
+background:#ff5722;
+color:white;
+padding:20px;
+text-align:center;
+}
+
+header h1{
+margin-bottom:5px;
+}
+
+header p{
+font-size:14px;
+}
+
+.container{
+max-width:600px;
+margin:auto;
+padding:15px;
+}
+
+.table-info,
+.order-card,
+.action-card,
+.bill-card{
+background:white;
+border-radius:12px;
+padding:18px;
+margin-bottom:15px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.table-info{
+text-align:center;
+font-weight:bold;
+color:#ff5722;
+}
+
+.order-title{
+font-size:20px;
+font-weight:bold;
+margin-bottom:12px;
+}
+
+.order-id{
+color:#777;
+font-size:13px;
+word-break:break-all;
+}
+
+.status-box{
+margin-top:15px;
+padding:16px;
+border-radius:10px;
+background:#fff3e0;
+color:#e65100;
+text-align:center;
+font-size:18px;
+font-weight:bold;
+}
+
+.status-message{
+text-align:center;
+color:#777;
+margin-top:10px;
+font-size:14px;
+}
+
+.action-card h3,
+.bill-card h3{
+margin-bottom:12px;
+}
+
+.action-btn{
+width:100%;
+padding:14px;
+border:none;
+border-radius:9px;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin-top:10px;
+}
+
+.waiter-btn{
+background:#ff5722;
+}
+
+.bill-btn{
+background:#333;
+}
+
+.action-btn:disabled{
+background:#aaa;
+cursor:not-allowed;
+}
+
+.requested{
+background:#43a047 !important;
+}
+
+.bill-status{
+padding:13px;
+border-radius:8px;
+background:#f5f5f5;
+text-align:center;
+color:#555;
+}
+
+.bill-generated{
+background:#e8f5e9;
+color:#2e7d32;
+font-weight:bold;
+}
+
+.bill-requested{
+background:#fff3e0;
+color:#e65100;
+font-weight:bold;
+}
+
+.bill-total{
+margin-top:15px;
+padding-top:15px;
+border-top:1px solid #ddd;
+display:flex;
+justify-content:space-between;
+font-size:20px;
+font-weight:bold;
+}
+
+.bill-price{
+color:#ff5722;
+}
+
+.bill-breakdown{
+background:#fafafa;
+border-radius:10px;
+padding:12px;
+margin-top:15px;
+}
+
+.bill-row{
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+color:#555;
+}
+
+.bill-row.discount{
+color:#2e7d32;
+}
+
+.bill-items{
+margin-top:15px;
+background:white;
+border:1px solid #eee;
+border-radius:10px;
+padding:12px;
+}
+
+.bill-item-row{
+display:flex;
+justify-content:space-between;
+gap:10px;
+padding:9px 0;
+border-bottom:1px solid #eee;
+}
+
+.bill-item-row:last-child{
+border-bottom:none;
+}
+
+.bill-item-name{
+font-weight:bold;
+color:#333;
+}
+
+.bill-item-quantity{
+color:#777;
+font-size:13px;
+}
+
+.bill-item-price{
+font-weight:bold;
+white-space:nowrap;
+}
+
+.bill-print-actions{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.bill-print-btn,
+.bill-pdf-btn{
+flex:1;
+padding:13px;
+border:none;
+border-radius:9px;
+color:white;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.bill-print-btn{
+background:#1976d2;
+}
+
+.bill-pdf-btn{
+background:#6a1b9a;
+}
+
+.bill-meta{
+margin-top:15px;
+padding:12px;
+background:#fafafa;
+border-radius:9px;
+font-size:14px;
+color:#555;
+}
+
+.bill-meta-row{
+display:flex;
+justify-content:space-between;
+gap:10px;
+padding:5px 0;
+}
+
+.bill-meta-row strong{
+color:#333;
+}
+
+/* PAYMENT */
+
+.payment-box{
+margin-top:18px;
+}
+
+.payment-title{
+font-size:17px;
+font-weight:bold;
+margin-bottom:8px;
+}
+
+.payment-help{
+color:#777;
+font-size:14px;
+margin-bottom:10px;
+}
+
+.payment-tabs{
+display:flex;
+gap:8px;
+margin-top:12px;
+}
+
+.payment-tab{
+flex:1;
+padding:13px 8px;
+border:2px solid #ddd;
+border-radius:9px;
+background:white;
+color:#555;
+font-weight:bold;
+cursor:pointer;
+}
+
+.payment-tab.active{
+background:#ff5722;
+border-color:#ff5722;
+color:white;
+}
+
+.payment-panel{
+margin-top:12px;
+padding:15px;
+border-radius:10px;
+background:#f8f8f8;
+border:1px solid #eee;
+}
+
+.payment-action-btn{
+width:100%;
+padding:13px;
+border:none;
+border-radius:8px;
+background:#ff5722;
+color:white;
+font-weight:bold;
+font-size:15px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.payment-selected{
+margin-top:15px;
+padding:16px;
+border-radius:9px;
+background:#fff3cd;
+color:#856404;
+text-align:center;
+font-weight:bold;
+}
+
+.payment-paid{
+margin-top:15px;
+padding:16px;
+border-radius:9px;
+background:#e8f5e9;
+color:#2e7d32;
+text-align:center;
+font-weight:bold;
+font-size:17px;
+}
+
+/* CASH REQUEST */
+
+.cash-request-panel{
+cursor:pointer;
+text-align:center;
+transition:.2s;
+}
+
+.cash-request-panel:hover{
+border-color:#ff5722;
+box-shadow:0 3px 10px rgba(255,87,34,.15);
+}
+
+.cash-icon{
+font-size:48px;
+margin-bottom:10px;
+}
+
+.cash-title{
+display:block;
+font-size:20px;
+font-weight:bold;
+}
+
+.cash-description{
+color:#777;
+font-size:14px;
+margin-top:8px;
+}
+
+.cash-request-button{
+margin-top:15px;
+padding:13px;
+background:#fff3e0;
+color:#e65100;
+border-radius:8px;
+font-weight:bold;
+}
+
+.cash-requested-box{
+margin-top:15px;
+padding:16px;
+background:#fff3e0;
+color:#e65100;
+border-radius:10px;
+text-align:center;
+font-weight:bold;
+}
+
+/* UPI */
+
+.upi-box{
+text-align:center;
+}
+
+.upi-amount{
+margin-top:15px;
+padding:14px;
+border-radius:9px;
+background:#fff3e0;
+color:#e65100;
+text-align:center;
+font-size:14px;
+}
+
+.upi-amount strong{
+display:block;
+font-size:26px;
+margin-top:5px;
+color:#ff5722;
+}
+
+.upi-qr{
+width:230px;
+height:230px;
+margin:18px auto;
+padding:10px;
+background:white;
+border-radius:10px;
+display:flex;
+align-items:center;
+justify-content:center;
+border:1px solid #ddd;
+}
+
+.upi-qr img{
+max-width:100%;
+max-height:100%;
+}
+
+.upi-details{
+text-align:center;
+padding:14px;
+background:white;
+border-radius:8px;
+color:#555;
+font-size:14px;
+line-height:1.6;
+}
+
+.upi-note{
+margin-top:12px;
+color:#777;
+font-size:12px;
+line-height:1.5;
+}
+
+.hidden{
+display:none;
+}
+
+.loading,
+.error,
+.empty{
+background:white;
+border-radius:12px;
+padding:25px;
+text-align:center;
+}
+
+.loading,
+.empty{
+color:#777;
+}
+
+.error{
+color:#c62828;
+}
+
+.back-btn{
+width:100%;
+margin-top:10px;
+padding:13px;
+border:none;
+border-radius:9px;
+background:#333;
+color:white;
+font-size:16px;
+cursor:pointer;
+}
+
+.print-bill{
+display:none;
+}
+
+@media(max-width:500px){
+
+.bill-print-actions{
+flex-direction:column;
+}
+
+.upi-qr{
+width:220px;
+height:220px;
+}
+
+}
+
+</style>
 
 </head>
 
-
 <body>
 
+<header>
 
-    <!-- =====================================================
-         HEADER
-    ====================================================== -->
+<h1 id="restaurantName">
+Restaurant
+</h1>
 
-    <header>
+<p>
+Order Status
+</p>
 
-        <h1 id="restaurantName">
-            Restaurant
-        </h1>
+</header>
 
-        <p>
-            Order Status
-        </p>
+<div class="container">
 
-    </header>
+<div
+id="tableInfo"
+class="table-info"
+>
+Loading table...
+</div>
 
+<div id="statusContainer">
 
-    <div class="container">
+<div class="loading">
+Loading order...
+</div>
 
+</div>
 
-        <!-- TABLE -->
+</div>
 
-        <div
-            id="tableInfo"
-            class="table-info"
-        >
-            Loading table...
-        </div>
+<div
+id="printBillContainer"
+style="display:none;"
+></div>
 
+<script type="module">
 
-        <!-- STATUS -->
+import {
+initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
-        <div id="statusContainer">
+import {
+getFirestore,
+doc,
+getDoc,
+updateDoc,
+onSnapshot,
+serverTimestamp
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-            <div class="loading">
-                Loading order...
-            </div>
+import {
+getAuth,
+onAuthStateChanged
+}
+from
+"https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
-        </div>
 
+const firebaseConfig={
 
-    </div>
+apiKey:"AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
 
+authDomain:"restaurant-qr-ordering-fdf9b.firebaseapp.com",
 
-    <!-- =====================================================
-         PRINT BILL CONTAINER
-    ====================================================== -->
+projectId:"restaurant-qr-ordering-fdf9b",
 
-    <div
-        id="printBillContainer"
-        style="display:none;"
-    ></div>
+storageBucket:"restaurant-qr-ordering-fdf9b.firebasestorage.app",
 
+messagingSenderId:"907571024375",
 
-    <script type="module">
+appId:"1:907571024375:web:796894f82f2cae4d7b9ef2",
 
+measurementId:"G-G3Q89BDFF9"
 
-        /* =====================================================
-           FIREBASE IMPORTS
-        ====================================================== */
+};
 
-        import {
-            initializeApp
-        }
-        from
-        "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
+const app=initializeApp(firebaseConfig);
 
-        import {
-            getFirestore,
-            doc,
-            getDoc,
-            updateDoc,
-            onSnapshot,
-            serverTimestamp
-        }
-        from
-        "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
+const db=getFirestore(app);
 
+const auth=getAuth(app);
 
-        import {
-            getAuth,
-            onAuthStateChanged
-        }
-        from
-        "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
 
+const params=new URLSearchParams(
+window.location.search
+);
 
-        /* =====================================================
-           FIREBASE CONFIG
-        ====================================================== */
+const restaurantId=params.get("restaurantId");
 
-        const firebaseConfig = {
+const table=params.get("table");
 
-            apiKey:
-                "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+const orderId=
+params.get("orderId") ||
+localStorage.getItem("currentOrderId");
 
-            authDomain:
-                "restaurant-qr-ordering-fdf9b.firebaseapp.com",
 
-            projectId:
-                "restaurant-qr-ordering-fdf9b",
+const restaurantName=
+document.getElementById("restaurantName");
 
-            storageBucket:
-                "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+const tableInfo=
+document.getElementById("tableInfo");
 
-            messagingSenderId:
-                "907571024375",
+const statusContainer=
+document.getElementById("statusContainer");
 
-            appId:
-                "1:907571024375:web:796894f82f2cae4d7b9ef2",
 
-            measurementId:
-                "G-G3Q89BDFF9"
+let currentUser=null;
 
-        };
+let orderData=null;
 
+let currentUPILink="";
 
-        /* =====================================================
-           INITIALIZE FIREBASE
-        ====================================================== */
+let restaurantPaymentData=null;
 
-        const app =
-            initializeApp(firebaseConfig);
 
+if(!restaurantId || !table || !orderId){
 
-        const db =
-            getFirestore(app);
+statusContainer.innerHTML=`
 
+<div class="error">
 
-        const auth =
-            getAuth(app);
+❌ Order information is missing.
 
+<br><br>
 
-        /* =====================================================
-           URL PARAMETERS
-        ====================================================== */
+Please open your order status
+from the order confirmation page.
 
-        const params =
-            new URLSearchParams(
-                window.location.search
-            );
+<button
+class="back-btn"
+onclick="goBackToMenu()"
+>
+← Back to Menu
+</button>
 
+</div>
 
-        const restaurantId =
-            params.get("restaurantId");
+`;
 
+}
+else{
 
-        const table =
-            params.get("table");
+tableInfo.textContent="🪑 Table "+table;
 
+loadRestaurant();
 
-        const orderId =
-            params.get("orderId") ||
-            localStorage.getItem(
-                "currentOrderId"
-            );
+waitForLogin();
 
+}
 
-        /* =====================================================
-           ELEMENTS
-        ====================================================== */
 
-        const restaurantName =
-            document.getElementById(
-                "restaurantName"
-            );
+/* RESTAURANT */
 
+async function loadRestaurant(){
 
-        const tableInfo =
-            document.getElementById(
-                "tableInfo"
-            );
+try{
 
+const ref=doc(
+db,
+"restaurants",
+restaurantId
+);
 
-        const statusContainer =
-            document.getElementById(
-                "statusContainer"
-            );
+const snap=await getDoc(ref);
 
+if(snap.exists()){
 
-        /* =====================================================
-           GLOBAL VARIABLES
-        ====================================================== */
+const data=snap.data();
 
-        let currentUser = null;
+restaurantPaymentData=data;
 
-        let orderData = null;
+restaurantName.textContent=
+data.restaurantName ||
+data.name ||
+"Restaurant";
 
-        let currentUPILink = "";
+}
 
-        let restaurantPaymentData = null;
+}
+catch(error){
 
+console.error(error);
 
-        /* =====================================================
-           CHECK PARAMETERS
-        ====================================================== */
+}
 
-        if (
-            !restaurantId ||
-            !table ||
-            !orderId
-        ) {
+}
 
-            statusContainer.innerHTML = `
 
-                <div class="error">
+/* LOGIN */
 
-                    ❌ Order information is missing.
+function waitForLogin(){
 
-                    <br><br>
+onAuthStateChanged(
+auth,
+function(user){
 
-                    Please open your order status
-                    from the order confirmation page.
+if(!user){
 
-                    <button
-                        class="back-btn"
-                        onclick="goBackToMenu()"
-                    >
-                        ← Back to Menu
-                    </button>
+statusContainer.innerHTML=`
 
-                </div>
+<div class="error">
 
-            `;
+❌ Please login to view
+your order status.
 
-        }
-        else {
+</div>
 
-            tableInfo.textContent =
-                "🪑 Table " + table;
+`;
 
+return;
 
-            loadRestaurant();
+}
 
+currentUser=user;
 
-            waitForLogin();
+loadOrder();
 
-        }
+}
+);
 
+}
 
-        /* =====================================================
-           LOAD RESTAURANT
-        ====================================================== */
 
-        async function loadRestaurant() {
+/* ORDER REALTIME */
 
-            try {
+function loadOrder(){
 
-                const restaurantRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        restaurantId
-                    );
+const orderRef=doc(
+db,
+"restaurants",
+restaurantId,
+"orders",
+orderId
+);
 
+onSnapshot(
+orderRef,
+function(snapshot){
 
-                const snapshot =
-                    await getDoc(
-                        restaurantRef
-                    );
+if(!snapshot.exists()){
 
+statusContainer.innerHTML=`
 
-                if (
-                    snapshot.exists()
-                ) {
+<div class="error">
+❌ Order not found.
+</div>
 
-                    const data =
-                        snapshot.data();
+`;
 
+return;
 
-                    restaurantPaymentData =
-                        data;
+}
 
+orderData=snapshot.data();
 
-                    restaurantName.textContent =
-                        data.restaurantName ||
-                        data.name ||
-                        "Restaurant";
+if(
+orderData.customerUid &&
+currentUser &&
+orderData.customerUid!==currentUser.uid
+){
 
-                }
+statusContainer.innerHTML=`
 
-            }
-            catch(error) {
+<div class="error">
 
-                console.error(
-                    "Restaurant loading error:",
-                    error
-                );
+❌ You are not authorized
+to view this order.
 
-            }
+</div>
 
-        }
+`;
 
+return;
 
-        /* =====================================================
-           WAIT FOR LOGIN
-        ====================================================== */
+}
 
-        function waitForLogin() {
+renderOrder();
 
-            onAuthStateChanged(
-                auth,
-                function(user) {
+},
+function(error){
 
-                    if (!user) {
+console.error(error);
 
-                        statusContainer.innerHTML = `
+statusContainer.innerHTML=`
 
-                            <div class="error">
+<div class="error">
 
-                                ❌ Please login to view
-                                your order status.
+❌ Unable to load order.
 
-                            </div>
+<br><br>
 
-                        `;
+${escapeHTML(error.message)}
 
-                        return;
+</div>
 
-                    }
+`;
 
+}
+);
 
-                    currentUser =
-                        user;
+}
 
 
-                    loadOrder();
+/* RENDER */
 
-                }
-            );
+function renderOrder(){
 
-        }
+const status=orderData.status || "received";
 
+const statusInfo=getStatusInfo(status);
 
-        /* =====================================================
-           LOAD ORDER REAL TIME
-        ====================================================== */
+const waiterCalled=
+orderData.waiterCalled===true;
 
-        function loadOrder() {
+const billRequested=
+orderData.billRequested===true;
 
-            const orderRef =
-                doc(
-                    db,
-                    "restaurants",
-                    restaurantId,
-                    "orders",
-                    orderId
-                );
+const billGenerated=
+orderData.billGenerated===true ||
+orderData.billStatus==="generated";
 
+statusContainer.innerHTML=`
 
-            onSnapshot(
-                orderRef,
+<div class="order-card">
 
-                function(snapshot) {
+<div class="order-title">
+📋 Order Status
+</div>
 
-                    if (
-                        !snapshot.exists()
-                    ) {
+<div class="order-id">
+Order ID: ${escapeHTML(orderId)}
+</div>
 
-                        statusContainer.innerHTML = `
+<div class="status-box">
 
-                            <div class="error">
+${statusInfo.icon}
+${statusInfo.text}
 
-                                ❌ Order not found.
+</div>
 
-                            </div>
+<div class="status-message">
+${statusInfo.message}
+</div>
 
-                        `;
+</div>
 
-                        return;
 
-                    }
+<div class="action-card">
 
+<h3>
+👨‍🍳 Need Assistance?
+</h3>
 
-                    orderData =
-                        snapshot.data();
+<p style="color:#777;font-size:14px;">
 
+Call a waiter whenever you need
+assistance at your table.
 
-                    if (
-                        orderData.customerUid &&
-                        currentUser &&
-                        orderData.customerUid !==
-                        currentUser.uid
-                    ) {
+</p>
 
-                        statusContainer.innerHTML = `
+<button
+id="waiterBtn"
+class="action-btn waiter-btn
+${waiterCalled?"requested":""}"
+${waiterCalled?"disabled":""}
+onclick="callWaiter()"
+>
 
-                            <div class="error">
+${waiterCalled
+?"✅ Waiter Requested"
+:"🔔 Call Waiter"}
 
-                                ❌ You are not authorized
-                                to view this order.
+</button>
 
-                            </div>
+</div>
 
-                        `;
 
-                        return;
+<div class="action-card">
 
-                    }
+<h3>
+🧾 Bill
+</h3>
 
+<p style="color:#777;font-size:14px;">
 
-                    renderOrder();
+When you are ready to pay,
+request your bill.
 
-                },
+</p>
 
+<button
+id="billBtn"
+class="action-btn bill-btn
+${billRequested?"requested":""}"
+${billRequested?"disabled":""}
+onclick="requestBill()"
+>
 
-                function(error) {
+${billRequested
+?"✅ Bill Requested"
+:"🧾 Request Bill"}
 
-                    console.error(
-                        "Order listener error:",
-                        error
-                    );
+</button>
 
+</div>
 
-                    statusContainer.innerHTML = `
 
-                        <div class="error">
+${
+billGenerated
+?
+renderGeneratedBill()
+:
+`
 
-                            ❌ Unable to load order.
+<div class="bill-card">
 
-                            <br><br>
+<h3>
+💳 Payment
+</h3>
 
-                            ${escapeHTML(
-                                error.message
-                            )}
+<div class="bill-status
+${billRequested?"bill-requested":""}">
 
-                        </div>
+${
+billRequested
+?
+"⏳ Bill requested. Waiting for restaurant..."
+:
+"⏳ Bill has not been requested yet."
+}
 
-                    `;
+</div>
 
-                }
-            );
+</div>
 
-        }
+`
+}
 
 
-        /* =====================================================
-           RENDER ORDER
-        ====================================================== */
+<button
+class="back-btn"
+onclick="goBackToMenu()"
+>
 
-        function renderOrder() {
+← Back to Menu
 
-            const status =
-                orderData.status ||
-                "received";
+</button>
 
+`;
 
-            const statusInfo =
-                getStatusInfo(
-                    status
-                );
+}
 
 
-            const waiterCalled =
-                orderData.waiterCalled === true;
+/* GENERATED BILL */
 
+function renderGeneratedBill(){
 
-            const billRequested =
-                orderData.billRequested === true;
+const subtotal=Number(
+orderData.billSubtotal ??
+orderData.subtotal ??
+orderData.total ??
+0
+);
 
+const discount=Number(
+orderData.billDiscountAmount ??
+orderData.discountAmount ??
+0
+);
 
-            const billGenerated =
-                orderData.billGenerated === true ||
-                orderData.billStatus === "generated";
+const total=Number(
+orderData.billTotal ??
+orderData.finalTotal ??
+orderData.total ??
+Math.max(0,subtotal-discount)
+);
 
+const paymentStatus=
+orderData.paymentStatus || "unpaid";
 
-            statusContainer.innerHTML = `
+const paymentMethod=
+orderData.paymentMethod || "";
 
-                <div class="order-card">
+const cashRequested=
+orderData.cashPaymentRequested===true;
 
-                    <div class="order-title">
-                        📋 Order Status
-                    </div>
+const items=Array.isArray(orderData.items)
+?orderData.items
+:[];
 
 
-                    <div class="order-id">
+let paymentSection="";
 
-                        Order ID:
-                        ${escapeHTML(orderId)}
 
-                    </div>
+/* PAID */
 
+if(paymentStatus==="paid"){
 
-                    <div class="status-box">
+paymentSection=`
 
-                        ${statusInfo.icon}
-                        ${statusInfo.text}
+<div class="payment-paid">
 
-                    </div>
+✅ Payment Completed
 
+<br>
 
-                    <div class="status-message">
+<small style="font-weight:normal;">
 
-                        ${statusInfo.message}
+Payment method:
 
-                    </div>
+${
+paymentMethod==="cash"
+?"💵 Cash"
+:
+paymentMethod==="upi"
+?"📱 UPI"
+:
+"Payment"
+}
 
-                </div>
+</small>
 
+</div>
 
-                <div class="action-card">
+`;
 
-                    <h3>
-                        👨‍🍳 Need Assistance?
-                    </h3>
+}
 
 
-                    <p style="
-                        color:#777;
-                        font-size:14px;
-                    ">
+/* CASH REQUESTED */
 
-                        Call a waiter whenever you need
-                        assistance at your table.
+else if(
+paymentStatus==="payment_selected" &&
+paymentMethod==="cash"
+){
 
-                    </p>
+paymentSection=`
 
+<div class="cash-requested-box">
 
-                    <button
-                        id="waiterBtn"
-                        class="action-btn waiter-btn
-                        ${waiterCalled ? "requested" : ""}"
-                        ${waiterCalled ? "disabled" : ""}
-                        onclick="callWaiter()"
-                    >
+💵 Cash Payment Requested
 
-                        ${
-                            waiterCalled
-                            ?
-                            "✅ Waiter Requested"
-                            :
-                            "🔔 Call Waiter"
-                        }
+<br>
 
-                    </button>
+<small style="font-weight:normal;">
 
-                </div>
+🔔 The waiter has been notified.
 
+<br>
 
-                <div class="action-card">
+Please keep the cash ready.
+The waiter will come to your table
+to collect it.
 
-                    <h3>
-                        🧾 Bill
-                    </h3>
+</small>
 
+</div>
 
-                    <p style="
-                        color:#777;
-                        font-size:14px;
-                    ">
+`;
 
-                        When you are ready to pay,
-                        request your bill.
+}
 
-                    </p>
 
+/* UPI SELECTED */
 
-                    <button
-                        id="billBtn"
-                        class="action-btn bill-btn
-                        ${billRequested ? "requested" : ""}"
-                        ${billRequested ? "disabled" : ""}
-                        onclick="requestBill()"
-                    >
+else if(
+paymentStatus==="payment_selected" &&
+paymentMethod==="upi"
+){
 
-                        ${
-                            billRequested
-                            ?
-                            "✅ Bill Requested"
-                            :
-                            "🧾 Request Bill"
-                        }
+paymentSection=`
 
-                    </button>
+<div class="payment-selected">
 
-                </div>
+📱 UPI Payment Selected
 
+<br>
 
-                ${
-                    billGenerated
-                    ?
-                    renderGeneratedBill()
-                    :
-                    `
+<small style="font-weight:normal;">
 
-                    <div class="bill-card">
+Please complete your UPI payment
+and tap "I Have Paid".
 
-                        <h3>
-                            💳 Payment
-                        </h3>
+</small>
 
+</div>
 
-                        <div class="
-                            bill-status
-                            ${billRequested
-                                ? "bill-requested"
-                                : ""}
-                        ">
+`;
 
-                            ${
-                                billRequested
-                                ?
-                                "⏳ Bill requested. Waiting for restaurant..."
-                                :
-                                "⏳ Bill has not been requested yet."
-                            }
+}
 
-                        </div>
 
-                    </div>
+/* PAYMENT CHOICE */
 
-                    `
-                }
+else{
 
+paymentSection=`
 
-                <button
-                    class="back-btn"
-                    onclick="goBackToMenu()"
-                >
+<div class="payment-box">
 
-                    ← Back to Menu
+<div class="payment-title">
+💳 Choose Payment Method
+</div>
 
-                </button>
+<div class="payment-help">
+Tap a payment method below.
+</div>
 
-            `;
+<div class="payment-tabs">
 
-        }
+<button
+id="cashTab"
+class="payment-tab active"
+onclick="showPaymentPanel('cash')"
+>
+💵 Cash
+</button>
 
+<button
+id="upiTab"
+class="payment-tab"
+onclick="showPaymentPanel('upi')"
+>
+📱 UPI
+</button>
 
-        /* =====================================================
-           GENERATED BILL
-        ====================================================== */
+</div>
 
-        function renderGeneratedBill() {
 
-            const subtotal =
-                Number(
-                    orderData.billSubtotal ??
-                    orderData.subtotal ??
-                    orderData.total ??
-                    0
-                );
+<!-- CASH -->
 
+<div
+id="cashPanel"
+class="payment-panel cash-request-panel"
+onclick="selectPayment('cash')"
+>
 
-            const discount =
-                Number(
-                    orderData.billDiscountAmount ??
-                    orderData.discountAmount ??
-                    0
-                );
+<div class="cash-icon">
+💵
+</div>
 
+<strong class="cash-title">
+Pay by Cash
+</strong>
 
-            const total =
-                Number(
-                    orderData.billTotal ??
-                    orderData.finalTotal ??
-                    orderData.total ??
-                    Math.max(
-                        0,
-                        subtotal - discount
-                    )
-                );
+<p class="cash-description">
 
+Tap here and a waiter will be
+notified to collect your cash.
 
-            const paymentStatus =
-                orderData.paymentStatus ||
-                "unpaid";
+</p>
 
+<div class="cash-request-button">
 
-            const paymentMethod =
-                orderData.paymentMethod ||
-                "";
+🔔 Tap to Request Cash Collection
 
+</div>
 
-            const items =
-                Array.isArray(
-                    orderData.items
-                )
-                ?
-                orderData.items
-                :
-                [];
+</div>
 
 
-            let paymentSection = "";
+<!-- UPI -->
 
+<div
+id="upiPanel"
+class="payment-panel upi-box"
+style="display:none;"
+>
 
-            /* =================================================
-               PAID
-            ================================================== */
+<strong>
+📱 Pay by UPI
+</strong>
 
-            if (
-                paymentStatus === "paid"
-            ) {
+<p style="color:#777;font-size:14px;margin-top:6px;">
 
-                paymentSection = `
+Scan the QR code using any UPI app.
 
-                    <div class="payment-paid">
+</p>
 
-                        ✅ Payment Completed
+<div class="upi-amount">
 
-                        <br>
+Amount to Pay
 
-                        <small style="
-                            font-weight:normal;
-                        ">
+<strong>
+₹${total.toFixed(2)}
+</strong>
 
-                            Payment method:
+</div>
 
-                            ${
-                                paymentMethod === "cash"
-                                ?
-                                "💵 Cash"
-                                :
-                                paymentMethod === "upi"
-                                ?
-                                "📱 UPI"
-                                :
-                                "Payment"
-                            }
+<div
+id="upiQRCode"
+class="upi-qr"
+>
+Loading QR...
+</div>
 
-                        </small>
+<div
+id="upiDetails"
+class="upi-details"
+>
+Loading UPI details...
+</div>
 
-                    </div>
+<button
+class="payment-action-btn"
+onclick="openUPIApp()"
+>
+📱 Open UPI App
+</button>
 
-                `;
+<button
+class="payment-action-btn"
+style="background:#2e7d32;"
+onclick="selectPayment('upi')"
+>
+✅ I Have Paid
+</button>
 
-            }
+<p class="upi-note">
 
+After completing the payment,
+tap <strong>"I Have Paid"</strong>.
 
-            /* =================================================
-               CASH SELECTED
-            ================================================== */
+<br><br>
 
-            else if (
-                paymentStatus === "payment_selected" &&
-                paymentMethod === "cash"
-            ) {
+The restaurant will manually verify
+the payment.
 
-                paymentSection = `
+</p>
 
-                    <div class="payment-selected">
+</div>
 
-                        💵 Cash Payment Selected
+</div>
 
-                        <br>
+`;
 
-                        <small style="
-                            font-weight:normal;
-                        ">
+}
 
-                            Please wait for the restaurant
-                            to collect and confirm your payment.
 
-                        </small>
+/* ITEMS */
 
-                    </div>
+let itemsHTML="";
 
-                `;
+if(items.length){
 
-            }
+items.forEach(item=>{
 
+const name=
+item.name ||
+item.foodName ||
+"Item";
 
-            /* =================================================
-               UPI SELECTED
-            ================================================== */
+const quantity=
+Number(item.quantity||1);
 
-            else if (
-                paymentStatus === "payment_selected" &&
-                paymentMethod === "upi"
-            ) {
+const price=
+Number(item.price||0);
 
-                paymentSection = `
+const lineTotal=price*quantity;
 
-                    <div class="payment-selected">
+itemsHTML+=`
 
-                        📱 UPI Payment Selected
+<div class="bill-item-row">
 
-                        <br>
+<div>
 
-                        <small style="
-                            font-weight:normal;
-                        ">
+<div class="bill-item-name">
 
-                            Your UPI payment selection has
-                            been recorded.
+${escapeHTML(name)}
 
-                            <br>
+</div>
 
-                            The restaurant will manually
-                            verify the payment.
+<div class="bill-item-quantity">
 
-                        </small>
+₹${price.toFixed(2)} × ${quantity}
 
-                    </div>
+</div>
 
-                `;
+</div>
 
-            }
+<div class="bill-item-price">
 
+₹${lineTotal.toFixed(2)}
 
-            /* =================================================
-               PAYMENT NOT SELECTED
-            ================================================== */
+</div>
 
-            else {
+</div>
 
-                paymentSection = `
+`;
 
-                    <div class="payment-box">
+});
 
-                        <div class="payment-title">
+}
+else{
 
-                            💳 Choose Payment Method
+itemsHTML=`
 
-                        </div>
+<div style="text-align:center;color:#777;padding:10px;">
 
+No item details available.
 
-                        <div class="payment-help">
+</div>
 
-                            Select how you want to pay.
+`;
 
-                        </div>
+}
 
 
-                        <div class="payment-tabs">
+const generatedAt=
+getTimestampMillis(
+orderData.billGeneratedAt
+);
 
-                            <button
-                                id="cashTab"
-                                class="payment-tab active"
-                                onclick="showPaymentPanel('cash')"
-                            >
+const billDate=
+generatedAt
+?new Date(generatedAt).toLocaleString()
+:new Date().toLocaleString();
 
-                                💵 Cash
 
-                            </button>
+let paymentText="Payment Pending";
 
+if(paymentStatus==="paid"){
 
-                            <button
-                                id="upiTab"
-                                class="payment-tab"
-                                onclick="showPaymentPanel('upi')"
-                            >
+paymentText=
+paymentMethod==="cash"
+?"Paid - Cash"
+:
+paymentMethod==="upi"
+?"Paid - UPI"
+:"Paid";
 
-                                📱 UPI
+}
+else if(paymentStatus==="payment_selected"){
 
-                            </button>
+paymentText=
+paymentMethod==="cash"
+?"Cash Collection Requested"
+:"UPI Selected";
 
-                        </div>
+}
 
 
-                        <!-- =================================
-                             CASH
-                        ================================== -->
+const billHTML=`
 
-                        <div
-                            id="cashPanel"
-                            class="payment-panel"
-                        >
+<div class="bill-card">
 
-                            <strong>
-                                💵 Pay by Cash
-                            </strong>
+<h3>
+🧾 Your Bill
+</h3>
 
+<div class="bill-status bill-generated">
 
-                            <p style="
-                                color:#777;
-                                font-size:14px;
-                                margin-top:6px;
-                            ">
+✅ Bill Generated
 
-                                Select cash and ask a waiter
-                                to collect your payment.
+</div>
 
-                            </p>
+<div class="bill-meta">
 
+<div class="bill-meta-row">
 
-                            <button
-                                class="payment-action-btn"
-                                onclick="selectPayment('cash')"
-                            >
+<strong>Restaurant</strong>
 
-                                Confirm Cash Payment
+<span>
+${escapeHTML(
+restaurantName.textContent||"Restaurant"
+)}
+</span>
 
-                            </button>
+</div>
 
-                        </div>
+<div class="bill-meta-row">
 
+<strong>Table</strong>
 
-                        <!-- =================================
-                             UPI
-                        ================================== -->
+<span>
+🪑 ${escapeHTML(String(table))}
+</span>
 
-                        <div
-                            id="upiPanel"
-                            class="payment-panel upi-box"
-                            style="display:none;"
-                        >
+</div>
 
-                            <strong>
-                                📱 Pay by UPI
-                            </strong>
+<div class="bill-meta-row">
 
+<strong>Order ID</strong>
 
-                            <p style="
-                                color:#777;
-                                font-size:14px;
-                                margin-top:6px;
-                            ">
+<span>
+${escapeHTML(orderId)}
+</span>
 
-                                Scan the QR code using
-                                any UPI app.
+</div>
 
-                            </p>
+<div class="bill-meta-row">
 
+<strong>Bill Generated</strong>
 
-                            <div class="upi-amount">
+<span>
+${escapeHTML(billDate)}
+</span>
 
-                                Amount to Pay
+</div>
 
-                                <strong>
-                                    ₹${total.toFixed(2)}
-                                </strong>
+</div>
 
-                            </div>
+<div class="bill-items">
 
+${itemsHTML}
 
-                            <!-- QR -->
+</div>
 
-                            <div
-                                id="upiQRCode"
-                                class="upi-qr"
-                            >
+<div class="bill-breakdown">
 
-                                Loading QR...
+<div class="bill-row">
 
-                            </div>
+<span>Subtotal</span>
 
+<span>
+₹${subtotal.toFixed(2)}
+</span>
 
-                            <!-- DYNAMIC UPI DETAILS -->
+</div>
 
-                            <div
-                                id="upiDetails"
-                                class="upi-details"
-                            >
+${
+discount>0
+?
+`
 
-                                Loading UPI details...
+<div class="bill-row discount">
 
-                            </div>
+<span>Discount</span>
 
+<span>
+-₹${discount.toFixed(2)}
+</span>
 
-                            <!-- OPEN UPI -->
+</div>
 
-                            <button
-                                class="payment-action-btn"
-                                onclick="openUPIApp()"
-                            >
+`
+:""
+}
 
-                                📱 Open UPI App
+<div class="bill-total">
 
-                            </button>
+<span>Total</span>
 
+<span class="bill-price">
 
-                            <!-- I HAVE PAID -->
+₹${total.toFixed(2)}
 
-                            <button
-                                class="payment-action-btn"
-                                style="background:#2e7d32;"
-                                onclick="selectPayment('upi')"
-                            >
+</span>
 
-                                ✅ I Have Paid
+</div>
 
-                            </button>
+</div>
 
+<div style="
+margin-top:15px;
+padding:12px;
+border-radius:9px;
+background:#f5f5f5;
+text-align:center;
+color:#555;
+">
 
-                            <p class="upi-note">
+<strong>
+Payment:
+</strong>
 
-                                After completing the payment,
-                                tap <strong>"I Have Paid"</strong>.
+${paymentText}
 
-                                <br><br>
+</div>
 
-                                The restaurant will manually
-                                verify the payment before
-                                marking it as paid.
+<div class="bill-print-actions">
 
-                            </p>
+<button
+class="bill-print-btn"
+onclick="printBill()"
+>
+🖨️ Print Bill
+</button>
 
-                        </div>
+<button
+class="bill-pdf-btn"
+onclick="downloadBillPDF()"
+>
+💾 Save PDF
+</button>
 
-                    </div>
+</div>
 
-                `;
+${paymentSection}
 
-            }
+</div>
 
+`;
 
-            /* =================================================
-               BILL ITEMS
-            ================================================== */
 
-            let itemsHTML = "";
+setTimeout(
+function(){
+loadUPIPayment(total);
+},
+300
+);
 
+return billHTML;
 
-            if (items.length) {
+}
 
-                items.forEach(
-                    function(item) {
 
-                        const name =
-                            item.name ||
-                            item.foodName ||
-                            "Item";
+/* UPI */
 
+async function loadUPIPayment(total){
 
-                        const quantity =
-                            Number(
-                                item.quantity || 1
-                            );
+const qrContainer=
+document.getElementById("upiQRCode");
 
+const detailsContainer=
+document.getElementById("upiDetails");
 
-                        const price =
-                            Number(
-                                item.price || 0
-                            );
+if(!qrContainer || !detailsContainer){
+return;
+}
 
+try{
 
-                        const lineTotal =
-                            price * quantity;
+const restaurantRef=
+doc(db,"restaurants",restaurantId);
 
+const snapshot=
+await getDoc(restaurantRef);
 
-                        itemsHTML += `
+if(!snapshot.exists()){
+return;
+}
 
-                            <div class="bill-item-row">
+const restaurant=snapshot.data();
 
-                                <div>
+const upiName=String(
+restaurant.upiName ||
+restaurant.merchantName ||
+restaurant.restaurantName ||
+restaurant.name ||
+"Restaurant"
+).trim();
 
-                                    <div class="bill-item-name">
+const upiId=String(
+restaurant.upiId ||
+restaurant.upi ||
+restaurant.merchantUpiId ||
+restaurant.paymentUpiId ||
+restaurant.paytmUpiId ||
+restaurant.businessUpiId ||
+""
+).trim();
 
-                                        ${escapeHTML(name)}
+if(!upiId){
 
-                                    </div>
+detailsContainer.innerHTML=`
 
+<strong>
+❌ UPI ID not configured.
+</strong>
 
-                                    <div class="bill-item-quantity">
+`;
 
-                                        ₹${price.toFixed(2)}
-                                        × ${quantity}
+return;
 
-                                    </div>
+}
 
-                                </div>
+const amount=Number(total);
 
+currentUPILink=
+"upi://pay"+
+"?pa="+encodeURIComponent(upiId)+
+"&pn="+encodeURIComponent(upiName)+
+"&am="+encodeURIComponent(amount.toFixed(2))+
+"&cu=INR"+
+"&tn="+encodeURIComponent("Order "+orderId);
 
-                                <div class="bill-item-price">
+qrContainer.innerHTML="";
 
-                                    ₹${lineTotal.toFixed(2)}
+if(typeof QRCode==="undefined"){
+return;
+}
 
-                                </div>
+new QRCode(
+qrContainer,
+{
+text:currentUPILink,
+width:210,
+height:210,
+colorDark:"#000000",
+colorLight:"#ffffff",
+correctLevel:QRCode.CorrectLevel.M
+}
+);
 
-                            </div>
+detailsContainer.innerHTML=`
 
-                        `;
+<strong>
+${escapeHTML(upiName)}
+</strong>
 
-                    }
-                );
+<br>
 
-            }
-            else {
+UPI ID:
 
-                itemsHTML = `
+<strong>
+${escapeHTML(upiId)}
+</strong>
 
-                    <div style="
-                        text-align:center;
-                        color:#777;
-                        padding:10px;
-                    ">
+<br>
 
-                        No item details available.
+Amount:
 
-                    </div>
+<strong>
+₹${amount.toFixed(2)}
+</strong>
 
-                `;
+`;
 
-            }
+}
+catch(error){
 
+console.error(error);
 
-            /* =================================================
-               BILL DATE
-            ================================================== */
+}
 
-            const generatedAt =
-                getTimestampMillis(
-                    orderData.billGeneratedAt
-                );
+}
 
 
-            const billDate =
-                generatedAt
-                ?
-                new Date(
-                    generatedAt
-                ).toLocaleString()
-                :
-                new Date().toLocaleString();
+/* OPEN UPI */
 
+window.openUPIApp=function(){
 
-            /* =================================================
-               PAYMENT TEXT
-            ================================================== */
+if(!currentUPILink){
 
-            let paymentText =
-                "Payment Pending";
+alert("UPI payment information is not available.");
 
+return;
 
-            if (
-                paymentStatus === "paid"
-            ) {
+}
 
-                paymentText =
-                    "Paid";
+window.location.href=currentUPILink;
 
-            }
-            else if (
-                paymentStatus === "payment_selected"
-            ) {
+};
 
-                paymentText =
-                    paymentMethod === "cash"
-                    ?
-                    "Cash Selected"
-                    :
-                    "UPI Selected";
 
-            }
+/* WAITER */
 
+window.callWaiter=async function(){
 
-            /* =================================================
-               BILL HTML
-            ================================================== */
+if(!currentUser){
+alert("Please login first.");
+return;
+}
 
-            const billHTML = `
+if(!orderData){
+return;
+}
 
-                <div class="bill-card">
+if(orderData.waiterCalled===true){
+return;
+}
 
-                    <h3>
-                        🧾 Your Bill
-                    </h3>
+const button=
+document.getElementById("waiterBtn");
 
+if(button){
+button.disabled=true;
+button.textContent="⏳ Calling Waiter...";
+}
 
-                    <div class="bill-status bill-generated">
+try{
 
-                        ✅ Bill Generated
+const orderRef=doc(
+db,
+"restaurants",
+restaurantId,
+"orders",
+orderId
+);
 
-                    </div>
+await updateDoc(
+orderRef,
+{
 
+waiterCalled:true,
 
-                    <div class="bill-meta">
+waiterRequestedAt:
+serverTimestamp(),
 
-                        <div class="bill-meta-row">
+updatedAt:
+serverTimestamp()
 
-                            <strong>
-                                Restaurant
-                            </strong>
+}
+);
 
-                            <span>
-                                ${escapeHTML(
-                                    restaurantName.textContent ||
-                                    "Restaurant"
-                                )}
-                            </span>
+alert("🔔 Waiter has been requested.");
 
-                        </div>
+}
+catch(error){
 
+console.error(error);
 
-                        <div class="bill-meta-row">
+alert(
+"❌ Unable to call waiter.\n\n"+
+error.message
+);
 
-                            <strong>
-                                Table
-                            </strong>
+if(button){
+button.disabled=false;
+button.textContent="🔔 Call Waiter";
+}
 
-                            <span>
-                                🪑 ${escapeHTML(
-                                    String(table)
-                                )}
-                            </span>
+}
 
-                        </div>
+};
 
 
-                        <div class="bill-meta-row">
+/* BILL */
 
-                            <strong>
-                                Order ID
-                            </strong>
+window.requestBill=async function(){
 
-                            <span>
-                                ${escapeHTML(orderId)}
-                            </span>
+if(!currentUser){
+alert("Please login first.");
+return;
+}
 
-                        </div>
+if(!orderData){
+return;
+}
 
+if(orderData.billRequested===true){
+return;
+}
 
-                        <div class="bill-meta-row">
+const button=
+document.getElementById("billBtn");
 
-                            <strong>
-                                Bill Generated
-                            </strong>
+if(button){
+button.disabled=true;
+button.textContent="⏳ Requesting Bill...";
+}
 
-                            <span>
-                                ${escapeHTML(billDate)}
-                            </span>
+try{
 
-                        </div>
+const orderRef=doc(
+db,
+"restaurants",
+restaurantId,
+"orders",
+orderId
+);
 
-                    </div>
+await updateDoc(
+orderRef,
+{
 
+billRequested:true,
 
-                    <div class="bill-items">
+billRequestedAt:
+serverTimestamp(),
 
-                        ${itemsHTML}
+updatedAt:
+serverTimestamp()
 
-                    </div>
+}
+);
 
+alert(
+"🧾 Bill requested. The restaurant will generate it shortly."
+);
 
-                    <div class="bill-breakdown">
+}
+catch(error){
 
-                        <div class="bill-row">
+console.error(error);
 
-                            <span>
-                                Subtotal
-                            </span>
+alert(
+"❌ Unable to request bill.\n\n"+
+error.message
+);
 
-                            <span>
-                                ₹${subtotal.toFixed(2)}
-                            </span>
+if(button){
+button.disabled=false;
+button.textContent="🧾 Request Bill";
+}
 
-                        </div>
+}
 
+};
 
-                        ${
-                            discount > 0
-                            ?
-                            `
 
-                            <div class="
-                                bill-row
-                                discount
-                            ">
+/* PAYMENT TABS */
 
-                                <span>
-                                    Discount
-                                </span>
+window.showPaymentPanel=function(method){
 
-                                <span>
-                                    -₹${discount.toFixed(2)}
-                                </span>
+const cashPanel=
+document.getElementById("cashPanel");
 
-                            </div>
+const upiPanel=
+document.getElementById("upiPanel");
 
-                            `
-                            :
-                            ""
-                        }
+const cashTab=
+document.getElementById("cashTab");
 
+const upiTab=
+document.getElementById("upiTab");
 
-                        <div class="bill-total">
+if(!cashPanel || !upiPanel){
+return;
+}
 
-                            <span>
-                                Total
-                            </span>
+if(method==="upi"){
 
-                            <span class="bill-price">
+cashPanel.style.display="none";
+upiPanel.style.display="block";
 
-                                ₹${total.toFixed(2)}
+cashTab.classList.remove("active");
+upiTab.classList.add("active");
 
-                            </span>
+const total=Number(
+orderData?.billTotal ??
+orderData?.finalTotal ??
+orderData?.billSubtotal ??
+orderData?.total ??
+0
+);
 
-                        </div>
+if(total>0){
+loadUPIPayment(total);
+}
 
-                    </div>
+}
+else{
 
+cashPanel.style.display="block";
+upiPanel.style.display="none";
 
-                    <div style="
-                        margin-top:15px;
-                        padding:12px;
-                        border-radius:9px;
-                        background:#f5f5f5;
-                        text-align:center;
-                        color:#555;
-                    ">
+cashTab.classList.add("active");
+upiTab.classList.remove("active");
 
-                        <strong>
-                            Payment:
-                        </strong>
+}
 
-                        ${paymentText}
+};
 
-                    </div>
 
+/* SELECT PAYMENT */
 
-                    <div class="bill-print-actions">
+window.selectPayment=async function(method){
 
-                        <button
-                            class="bill-print-btn"
-                            onclick="printBill()"
-                        >
+if(!currentUser){
 
-                            🖨️ Print Bill
+alert("Please login first.");
 
-                        </button>
+return;
 
+}
 
-                        <button
-                            class="bill-pdf-btn"
-                            onclick="downloadBillPDF()"
-                        >
+if(!orderData){
+return;
+}
 
-                            💾 Save PDF
+const billGenerated=
+orderData.billGenerated===true ||
+orderData.billStatus==="generated";
 
-                        </button>
+if(!billGenerated){
 
-                    </div>
+alert(
+"The bill has not been generated yet."
+);
 
+return;
 
-                    ${paymentSection}
+}
 
-                </div>
+if(orderData.paymentStatus==="paid"){
+return;
+}
 
-            `;
 
+/*
+IMPORTANT:
 
-            /* =================================================
-               GENERATE UPI QR AFTER DOM INSERTION
-            ================================================== */
+CASH DOES NOT SHOW ANOTHER
+CONFIRMATION DIALOG.
 
-            setTimeout(
-                function() {
+CLICKING CASH DIRECTLY CREATES
+THE CASH COLLECTION REQUEST.
+*/
 
-                    loadUPIPayment(total);
+try{
 
-                },
-                300
-            );
+const orderRef=doc(
+db,
+"restaurants",
+restaurantId,
+"orders",
+orderId
+);
 
+const updateData={
 
-            return billHTML;
+paymentMethod:method,
 
-        }
+paymentStatus:"payment_selected",
 
+paymentSelectedAt:
+serverTimestamp(),
 
-        /* =====================================================
-           LOAD UPI PAYMENT FROM ADMIN PANEL
-        ====================================================== */
+updatedAt:
+serverTimestamp()
 
-        async function loadUPIPayment(total) {
+};
 
-            const qrContainer =
-                document.getElementById(
-                    "upiQRCode"
-                );
 
+if(method==="cash"){
 
-            const detailsContainer =
-                document.getElementById(
-                    "upiDetails"
-                );
+updateData.cashPaymentRequested=true;
 
+updateData.cashPaymentRequestedAt=
+serverTimestamp();
 
-            if (
-                !qrContainer ||
-                !detailsContainer
-            ) {
+updateData.cashPaymentNotification=
+true;
 
-                return;
+}
 
-            }
 
+if(method==="upi"){
 
-            /* ---------------------------------------------
-               LOADING
-            --------------------------------------------- */
+const restaurantRef=
+doc(
+db,
+"restaurants",
+restaurantId
+);
 
-            qrContainer.innerHTML = `
+const restaurantSnapshot=
+await getDoc(restaurantRef);
 
-                <div style="
-                    color:#777;
-                    text-align:center;
-                    font-size:14px;
-                ">
+if(!restaurantSnapshot.exists()){
 
-                    Loading QR...
+alert(
+"Restaurant payment settings not found."
+);
 
-                </div>
+return;
 
-            `;
+}
 
+const restaurant=
+restaurantSnapshot.data();
 
-            detailsContainer.innerHTML = `
+const upiId=String(
+restaurant.upiId ||
+restaurant.upi ||
+restaurant.merchantUpiId ||
+restaurant.paymentUpiId ||
+restaurant.paytmUpiId ||
+restaurant.businessUpiId ||
+""
+).trim();
 
-                Loading UPI details...
+if(!upiId){
 
-            `;
+alert(
+"UPI ID is not configured in the Admin Panel."
+);
 
+return;
 
-            try {
+}
 
-                /* -----------------------------------------
-                   LOAD RESTAURANT DOCUMENT
-                ------------------------------------------ */
+updateData.upiPaymentRequested=true;
 
-                const restaurantRef =
-                    doc(
-                        db,
-                        "restaurants",
-                        restaurantId
-                    );
+updateData.upiPaymentRequestedAt=
+serverTimestamp();
 
+}
 
-                const restaurantSnapshot =
-                    await getDoc(
-                        restaurantRef
-                    );
+await updateDoc(
+orderRef,
+updateData
+);
 
 
-                if (
-                    !restaurantSnapshot.exists()
-                ) {
+/* CASH */
 
-                    qrContainer.innerHTML = `
+if(method==="cash"){
 
-                        <div style="
-                            color:#c62828;
-                            font-weight:bold;
-                            text-align:center;
-                            padding:15px;
-                        ">
+alert(
+"💵 Cash payment requested!\n\n"+
+"🔔 The waiter has been notified.\n"+
+"Please keep the cash ready."
+);
 
-                            ❌ Restaurant not found.
+}
 
-                        </div>
 
-                    `;
+/* UPI */
 
+else{
 
-                    detailsContainer.innerHTML = `
+alert(
+"📱 UPI payment selected.\n\n"+
+"Complete the payment and tap 'I Have Paid'."
+);
 
-                        Unable to load restaurant
-                        payment settings.
+}
 
-                    `;
+}
+catch(error){
 
+console.error(
+"Payment selection error:",
+error
+);
 
-                    return;
+alert(
+"❌ Unable to select payment method.\n\n"+
+error.message
+);
 
-                }
+}
 
+};
 
-                /* -----------------------------------------
-                   RESTAURANT DATA
-                ------------------------------------------ */
 
-                const restaurant =
-                    restaurantSnapshot.data();
+/* PRINT */
 
+window.printBill=function(){
 
-                restaurantPaymentData =
-                    restaurant;
+createPrintBill();
 
+setTimeout(
+function(){
+window.print();
+},
+100
+);
 
-                console.log(
-                    "Restaurant data:",
-                    restaurant
-                );
+};
 
 
-                /* -----------------------------------------
-                   RESTAURANT NAME
-                ------------------------------------------ */
+/* PDF */
 
-                const upiName =
-                    String(
-                        restaurant.upiName ||
-                        restaurant.merchantName ||
-                        restaurant.restaurantName ||
-                        restaurant.name ||
-                        "Restaurant"
-                    ).trim();
+window.downloadBillPDF=function(){
 
+createPrintBill();
 
-                /* -----------------------------------------
-                   UPI ID
+setTimeout(
+function(){
+window.print();
+},
+100
+);
 
-                   The first field is the expected
-                   Admin Panel field.
+};
 
-                   Others are supported as fallback.
-                ------------------------------------------ */
 
-                const upiId =
-                    String(
-                        restaurant.upiId ||
-                        restaurant.upi ||
-                        restaurant.merchantUpiId ||
-                        restaurant.paymentUpiId ||
-                        restaurant.paytmUpiId ||
-                        restaurant.businessUpiId ||
-                        ""
-                    ).trim();
+/* PRINT BILL */
 
+function createPrintBill(){
 
-                console.log(
-                    "UPI Name:",
-                    upiName
-                );
+if(!orderData){
+return;
+}
 
+const container=
+document.getElementById(
+"printBillContainer"
+);
 
-                console.log(
-                    "UPI ID:",
-                    upiId
-                );
+if(!container){
+return;
+}
 
+const total=Number(
+orderData.billTotal ??
+orderData.finalTotal ??
+orderData.total ??
+0
+);
 
-                /* -----------------------------------------
-                   CHECK UPI ID
-                ------------------------------------------ */
+const paymentStatus=
+orderData.paymentStatus || "unpaid";
 
-                if (!upiId) {
+const paymentMethod=
+orderData.paymentMethod || "";
 
-                    qrContainer.innerHTML = `
+const paymentText=
+paymentStatus==="paid"
+?
+paymentMethod==="cash"
+?"Paid - Cash"
+:
+paymentMethod==="upi"
+?"Paid - UPI"
+:"Paid"
+:
+paymentStatus==="payment_selected"
+?
+paymentMethod==="cash"
+?"Cash Collection Requested"
+:"UPI Selected"
+:
+"Payment Pending";
 
-                        <div style="
-                            color:#c62828;
-                            font-weight:bold;
-                            text-align:center;
-                            padding:15px;
-                        ">
+container.innerHTML=`
 
-                            ❌ UPI ID not configured.
+<div style="
+padding:30px;
+background:white;
+color:#111;
+font-family:Arial;
+">
 
-                        </div>
+<h1 style="text-align:center;">
+${escapeHTML(restaurantName.textContent)}
+</h1>
 
-                    `;
+<hr>
 
+<p>
+<strong>Order ID:</strong>
+${escapeHTML(orderId)}
+</p>
 
-                    detailsContainer.innerHTML = `
+<p>
+<strong>Table:</strong>
+${escapeHTML(String(table))}
+</p>
 
-                        <strong>
-                            UPI payment is not configured.
-                        </strong>
+<hr>
 
-                        <br><br>
+<h2>
+Total: ₹${total.toFixed(2)}
+</h2>
 
-                        Please add the Paytm Business
-                        UPI ID in the Admin Panel.
+<p>
+<strong>Payment:</strong>
+${escapeHTML(paymentText)}
+</p>
 
-                    `;
+</div>
 
+`;
 
-                    return;
+}
 
-                }
 
+/* BACK */
 
-                /* -----------------------------------------
-                   CHECK AMOUNT
-                ------------------------------------------ */
+window.goBackToMenu=function(){
 
-                const amount =
-                    Number(total);
+window.location.href=
+"customer-menu.html"+
+"?restaurantId="+
+encodeURIComponent(restaurantId)+
+"&table="+
+encodeURIComponent(table);
 
+};
 
-                if (
-                    !Number.isFinite(amount) ||
-                    amount <= 0
-                ) {
 
-                    qrContainer.innerHTML = `
+/* STATUS */
 
-                        <div style="
-                            color:#c62828;
-                            font-weight:bold;
-                            text-align:center;
-                            padding:15px;
-                        ">
+function getStatusInfo(status){
 
-                            ❌ Invalid payment amount.
+switch(status){
 
-                        </div>
+case "new":
+case "received":
 
-                    `;
+return{
+icon:"📥",
+text:"Order Received",
+message:"Your order has been received by the restaurant."
+};
 
+case "accepted":
 
-                    detailsContainer.innerHTML =
-                        "Unable to create UPI payment QR.";
+return{
+icon:"✅",
+text:"Order Accepted",
+message:"The restaurant has accepted your order."
+};
 
+case "preparing":
 
-                    return;
+return{
+icon:"👨‍🍳",
+text:"Preparing",
+message:"The kitchen is preparing your order."
+};
 
-                }
+case "ready":
 
+return{
+icon:"🍽️",
+text:"Ready",
+message:"Your order is ready."
+};
 
-                /* -----------------------------------------
-                   CREATE UPI LINK
-                ------------------------------------------ */
+case "served":
 
-                currentUPILink =
-                    "upi://pay" +
-                    "?pa=" +
-                    encodeURIComponent(
-                        upiId
-                    ) +
-                    "&pn=" +
-                    encodeURIComponent(
-                        upiName
-                    ) +
-                    "&am=" +
-                    encodeURIComponent(
-                        amount.toFixed(2)
-                    ) +
-                    "&cu=INR" +
-                    "&tn=" +
-                    encodeURIComponent(
-                        "Order " + orderId
-                    );
+return{
+icon:"✅",
+text:"Served",
+message:"Your order has been served."
+};
 
+case "completed":
 
-                console.log(
-                    "Generated UPI Link:",
-                    currentUPILink
-                );
+return{
+icon:"🎉",
+text:"Completed",
+message:"Your order is completed."
+};
 
+case "cancelled":
 
-                /* -----------------------------------------
-                   CLEAR QR
-                ------------------------------------------ */
+return{
+icon:"❌",
+text:"Cancelled",
+message:"This order has been cancelled."
+};
 
-                qrContainer.innerHTML = "";
+default:
 
+return{
+icon:"📋",
+text:String(status),
+message:"Your order status has been updated."
+};
 
-                /* -----------------------------------------
-                   CHECK QR LIBRARY
-                ------------------------------------------ */
+}
 
-                if (
-                    typeof QRCode === "undefined"
-                ) {
+}
 
-                    qrContainer.innerHTML = `
 
-                        <div style="
-                            color:#c62828;
-                            font-weight:bold;
-                            text-align:center;
-                            padding:15px;
-                        ">
+/* TIMESTAMP */
 
-                            ❌ QR library could not
-                            be loaded.
+function getTimestampMillis(value){
 
-                        </div>
+if(!value){
+return 0;
+}
 
-                    `;
+if(typeof value.toMillis==="function"){
+return value.toMillis();
+}
 
+if(value.seconds!==undefined){
+return Number(value.seconds)*1000;
+}
 
-                    detailsContainer.innerHTML = `
+if(value instanceof Date){
+return value.getTime();
+}
 
-                        Please check your internet
-                        connection and reload the page.
+if(typeof value==="string"){
 
-                    `;
+const parsed=Date.parse(value);
 
+return Number.isNaN(parsed)?0:parsed;
 
-                    return;
+}
 
-                }
+return 0;
 
+}
 
-                /* -----------------------------------------
-                   GENERATE QR
-                ------------------------------------------ */
 
-                new QRCode(
-                    qrContainer,
-                    {
+/* ESCAPE */
 
-                        text:
-                            currentUPILink,
+function escapeHTML(value){
 
-                        width:
-                            210,
+return String(value)
+.replaceAll("&","&amp;")
+.replaceAll("<","&lt;")
+.replaceAll(">","&gt;")
+.replaceAll('"',"&quot;")
+.replaceAll("'","&#039;");
 
-                        height:
-                            210,
+}
 
-                        colorDark:
-                            "#000000",
-
-                        colorLight:
-                            "#ffffff",
-
-                        correctLevel:
-                            QRCode.CorrectLevel.M
-
-                    }
-                );
-
-
-                /* -----------------------------------------
-                   SHOW ACTUAL ADMIN PANEL DETAILS
-                ------------------------------------------ */
-
-                detailsContainer.innerHTML = `
-
-                    <strong style="
-                        font-size:18px;
-                        color:#444;
-                    ">
-
-                        ${escapeHTML(upiName)}
-
-                    </strong>
-
-
-                    <br>
-
-
-                    <span style="
-                        display:block;
-                        margin-top:8px;
-                        color:#555;
-                    ">
-
-                        UPI ID:
-
-                    </span>
-
-
-                    <strong style="
-                        display:block;
-                        margin-top:3px;
-                        color:#222;
-                        word-break:break-all;
-                    ">
-
-                        ${escapeHTML(upiId)}
-
-                    </strong>
-
-
-                    <div style="
-                        margin-top:8px;
-                        color:#555;
-                    ">
-
-                        Amount:
-
-                        <strong>
-                            ₹${amount.toFixed(2)}
-                        </strong>
-
-                    </div>
-
-                `;
-
-
-                console.log(
-                    "✅ UPI QR generated successfully"
-                );
-
-            }
-            catch(error) {
-
-                console.error(
-                    "UPI loading error:",
-                    error
-                );
-
-
-                qrContainer.innerHTML = `
-
-                    <div style="
-                        color:#c62828;
-                        text-align:center;
-                        padding:15px;
-                        font-weight:bold;
-                    ">
-
-                        ❌ Unable to generate QR.
-
-                    </div>
-
-                `;
-
-
-                detailsContainer.innerHTML = `
-
-                    Unable to load payment details.
-
-                    <br><br>
-
-                    <small>
-                        ${escapeHTML(
-                            error.message
-                        )}
-                    </small>
-
-                `;
-
-            }
-
-        }
-
-
-        /* =====================================================
-           OPEN UPI APP
-        ====================================================== */
-
-        window.openUPIApp =
-            function() {
-
-                if (
-                    !currentUPILink
-                ) {
-
-                    alert(
-                        "UPI payment information is not available."
-                    );
-
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "Opening UPI:",
-                    currentUPILink
-                );
-
-
-                window.location.href =
-                    currentUPILink;
-
-            };
-
-
-        /* =====================================================
-           CREATE PRINT BILL
-        ====================================================== */
-
-        function createPrintBill() {
-
-            if (!orderData) {
-                return;
-            }
-
-
-            const printContainer =
-                document.getElementById(
-                    "printBillContainer"
-                );
-
-
-            if (!printContainer) {
-                return;
-            }
-
-
-            const restaurant =
-                restaurantName.textContent ||
-                "Restaurant";
-
-
-            const subtotal =
-                Number(
-                    orderData.billSubtotal ??
-                    orderData.subtotal ??
-                    orderData.total ??
-                    0
-                );
-
-
-            const discount =
-                Number(
-                    orderData.billDiscountAmount ??
-                    orderData.discountAmount ??
-                    0
-                );
-
-
-            const total =
-                Number(
-                    orderData.billTotal ??
-                    orderData.finalTotal ??
-                    orderData.total ??
-                    Math.max(
-                        0,
-                        subtotal - discount
-                    )
-                );
-
-
-            const items =
-                Array.isArray(
-                    orderData.items
-                )
-                ?
-                orderData.items
-                :
-                [];
-
-
-            const generatedAt =
-                getTimestampMillis(
-                    orderData.billGeneratedAt
-                );
-
-
-            const billDate =
-                generatedAt
-                ?
-                new Date(
-                    generatedAt
-                ).toLocaleString()
-                :
-                new Date().toLocaleString();
-
-
-            const paymentStatus =
-                orderData.paymentStatus ||
-                "unpaid";
-
-
-            const paymentMethod =
-                orderData.paymentMethod ||
-                "";
-
-
-            let paymentText =
-                "Payment Pending";
-
-
-            if (
-                paymentStatus === "paid"
-            ) {
-
-                paymentText =
-                    paymentMethod === "cash"
-                    ?
-                    "Paid - Cash"
-                    :
-                    paymentMethod === "upi"
-                    ?
-                    "Paid - UPI"
-                    :
-                    "Paid";
-
-            }
-            else if (
-                paymentStatus === "payment_selected"
-            ) {
-
-                paymentText =
-                    paymentMethod === "cash"
-                    ?
-                    "Cash Selected"
-                    :
-                    "UPI Selected";
-
-            }
-
-
-            let itemsHTML = "";
-
-
-            if (items.length) {
-
-                items.forEach(
-                    function(item) {
-
-                        const name =
-                            item.name ||
-                            item.foodName ||
-                            "Item";
-
-
-                        const quantity =
-                            Number(
-                                item.quantity || 1
-                            );
-
-
-                        const price =
-                            Number(
-                                item.price || 0
-                            );
-
-
-                        const lineTotal =
-                            price * quantity;
-
-
-                        itemsHTML += `
-
-                            <tr>
-
-                                <td>
-                                    ${escapeHTML(name)}
-                                </td>
-
-                                <td>
-                                    ${quantity}
-                                </td>
-
-                                <td>
-                                    ₹${price.toFixed(2)}
-                                </td>
-
-                                <td>
-                                    ₹${lineTotal.toFixed(2)}
-                                </td>
-
-                            </tr>
-
-                        `;
-
-                    }
-                );
-
-            }
-            else {
-
-                itemsHTML = `
-
-                    <tr>
-
-                        <td colspan="4">
-                            No item details available.
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-
-            printContainer.innerHTML = `
-
-                <div class="print-bill">
-
-                    <div class="print-header">
-
-                        <h1>
-                            ${escapeHTML(restaurant)}
-                        </h1>
-
-
-                        <p>
-                            Restaurant Bill
-                        </p>
-
-                    </div>
-
-
-                    <div class="print-info">
-
-                        <div class="print-info-row">
-
-                            <strong>
-                                Order ID
-                            </strong>
-
-                            <span>
-                                ${escapeHTML(orderId)}
-                            </span>
-
-                        </div>
-
-
-                        <div class="print-info-row">
-
-                            <strong>
-                                Table
-                            </strong>
-
-                            <span>
-                                ${escapeHTML(
-                                    String(table)
-                                )}
-                            </span>
-
-                        </div>
-
-
-                        <div class="print-info-row">
-
-                            <strong>
-                                Bill Date
-                            </strong>
-
-                            <span>
-                                ${escapeHTML(billDate)}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <table class="print-items">
-
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Item
-                                </th>
-
-                                <th>
-                                    Qty
-                                </th>
-
-                                <th>
-                                    Price
-                                </th>
-
-                                <th>
-                                    Amount
-                                </th>
-
-                            </tr>
-
-                        </thead>
-
-
-                        <tbody>
-
-                            ${itemsHTML}
-
-                        </tbody>
-
-                    </table>
-
-
-                    <div class="print-summary">
-
-                        <div class="print-summary-row">
-
-                            <span>
-                                Subtotal
-                            </span>
-
-                            <span>
-                                ₹${subtotal.toFixed(2)}
-                            </span>
-
-                        </div>
-
-
-                        ${
-                            discount > 0
-                            ?
-                            `
-
-                            <div class="print-summary-row">
-
-                                <span>
-                                    Discount
-                                </span>
-
-                                <span>
-                                    -₹${discount.toFixed(2)}
-                                </span>
-
-                            </div>
-
-                            `
-                            :
-                            ""
-                        }
-
-
-                        <div class="
-                            print-summary-row
-                            print-summary-total
-                        ">
-
-                            <span>
-                                Total
-                            </span>
-
-                            <span>
-                                ₹${total.toFixed(2)}
-                            </span>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="print-payment">
-
-                        <strong>
-                            Payment Status
-                        </strong>
-
-                        <br>
-
-                        ${escapeHTML(paymentText)}
-
-                    </div>
-
-
-                    <div class="print-footer">
-
-                        Thank you for dining with us!
-
-                        <br>
-
-                        Please keep this bill for your records.
-
-                    </div>
-
-                </div>
-
-            `;
-
-        }
-
-
-        /* =====================================================
-           PRINT BILL
-        ====================================================== */
-
-        window.printBill =
-            function() {
-
-                if (!orderData) {
-
-                    alert(
-                        "Bill information is not available."
-                    );
-
-
-                    return;
-
-                }
-
-
-                const billGenerated =
-                    orderData.billGenerated === true ||
-                    orderData.billStatus === "generated";
-
-
-                if (!billGenerated) {
-
-                    alert(
-                        "The bill has not been generated yet."
-                    );
-
-
-                    return;
-
-                }
-
-
-                createPrintBill();
-
-
-                setTimeout(
-                    function() {
-
-                        window.print();
-
-                    },
-                    100
-                );
-
-            };
-
-
-        /* =====================================================
-           SAVE BILL AS PDF
-        ====================================================== */
-
-        window.downloadBillPDF =
-            function() {
-
-                if (!orderData) {
-
-                    alert(
-                        "Bill information is not available."
-                    );
-
-
-                    return;
-
-                }
-
-
-                const billGenerated =
-                    orderData.billGenerated === true ||
-                    orderData.billStatus === "generated";
-
-
-                if (!billGenerated) {
-
-                    alert(
-                        "The bill has not been generated yet."
-                    );
-
-
-                    return;
-
-                }
-
-
-                createPrintBill();
-
-
-                setTimeout(
-                    function() {
-
-                        window.print();
-
-                    },
-                    100
-                );
-
-            };
-
-
-        /* =====================================================
-           CALL WAITER
-        ====================================================== */
-
-        window.callWaiter =
-            async function() {
-
-                if (!currentUser) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-
-                    return;
-
-                }
-
-
-                if (!orderData) {
-                    return;
-                }
-
-
-                if (
-                    orderData.waiterCalled === true
-                ) {
-
-                    return;
-
-                }
-
-
-                const button =
-                    document.getElementById(
-                        "waiterBtn"
-                    );
-
-
-                if (button) {
-
-                    button.disabled =
-                        true;
-
-
-                    button.textContent =
-                        "⏳ Calling Waiter...";
-
-                }
-
-
-                try {
-
-                    const orderRef =
-                        doc(
-                            db,
-                            "restaurants",
-                            restaurantId,
-                            "orders",
-                            orderId
-                        );
-
-
-                    await updateDoc(
-                        orderRef,
-                        {
-
-                            waiterCalled:
-                                true,
-
-                            waiterRequestedAt:
-                                serverTimestamp(),
-
-                            updatedAt:
-                                serverTimestamp()
-
-                        }
-                    );
-
-
-                    alert(
-                        "🔔 Waiter has been requested."
-                    );
-
-                }
-                catch(error) {
-
-                    console.error(
-                        "Waiter request error:",
-                        error
-                    );
-
-
-                    alert(
-                        "❌ Unable to call waiter.\n\n" +
-                        error.message
-                    );
-
-
-                    if (button) {
-
-                        button.disabled =
-                            false;
-
-
-                        button.textContent =
-                            "🔔 Call Waiter";
-
-                    }
-
-                }
-
-            };
-
-
-        /* =====================================================
-           REQUEST BILL
-        ====================================================== */
-
-        window.requestBill =
-            async function() {
-
-                if (!currentUser) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-
-                    return;
-
-                }
-
-
-                if (!orderData) {
-                    return;
-                }
-
-
-                if (
-                    orderData.billRequested === true
-                ) {
-
-                    return;
-
-                }
-
-
-                const button =
-                    document.getElementById(
-                        "billBtn"
-                    );
-
-
-                if (button) {
-
-                    button.disabled =
-                        true;
-
-
-                    button.textContent =
-                        "⏳ Requesting Bill...";
-
-                }
-
-
-                try {
-
-                    const orderRef =
-                        doc(
-                            db,
-                            "restaurants",
-                            restaurantId,
-                            "orders",
-                            orderId
-                        );
-
-
-                    await updateDoc(
-                        orderRef,
-                        {
-
-                            billRequested:
-                                true,
-
-                            billRequestedAt:
-                                serverTimestamp(),
-
-                            updatedAt:
-                                serverTimestamp()
-
-                        }
-                    );
-
-
-                    alert(
-                        "🧾 Bill requested. The restaurant will generate it shortly."
-                    );
-
-                }
-                catch(error) {
-
-                    console.error(
-                        "Bill request error:",
-                        error
-                    );
-
-
-                    alert(
-                        "❌ Unable to request bill.\n\n" +
-                        error.message
-                    );
-
-
-                    if (button) {
-
-                        button.disabled =
-                            false;
-
-
-                        button.textContent =
-                            "🧾 Request Bill";
-
-                    }
-
-                }
-
-            };
-
-
-        /* =====================================================
-           PAYMENT TABS
-        ====================================================== */
-
-        window.showPaymentPanel =
-            function(method) {
-
-                const cashPanel =
-                    document.getElementById(
-                        "cashPanel"
-                    );
-
-
-                const upiPanel =
-                    document.getElementById(
-                        "upiPanel"
-                    );
-
-
-                const cashTab =
-                    document.getElementById(
-                        "cashTab"
-                    );
-
-
-                const upiTab =
-                    document.getElementById(
-                        "upiTab"
-                    );
-
-
-                if (
-                    !cashPanel ||
-                    !upiPanel ||
-                    !cashTab ||
-                    !upiTab
-                ) {
-
-                    return;
-
-                }
-
-
-                if (
-                    method === "upi"
-                ) {
-
-                    cashPanel.style.display =
-                        "none";
-
-
-                    upiPanel.style.display =
-                        "block";
-
-
-                    cashTab.classList.remove(
-                        "active"
-                    );
-
-
-                    upiTab.classList.add(
-                        "active"
-                    );
-
-
-                    /*
-                     * Generate QR again when
-                     * UPI tab is opened.
-                     */
-
-                    const total =
-                        Number(
-                            orderData?.billTotal ??
-                            orderData?.finalTotal ??
-                            orderData?.billSubtotal ??
-                            orderData?.total ??
-                            0
-                        );
-
-
-                    if (total > 0) {
-
-                        loadUPIPayment(total);
-
-                    }
-
-                }
-                else {
-
-                    cashPanel.style.display =
-                        "block";
-
-
-                    upiPanel.style.display =
-                        "none";
-
-
-                    cashTab.classList.add(
-                        "active"
-                    );
-
-
-                    upiTab.classList.remove(
-                        "active"
-                    );
-
-                }
-
-            };
-
-
-        /* =====================================================
-           SELECT PAYMENT
-        ====================================================== */
-
-        window.selectPayment =
-            async function(method) {
-
-                if (!currentUser) {
-
-                    alert(
-                        "Please login first."
-                    );
-
-
-                    return;
-
-                }
-
-
-                if (!orderData) {
-                    return;
-                }
-
-
-                const billGenerated =
-                    orderData.billGenerated === true ||
-                    orderData.billStatus === "generated";
-
-
-                if (!billGenerated) {
-
-                    alert(
-                        "The bill has not been generated yet."
-                    );
-
-
-                    return;
-
-                }
-
-
-                if (
-                    orderData.paymentStatus ===
-                    "paid"
-                ) {
-
-                    return;
-
-                }
-
-
-                /* -----------------------------------------
-                   FOR UPI VERIFY THAT UPI EXISTS
-                ------------------------------------------ */
-
-                if (
-                    method === "upi"
-                ) {
-
-                    try {
-
-                        const restaurantRef =
-                            doc(
-                                db,
-                                "restaurants",
-                                restaurantId
-                            );
-
-
-                        const restaurantSnapshot =
-                            await getDoc(
-                                restaurantRef
-                            );
-
-
-                        if (
-                            !restaurantSnapshot.exists()
-                        ) {
-
-                            alert(
-                                "Restaurant payment settings not found."
-                            );
-
-
-                            return;
-
-                        }
-
-
-                        const restaurant =
-                            restaurantSnapshot.data();
-
-
-                        const upiId =
-                            String(
-                                restaurant.upiId ||
-                                restaurant.upi ||
-                                restaurant.merchantUpiId ||
-                                restaurant.paymentUpiId ||
-                                restaurant.paytmUpiId ||
-                                restaurant.businessUpiId ||
-                                ""
-                            ).trim();
-
-
-                        if (!upiId) {
-
-                            alert(
-                                "UPI ID is not configured in the Admin Panel."
-                            );
-
-
-                            return;
-
-                        }
-
-                    }
-                    catch(error) {
-
-                        console.error(
-                            "UPI validation error:",
-                            error
-                        );
-
-
-                        alert(
-                            "Unable to verify UPI settings."
-                        );
-
-
-                        return;
-
-                    }
-
-                }
-
-
-                const methodName =
-                    method === "upi"
-                    ?
-                    "UPI"
-                    :
-                    "Cash";
-
-
-                const confirmed =
-                    confirm(
-                        "Select " +
-                        methodName +
-                        " as your payment method?"
-                    );
-
-
-                if (!confirmed) {
-                    return;
-                }
-
-
-                try {
-
-                    const orderRef =
-                        doc(
-                            db,
-                            "restaurants",
-                            restaurantId,
-                            "orders",
-                            orderId
-                        );
-
-
-                    const updateData = {
-
-                        paymentMethod:
-                            method,
-
-                        paymentStatus:
-                            "payment_selected",
-
-                        paymentSelectedAt:
-                            serverTimestamp(),
-
-                        updatedAt:
-                            serverTimestamp()
-
-                    };
-
-
-                    if (
-                        method === "cash"
-                    ) {
-
-                        updateData.cashPaymentRequested =
-                            true;
-
-
-                        updateData.cashPaymentRequestedAt =
-                            serverTimestamp();
-
-                    }
-
-
-                    if (
-                        method === "upi"
-                    ) {
-
-                        updateData.upiPaymentRequested =
-                            true;
-
-
-                        updateData.upiPaymentRequestedAt =
-                            serverTimestamp();
-
-                    }
-
-
-                    await updateDoc(
-                        orderRef,
-                        updateData
-                    );
-
-
-                    alert(
-                        "✅ " +
-                        methodName +
-                        " selected.\n\n" +
-                        (
-                            method === "cash"
-                            ?
-                            "Please wait for the waiter to collect your cash."
-                            :
-                            "Please complete the UPI payment and tap 'I Have Paid'."
-                        )
-                    );
-
-                }
-                catch(error) {
-
-                    console.error(
-                        "Payment selection error:",
-                        error
-                    );
-
-
-                    alert(
-                        "❌ Unable to select payment method.\n\n" +
-                        error.message
-                    );
-
-                }
-
-            };
-
-
-        /* =====================================================
-           BACK TO MENU
-        ====================================================== */
-
-        window.goBackToMenu =
-            function() {
-
-                window.location.href =
-                    "customer-menu.html" +
-                    "?restaurantId=" +
-                    encodeURIComponent(
-                        restaurantId
-                    ) +
-                    "&table=" +
-                    encodeURIComponent(
-                        table
-                    );
-
-            };
-
-
-        /* =====================================================
-           STATUS INFORMATION
-        ====================================================== */
-
-        function getStatusInfo(status) {
-
-            switch(status) {
-
-                case "new":
-
-                case "received":
-
-                    return {
-
-                        icon:
-                            "📥",
-
-                        text:
-                            "Order Received",
-
-                        message:
-                            "Your order has been received by the restaurant."
-
-                    };
-
-
-                case "accepted":
-
-                    return {
-
-                        icon:
-                            "✅",
-
-                        text:
-                            "Order Accepted",
-
-                        message:
-                            "The restaurant has accepted your order."
-
-                    };
-
-
-                case "preparing":
-
-                    return {
-
-                        icon:
-                            "👨‍🍳",
-
-                        text:
-                            "Preparing",
-
-                        message:
-                            "The kitchen is preparing your order."
-
-                    };
-
-
-                case "ready":
-
-                    return {
-
-                        icon:
-                            "🍽️",
-
-                        text:
-                            "Ready",
-
-                        message:
-                            "Your order is ready."
-
-                    };
-
-
-                case "served":
-
-                    return {
-
-                        icon:
-                            "✅",
-
-                        text:
-                            "Served",
-
-                        message:
-                            "Your order has been served."
-
-                    };
-
-
-                case "completed":
-
-                    return {
-
-                        icon:
-                            "🎉",
-
-                        text:
-                            "Completed",
-
-                        message:
-                            "Your order is completed."
-
-                    };
-
-
-                case "cancelled":
-
-                    return {
-
-                        icon:
-                            "❌",
-
-                        text:
-                            "Cancelled",
-
-                        message:
-                            "This order has been cancelled."
-
-                    };
-
-
-                default:
-
-                    return {
-
-                        icon:
-                            "📋",
-
-                        text:
-                            String(status),
-
-                        message:
-                            "Your order status has been updated."
-
-                    };
-
-            }
-
-        }
-
-
-        /* =====================================================
-           FIREBASE TIMESTAMP HELPER
-        ====================================================== */
-
-        function getTimestampMillis(value) {
-
-            if (!value) {
-                return 0;
-            }
-
-
-            if (
-                typeof value.toMillis ===
-                "function"
-            ) {
-
-                return value.toMillis();
-
-            }
-
-
-            if (
-                value.seconds !== undefined
-            ) {
-
-                return (
-                    Number(value.seconds) *
-                    1000
-                );
-
-            }
-
-
-            if (
-                value instanceof Date
-            ) {
-
-                return value.getTime();
-
-            }
-
-
-            if (
-                typeof value === "string"
-            ) {
-
-                const parsed =
-                    Date.parse(value);
-
-
-                return Number.isNaN(parsed)
-                    ?
-                    0
-                    :
-                    parsed;
-
-            }
-
-
-            return 0;
-
-        }
-
-
-        /* =====================================================
-           ESCAPE HTML
-        ====================================================== */
-
-        function escapeHTML(value) {
-
-            return String(value)
-
-                .replaceAll(
-                    "&",
-                    "&amp;"
-                )
-
-                .replaceAll(
-                    "<",
-                    "&lt;"
-                )
-
-                .replaceAll(
-                    ">",
-                    "&gt;"
-                )
-
-                .replaceAll(
-                    '"',
-                    "&quot;"
-                )
-
-                .replaceAll(
-                    "'",
-                    "&#039;"
-                );
-
-        }
-
-
-    </script>
+</script>
 
 </body>
-
 </html>
