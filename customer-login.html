@@ -1,725 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Customer Login - OTP</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-        }
-
-        body {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background: linear-gradient(135deg, #fff7f2, #ffe5d8);
-        }
-
-        .login-card {
-            width: 100%;
-            max-width: 420px;
-            background: #ffffff;
-            padding: 30px 25px;
-            border-radius: 18px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-        }
-
-        .logo {
-            text-align: center;
-            font-size: 46px;
-            margin-bottom: 8px;
-        }
-
-        h1 {
-            text-align: center;
-            color: #222;
-            font-size: 25px;
-            margin-bottom: 8px;
-        }
-
-        .subtitle {
-            text-align: center;
-            color: #666;
-            font-size: 14px;
-            line-height: 1.5;
-            margin-bottom: 22px;
-        }
-
-        .table-info {
-            text-align: center;
-            background: #fff3ec;
-            color: #d84315;
-            padding: 10px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 16px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 7px;
-            color: #333;
-            font-size: 14px;
-            font-weight: bold;
-        }
-
-        .phone-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .country-code {
-            width: 82px;
-            flex-shrink: 0;
-            padding: 13px 8px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            background: #f7f7f7;
-            color: #333;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        input {
-            width: 100%;
-            padding: 13px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            outline: none;
-            font-size: 16px;
-        }
-
-        input:focus {
-            border-color: #ff5722;
-            box-shadow: 0 0 0 3px rgba(255, 87, 34, 0.10);
-        }
-
-        button {
-            width: 100%;
-            border: none;
-            border-radius: 10px;
-            padding: 13px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .primary-btn {
-            background: #ff5722;
-            color: white;
-        }
-
-        .primary-btn:hover {
-            background: #e64a19;
-        }
-
-        .secondary-btn {
-            margin-top: 10px;
-            background: #eeeeee;
-            color: #333;
-        }
-
-        button:disabled {
-            background: #aaa;
-            cursor: not-allowed;
-        }
-
-        #otpSection {
-            display: none;
-        }
-
-        .otp-input {
-            text-align: center;
-            letter-spacing: 8px;
-            font-size: 22px;
-            font-weight: bold;
-        }
-
-        .status {
-            min-height: 22px;
-            margin: 14px 0 0;
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .status.error {
-            color: #c62828;
-        }
-
-        .status.success {
-            color: #2e7d32;
-        }
-
-        .status.info {
-            color: #666;
-        }
-
-        .small-note {
-            margin-top: 16px;
-            text-align: center;
-            color: #777;
-            font-size: 12px;
-            line-height: 1.5;
-        }
-
-        #recaptcha-container {
-            margin-top: 12px;
-            display: flex;
-            justify-content: center;
-        }
-
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 25px 18px;
-            }
-
-            h1 {
-                font-size: 23px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Customer Login - OTP</title>
+<style>
+*{box-sizing:border-box;font-family:Arial,sans-serif}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#fff7f2,#ffe5d8)}
+.card{width:100%;max-width:430px;background:#fff;padding:28px 24px;border-radius:18px;box-shadow:0 8px 30px #0002}
+.logo{text-align:center;font-size:45px}
+h1{text-align:center;margin:8px 0;color:#222}
+.sub{text-align:center;color:#666;font-size:14px;line-height:1.5;margin-bottom:20px}
+.table{background:#fff3ec;color:#d84315;text-align:center;padding:10px;border-radius:10px;margin-bottom:18px;font-weight:bold}
+label{display:block;font-weight:bold;margin:12px 0 7px}
+.row{display:flex;gap:8px}
+.code{width:75px;padding:13px 8px;border:1px solid #ccc;border-radius:10px;background:#f7f7f7;text-align:center}
+input{width:100%;padding:13px;border:1px solid #ccc;border-radius:10px;font-size:16px;outline:none}
+input:focus{border-color:#ff5722}
+button{width:100%;padding:13px;border:0;border-radius:10px;background:#ff5722;color:#fff;font-size:16px;font-weight:bold;cursor:pointer;margin-top:15px}
+button:disabled{background:#aaa}
+.secondary{background:#eee;color:#333;margin-top:10px}
+#otpSection{display:none}
+.otp{text-align:center;letter-spacing:8px;font-size:22px;font-weight:bold}
+.status{min-height:22px;text-align:center;margin-top:14px;font-size:14px;line-height:1.4}
+.error{color:#c62828} .success{color:#2e7d32} .info{color:#666}
+#recaptcha-container{display:flex;justify-content:center}
+</style>
 </head>
-
 <body>
-
-    <main class="login-card">
-        <div class="logo">🍽️</div>
-
-        <h1>Customer Login</h1>
-
-        <p class="subtitle">
-            Enter your mobile number to receive a one-time password.
-        </p>
-
-        <div id="tableInfo" class="table-info">
-            Checking table...
-        </div>
-
-        <!-- MOBILE NUMBER -->
-        <section id="mobileSection">
-            <div class="form-group">
-                <label for="mobileNumber">Mobile Number</label>
-
-                <div class="phone-row">
-                    <div class="country-code">+91</div>
-
-                    <input
-                        id="mobileNumber"
-                        type="tel"
-                        inputmode="numeric"
-                        autocomplete="tel"
-                        maxlength="10"
-                        placeholder="Enter 10-digit mobile number"
-                    >
-                </div>
-            </div>
-
-            <button
-                id="sendOtpBtn"
-                class="primary-btn"
-                type="button"
-            >
-                Send OTP
-            </button>
-
-            <div id="recaptcha-container"></div>
-        </section>
-
-        <!-- OTP -->
-        <section id="otpSection">
-            <div class="form-group">
-                <label for="otpCode">Enter OTP</label>
-
-                <input
-                    id="otpCode"
-                    class="otp-input"
-                    type="tel"
-                    inputmode="numeric"
-                    autocomplete="one-time-code"
-                    maxlength="6"
-                    placeholder="••••••"
-                >
-            </div>
-
-            <button
-                id="verifyOtpBtn"
-                class="primary-btn"
-                type="button"
-            >
-                Verify OTP
-            </button>
-
-            <button
-                id="changeNumberBtn"
-                class="secondary-btn"
-                type="button"
-            >
-                Change Mobile Number
-            </button>
-        </section>
-
-        <div id="status" class="status info"></div>
-
-        <p class="small-note">
-            Your mobile number is used only for customer authentication.
-        </p>
-    </main>
-
-    <script type="module">
-        /* =========================================
-           FIREBASE IMPORTS
-        ========================================= */
-
-        import {
-            initializeApp
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
-
-        import {
-            getAuth,
-            RecaptchaVerifier,
-            signInWithPhoneNumber
-        } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
-
-
-        /* =========================================
-           FIREBASE CONFIGURATION
-        ========================================= */
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
-            authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
-            projectId: "restaurant-qr-ordering-fdf9b",
-            storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
-            messagingSenderId: "907571024375",
-            appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
-            measurementId: "G-G3Q89BDFF9"
-        };
-
-
-        /* =========================================
-           INITIALIZE FIREBASE
-        ========================================= */
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-
-        /* =========================================
-           READ QR PARAMETERS
-
-           Expected QR URL:
-           customer-login.html?restaurantId=XXX&table=1
-        ========================================= */
-
-        const params = new URLSearchParams(
-            window.location.search
-        );
-
-        const restaurantId =
-            params.get("restaurantId");
-
-        const tableNumber =
-            params.get("table");
-
-
-        /* =========================================
-           ELEMENTS
-        ========================================= */
-
-        const mobileSection =
-            document.getElementById("mobileSection");
-
-        const otpSection =
-            document.getElementById("otpSection");
-
-        const mobileNumberInput =
-            document.getElementById("mobileNumber");
-
-        const otpCodeInput =
-            document.getElementById("otpCode");
-
-        const sendOtpBtn =
-            document.getElementById("sendOtpBtn");
-
-        const verifyOtpBtn =
-            document.getElementById("verifyOtpBtn");
-
-        const changeNumberBtn =
-            document.getElementById("changeNumberBtn");
-
-        const status =
-            document.getElementById("status");
-
-        const tableInfo =
-            document.getElementById("tableInfo");
-
-
-        /* =========================================
-           TABLE VALIDATION
-        ========================================= */
-
-        if (tableNumber) {
-            tableInfo.textContent =
-                "🪑 Table " + tableNumber;
-        } else {
-            tableInfo.textContent =
-                "🪑 Table not specified";
-        }
-
-
-        /* =========================================
-           STATUS HELPER
-        ========================================= */
-
-        function setStatus(
-            message,
-            type = "info"
-        ) {
-            status.textContent = message;
-            status.className =
-                "status " + type;
-        }
-
-
-        /* =========================================
-           RECAPTCHA
-
-           Invisible reCAPTCHA protects the
-           "Send OTP" action.
-        ========================================= */
-
-        let recaptchaVerifier = null;
-        let confirmationResult = null;
-
-
-        function setupRecaptcha() {
-            if (recaptchaVerifier) {
-                return;
-            }
-
-            recaptchaVerifier =
-                new RecaptchaVerifier(
-                    auth,
-                    "recaptcha-container",
-                    {
-                        size: "invisible",
-
-                        callback: () => {
-                            console.log(
-                                "reCAPTCHA verified."
-                            );
-                        },
-
-                        "expired-callback": () => {
-                            setStatus(
-                                "reCAPTCHA expired. Please try again.",
-                                "error"
-                            );
-                        }
-                    }
-                );
-
-            recaptchaVerifier.render()
-                .catch((error) => {
-                    console.error(
-                        "reCAPTCHA render error:",
-                        error
-                    );
-                });
-        }
-
-
-        setupRecaptcha();
-
-
-        /* =========================================
-           SEND OTP
-        ========================================= */
-
-        sendOtpBtn.addEventListener(
-            "click",
-            async () => {
-
-                const mobile =
-                    mobileNumberInput.value.trim();
-
-                if (!/^[6-9]\d{9}$/.test(mobile)) {
-                    setStatus(
-                        "Please enter a valid 10-digit Indian mobile number.",
-                        "error"
-                    );
-
-                    mobileNumberInput.focus();
-                    return;
-                }
-
-                const phoneNumber =
-                    "+91" + mobile;
-
-                sendOtpBtn.disabled = true;
-
-                setStatus(
-                    "Sending OTP...",
-                    "info"
-                );
-
-                try {
-
-                    setupRecaptcha();
-
-                    confirmationResult =
-                        await signInWithPhoneNumber(
-                            auth,
-                            phoneNumber,
-                            recaptchaVerifier
-                        );
-
-                    mobileSection.style.display =
-                        "none";
-
-                    otpSection.style.display =
-                        "block";
-
-                    otpCodeInput.value = "";
-                    otpCodeInput.focus();
-
-                    setStatus(
-                        "OTP sent successfully. Enter the 6-digit OTP.",
-                        "success"
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        "OTP send error:",
-                        error
-                    );
-
-                    sendOtpBtn.disabled = false;
-
-                    setStatus(
-                        getFirebaseErrorMessage(error),
-                        "error"
-                    );
-
-                    /*
-                     * A failed attempt may require a
-                     * fresh reCAPTCHA instance.
-                     */
-                    if (recaptchaVerifier) {
-                        try {
-                            recaptchaVerifier.clear();
-                        } catch (_) {}
-
-                        recaptchaVerifier = null;
-                    }
-
-                    setupRecaptcha();
-                }
-            }
-        );
-
-
-        /* =========================================
-           VERIFY OTP
-        ========================================= */
-
-        verifyOtpBtn.addEventListener(
-            "click",
-            async () => {
-
-                const otp =
-                    otpCodeInput.value.trim();
-
-                if (!/^\d{6}$/.test(otp)) {
-                    setStatus(
-                        "Please enter the 6-digit OTP.",
-                        "error"
-                    );
-
-                    otpCodeInput.focus();
-                    return;
-                }
-
-                if (!confirmationResult) {
-                    setStatus(
-                        "Please request a new OTP first.",
-                        "error"
-                    );
-
-                    return;
-                }
-
-                verifyOtpBtn.disabled = true;
-
-                setStatus(
-                    "Verifying OTP...",
-                    "info"
-                );
-
-                try {
-
-                    await confirmationResult.confirm(
-                        otp
-                    );
-
-                    setStatus(
-                        "Login successful. Opening your menu...",
-                        "success"
-                    );
-
-                    /*
-                     * Keep the QR information so the
-                     * customer opens the correct
-                     * restaurant and table.
-                     */
-                    const menuURL =
-                        "menu.html" +
-                        "?restaurantId=" +
-                        encodeURIComponent(
-                            restaurantId || ""
-                        ) +
-                        "&table=" +
-                        encodeURIComponent(
-                            tableNumber || ""
-                        );
-
-                    window.location.replace(
-                        menuURL
-                    );
-
-                } catch (error) {
-
-                    console.error(
-                        "OTP verification error:",
-                        error
-                    );
-
-                    verifyOtpBtn.disabled = false;
-
-                    setStatus(
-                        getFirebaseErrorMessage(error),
-                        "error"
-                    );
-                }
-            }
-        );
-
-
-        /* =========================================
-           CHANGE MOBILE NUMBER
-        ========================================= */
-
-        changeNumberBtn.addEventListener(
-            "click",
-            () => {
-
-                confirmationResult = null;
-
-                otpCodeInput.value = "";
-
-                otpSection.style.display =
-                    "none";
-
-                mobileSection.style.display =
-                    "block";
-
-                sendOtpBtn.disabled = false;
-
-                setStatus(
-                    "",
-                    "info"
-                );
-
-                mobileNumberInput.focus();
-            }
-        );
-
-
-        /* =========================================
-           ALLOW ENTER KEY
-        ========================================= */
-
-        mobileNumberInput.addEventListener(
-            "keydown",
-            (event) => {
-                if (event.key === "Enter") {
-                    sendOtpBtn.click();
-                }
-            }
-        );
-
-
-        otpCodeInput.addEventListener(
-            "keydown",
-            (event) => {
-                if (event.key === "Enter") {
-                    verifyOtpBtn.click();
-                }
-            }
-        );
-
-
-        /* =========================================
-           FIREBASE ERROR MESSAGES
-        ========================================= */
-
-        function getFirebaseErrorMessage(error) {
-
-            const code =
-                error?.code || "";
-
-            switch (code) {
-
-                case "auth/invalid-phone-number":
-                    return "The mobile number is invalid.";
-
-                case "auth/too-many-requests":
-                    return "Too many attempts. Please wait and try again later.";
-
-                case "auth/quota-exceeded":
-                    return "SMS quota exceeded. Please try again later.";
-
-                case "auth/billing-not-enabled":
-                    return "Firebase billing is not enabled. Enable billing for Phone Authentication SMS to work.";
-
-                case "auth/invalid-verification-code":
-                    return "Incorrect OTP. Please check the OTP and try again.";
-
-                case "auth/code-expired":
-                    return "This OTP has expired. Please request a new OTP.";
-
-                case "auth/captcha-check-failed":
-                    return "reCAPTCHA verification failed. Please refresh the page and try again.";
-
-                case "auth/operation-not-allowed":
-                    return "Phone Authentication is not enabled in Firebase Authentication.";
-
-                case "auth/missing-phone-number":
-                    return "Please enter your mobile number.";
-
-                default:
-                    return (
-                        "Unable to continue: " +
-                        (error?.message ||
-                            "Unknown Firebase error.")
-                    );
-            }
-        }
-    </script>
-
+<main class="card">
+<div class="logo">🍽️</div>
+<h1>Customer Login</h1>
+<p class="sub">Enter your mobile number to continue to the restaurant menu.</p>
+<div id="tableInfo" class="table">Checking QR...</div>
+
+<section id="mobileSection">
+<label for="mobile">Mobile Number</label>
+<div class="row"><div class="code">+91</div><input id="mobile" type="tel" inputmode="numeric" maxlength="10" autocomplete="tel" placeholder="10-digit mobile number"></div>
+<button id="send">Send OTP</button>
+<div id="recaptcha-container"></div>
+</section>
+
+<section id="otpSection">
+<label for="otp">Enter OTP</label>
+<input id="otp" class="otp" type="tel" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="••••••">
+<button id="verify">Verify OTP</button>
+<button id="change" class="secondary">Change Mobile Number</button>
+</section>
+
+<div id="status" class="status info"></div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-auth.js";
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAqhxdr_vaqwGup-lXmefwQFxMJErawlvw",
+    authDomain: "restaurant-qr-ordering-fdf9b.firebaseapp.com",
+    projectId: "restaurant-qr-ordering-fdf9b",
+    storageBucket: "restaurant-qr-ordering-fdf9b.firebasestorage.app",
+    messagingSenderId: "907571024375",
+    appId: "1:907571024375:web:796894f82f2cae4d7b9ef2",
+    measurementId: "G-G3Q89BDFF9"
+};
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+
+const params=new URLSearchParams(location.search);
+const restaurantId=params.get("restaurantId");
+const table=params.get("table");
+
+const tableInfo=document.getElementById("tableInfo");
+const mobileSection=document.getElementById("mobileSection");
+const otpSection=document.getElementById("otpSection");
+const mobile=document.getElementById("mobile");
+const otp=document.getElementById("otp");
+const send=document.getElementById("send");
+const verify=document.getElementById("verify");
+const change=document.getElementById("change");
+const status=document.getElementById("status");
+
+if(!restaurantId || !table) {
+    tableInfo.textContent="❌ Invalid QR code";
+    send.disabled=true;
+    setStatus("This QR code is missing restaurant or table information.","error");
+} else {
+    tableInfo.textContent="🪑 Table "+table;
+}
+
+function setStatus(msg,type="info") {
+    status.textContent=msg;
+    status.className="status "+type;
+}
+
+let verifier=null;
+let confirmation=null;
+
+function createRecaptcha() {
+    if(verifier) return;
+    verifier=new RecaptchaVerifier(auth,"recaptcha-container",{
+        size:"invisible",
+        callback:()=>console.log("reCAPTCHA verified"),
+        "expired-callback":()=>setStatus("reCAPTCHA expired. Try again.","error")
+    });
+    verifier.render().catch(console.error);
+}
+if(restaurantId && table) createRecaptcha();
+
+send.onclick=async()=>{
+    const number=mobile.value.trim();
+    if(!/^[6-9]\d{9}$/.test(number)) {
+        setStatus("Enter a valid 10-digit Indian mobile number.","error"); return;
+    }
+    send.disabled=true;
+    setStatus("Sending OTP...","info");
+    try {
+        createRecaptcha();
+        confirmation=await signInWithPhoneNumber(auth,"+91"+number,verifier);
+        mobileSection.style.display="none";
+        otpSection.style.display="block";
+        otp.focus();
+        setStatus("OTP sent successfully. Enter the 6-digit OTP.","success");
+    } catch(e) {
+        console.error(e);
+        send.disabled=false;
+        if(verifier) { try{verifier.clear()}catch(_){} verifier=null; }
+        createRecaptcha();
+        setStatus(firebaseError(e),"error");
+    }
+};
+
+verify.onclick=async()=>{
+    if(!/^\d{6}$/.test(otp.value.trim())) {
+        setStatus("Enter the 6-digit OTP.","error"); return;
+    }
+    if(!confirmation) { setStatus("Please request a new OTP.","error"); return; }
+    verify.disabled=true;
+    setStatus("Verifying OTP...","info");
+    try {
+        await confirmation.confirm(otp.value.trim());
+        setStatus("Login successful. Opening menu...","success");
+        const menuURL=new URL("menu.html",location.href);
+        menuURL.searchParams.set("restaurantId",restaurantId);
+        menuURL.searchParams.set("table",table);
+        location.replace(menuURL.href);
+    } catch(e) {
+        console.error(e);
+        verify.disabled=false;
+        setStatus(firebaseError(e),"error");
+    }
+};
+
+change.onclick=()=>{
+    confirmation=null; otp.value="";
+    otpSection.style.display="none";
+    mobileSection.style.display="block";
+    send.disabled=false;
+    setStatus("");
+    mobile.focus();
+};
+
+function firebaseError(e) {
+    const c=e?.code||"";
+    const messages={
+        "auth/invalid-phone-number":"Invalid mobile number.",
+        "auth/too-many-requests":"Too many attempts. Please wait and try again.",
+        "auth/quota-exceeded":"SMS quota exceeded. Please try later.",
+        "auth/billing-not-enabled":"Firebase billing is not enabled for Phone Authentication.",
+        "auth/invalid-verification-code":"Incorrect OTP.",
+        "auth/code-expired":"OTP expired. Request a new OTP.",
+        "auth/captcha-check-failed":"reCAPTCHA failed. Refresh and try again.",
+        "auth/operation-not-allowed":"Phone Authentication is not enabled in Firebase.",
+    };
+    return messages[c] || e?.message || "Unable to continue.";
+}
+</script>
 </body>
 </html>
