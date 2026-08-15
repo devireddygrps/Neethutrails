@@ -141,7 +141,7 @@ verify.onclick=async()=>{
     try {
         await confirmation.confirm(otp.value.trim());
         setStatus("Login successful. Opening menu...","success");
-        const menuURL=new URL("menu.html",location.href);
+        const menuURL=new URL("customer-menu.html",location.href);
         menuURL.searchParams.set("restaurantId",restaurantId);
         menuURL.searchParams.set("table",table);
         location.replace(menuURL.href);
